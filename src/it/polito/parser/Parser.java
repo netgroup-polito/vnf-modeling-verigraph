@@ -1,7 +1,9 @@
 package it.polito.parser;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
@@ -42,7 +44,10 @@ public class Parser {
 		char[] source = null;
 		try{
 			/* Load the source file */
-			reader = new BufferedReader(new InputStreamReader(Parser.class.getResourceAsStream(fileName)));
+			//InputStream resourceAsStream = this.getClass().getResourceAsStream(fileName);
+			InputStream resourceAsStream =  new FileInputStream(fileName);
+			reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+			
 			String line = null;
 			String classCode = "";
 			while(true)
@@ -117,6 +122,7 @@ public class Parser {
 		System.out.println("Reading VNF model...");
 		
 		/* Instantiate a parser */
+		//ex. src/it/polito/nfdev/nat/Nat.java
 		Parser parser = new Parser(args[0]);
 		try {
 			/* Parse the VNF code */
