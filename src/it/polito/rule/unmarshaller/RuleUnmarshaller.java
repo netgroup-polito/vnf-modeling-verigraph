@@ -34,6 +34,8 @@ import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.xml.sax.SAXException;
 
+import com.microsoft.z3.IntExpr;
+
 import it.polito.nfdev.jaxb.ExpressionObject;
 import it.polito.nfdev.jaxb.ExpressionResult;
 import it.polito.nfdev.jaxb.LFFieldOf;
@@ -82,6 +84,13 @@ class RuleUnmarshaller {
 		constants.add("HTTP_RESPONSE");
 		constants.add("POP3_REQUEST");
 		constants.add("POP3_RESPONSE");
+		constants.add("DNS_REQUEST");
+		constants.add("DNS_RESPONSE");
+		constants.add("DNS_PORT_53");
+		constants.add("HTTP_PORT_80");
+		constants.add("REQUESTED_URL");
+	/*	constants.add("new_port");
+		constants.add("value_0");*/
 		
 		JAXBContext context;
 		try {
@@ -638,11 +647,13 @@ class RuleUnmarshaller {
 
 
 	private Expression generateFieldOf(LFFieldOf fieldOf) {
+		//(IntExpr)src_port.apply(p_0)
 		
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("apply"));
 		mi.arguments().add(ast.newName(fieldOf.getUnit()));
-		
+		if((fieldOf.getField().compareTo(Constants.PORT_SOURCE) != 0) && (fieldOf.getField().compareTo(Constants.PORT_DESTINATION) != 0)){
+			
 		MethodInvocation innerMi = ast.newMethodInvocation();
 		innerMi.setName(ast.newSimpleName("get"));
 		
@@ -656,6 +667,23 @@ class RuleUnmarshaller {
 		innerMi.arguments().add(sl);
 		
 		mi.setExpression(innerMi);
+		}
+		else if(fieldOf.getField().compareTo(Constants.PORT_SOURCE) == 0){
+			FieldAccess fa = ast.newFieldAccess();
+			fa.setName(ast.newSimpleName("src_port"));
+			fa.setExpression(ast.newName("nctx"));
+			
+			mi.setExpression(fa);
+			
+		}
+		else{
+			FieldAccess fa = ast.newFieldAccess();
+			fa.setName(ast.newSimpleName("dest_port"));
+			fa.setExpression(ast.newName("nctx"));
+			
+			mi.setExpression(fa);
+		}
+		
 		return mi;
 		
 	}
@@ -745,6 +773,12 @@ class RuleUnmarshaller {
 				
 			case Constants.L7DATA:
 				return Constants.Z3_L7DATA;
+				
+			case Constants.OLD_SRC:
+				return Constants.Z3_OLD_SRC;
+				
+			case Constants.OLD_DST:
+				return Constants.Z3_OLD_DEST;
 							
 		}
 		

@@ -19,7 +19,7 @@ import it.polito.parser.MyExpression;
 
 public class TableEntryContext implements Comparable<TableEntryContext> {
 	
-	private List<IfElseBranch> conditionList;
+	private List<IfElseBranch> conditionList;  /*-->just for looking for isInternal() to define 'type'*/ 
 	private String value;
 	private String type = Constants.NONE;
 	private int position;

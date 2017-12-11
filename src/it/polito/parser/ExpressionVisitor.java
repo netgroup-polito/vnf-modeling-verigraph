@@ -2,6 +2,7 @@ package it.polito.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -11,6 +12,7 @@ import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 
+import it.polito.nfdev.lib.Packet.PacketField;
 import it.polito.parser.context.Context;
 import it.polito.parser.context.StatementContext;
 import it.polito.parser.context.TableEntryContext;
@@ -35,7 +37,10 @@ public class ExpressionVisitor extends ASTVisitor {
 			case Constants.DATA_DRIVEN:
 				context.getMethodContext().getContext().setDataDriven(true);
 				break;
-		
+		/*	case Constants.INDIRECT_NF:
+				context.getMethodContext().getContext().setIndirectNF(true);
+				break;
+		*/		
 			case Constants.SET_TYPES:
 				
 				Context ctx = context.getMethodContext().getContext();
@@ -136,12 +141,23 @@ public class ExpressionVisitor extends ASTVisitor {
 					}
 					
 					public boolean visit(QualifiedName node){
-						builder.append(node.getName().getFullyQualifiedName());
+						builder.append(node.getName().getFullyQualifiedName());   /* -->PacketField.IP_SRC-- */
 						return false;
 					}
 				});
 				
-				
+		/*		if(!checkPacketField(builder.toString())){
+					String globleVarName = builder.toString();
+					Map<String,List<Variable>> globleVariables = context.getMethodContext().getContext().getVariablesMap();
+					List<Variable> vars = globleVariables.get(globleVarName);
+					if(vars.size()==1){
+						Variable var = vars.get(0);
+						if(var.getValueFromClient()){
+							
+						}
+					}
+				}
+			*/	
 				MyExpression expressionEntry = new MyExpression(fieldEntry, valueEntry, -1);
 				
 				TableEntryContext entry = new TableEntryContext(context.getConditions(), builder.toString(), position);
@@ -185,4 +201,31 @@ public class ExpressionVisitor extends ASTVisitor {
 	
 	public List<MyExpression> getPredicates() { return predicates; }
 	
+/*public boolean checkPacketField(String field){
+		
+		switch(field){
+			case Constants.IP_SOURCE:
+				return true;
+			case Constants.IP_DESTINATION:
+				return true;
+			case Constants.PORT_SOURCE:
+				return true;
+			case Constants.PORT_DESTINATION:
+				return true;
+			case Constants.TRANSPORT_PROTOCOL:
+				return true;
+			case Constants.APPLICATION_PROTOCOL:
+				return true;
+			case Constants.L7DATA:
+				return true;
+			case Constants.OLD_SRC:
+				return true;
+			case Constants.OLD_DST:
+				return true;
+			default:
+				return false;
+		}
+		
+	}
+*/	
 }

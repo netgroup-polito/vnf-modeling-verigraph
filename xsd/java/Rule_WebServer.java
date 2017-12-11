@@ -59,10 +59,13 @@ public class Rule_WebServer extends NetworkObject {
     BoolExpr[] constrs=new BoolExpr[constr.size()];
     constraints.add(ctx.mkForall(new Expr[]{in_0},ctx.mkEq(isInternal.apply(in_0),ctx.mkOr(constr.toArray(constrs))),1,null,null,null,null));
   }
-  public void addEntry(  Expr expr_0){
-    if (expr_0 == null)     return;
+  public void addEntry(  Expr expr_0,  Expr expr_1){
+    if (expr_0 == null && expr_1 == null)     return;
     ArrayList<Expr> entry=new ArrayList<Expr>();
-    entry.add(expr_0);
+    if (expr_0 == null)     entry.add(ctx.mkBool(true));
+ else     entry.add(expr_0);
+    if (expr_1 == null)     entry.add(ctx.mkBool(true));
+ else     entry.add(expr_1);
     entries.add(entry);
   }
   public void installWebServer(  Expr value_0){
@@ -72,6 +75,6 @@ public class Rule_WebServer extends NetworkObject {
     Expr p_1=ctx.mkConst("n_WebServer_" + n_WebServer + "_p_1",nctx.packet);
     IntExpr t_0=ctx.mkIntConst("n_WebServer_" + n_WebServer + "_t_0");
     IntExpr t_1=ctx.mkIntConst("n_WebServer_" + n_WebServer + "_t_1");
-    constraints.add(ctx.mkForall(new Expr[]{t_0,p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_WebServer,n_0,p_0,t_0),ctx.mkExists(new Expr[]{t_1,p_1,n_1},ctx.mkAnd((BoolExpr)nctx.recv.apply(n_1,n_WebServer,p_1,t_1),ctx.mkLt(t_1,t_0),ctx.mkEq(nctx.pf.get("proto").apply(p_1),ctx.mkInt(nctx.HTTP_REQUEST)),(BoolExpr)matchEntry.apply(nctx.pf.get("application_data").apply(p_1)),ctx.mkEq(nctx.pf.get("src").apply(p_0),nctx.pf.get("dest").apply(p_1)),ctx.mkEq(nctx.pf.get("src_port").apply(p_0),nctx.pf.get("dst_port").apply(p_1)),ctx.mkEq(nctx.pf.get("dest").apply(p_0),nctx.pf.get("src").apply(p_1)),ctx.mkEq(nctx.pf.get("dst_port").apply(p_0),nctx.pf.get("src_port").apply(p_1)),ctx.mkEq(nctx.pf.get("proto").apply(p_0),ctx.mkInt(nctx.HTTP_RESPONSE)),ctx.mkEq(nctx.pf.get("application_data").apply(p_0),value_0),ctx.mkEq(nctx.pf.get("transport_protocol").apply(p_0),nctx.pf.get("transport_protocol").apply(p_1))),1,null,null,null,null)),1,null,null,null,null));
+    constraints.add(ctx.mkForall(new Expr[]{t_0,p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_WebServer,n_0,p_0,t_0),ctx.mkExists(new Expr[]{t_1,p_1,n_1},ctx.mkAnd((BoolExpr)nctx.recv.apply(n_1,n_WebServer,p_1,t_1),ctx.mkLt(t_1,t_0),ctx.mkEq(nctx.pf.get("proto").apply(p_1),ctx.mkInt(nctx.HTTP_REQUEST)),(BoolExpr)matchEntry.apply(nctx.pf.get("application_data").apply(p_1)),ctx.mkEq(nctx.pf.get("src").apply(p_0),nctx.pf.get("dest").apply(p_1)),ctx.mkEq(nctx.src_port.apply(p_0),nctx.dest_port.apply(p_1)),ctx.mkEq(nctx.pf.get("dest").apply(p_0),nctx.pf.get("src").apply(p_1)),ctx.mkEq(nctx.dest_port.apply(p_0),nctx.src_port.apply(p_1)),ctx.mkEq(nctx.pf.get("proto").apply(p_0),ctx.mkInt(nctx.HTTP_RESPONSE)),ctx.mkEq(nctx.pf.get("application_data").apply(p_0),value_0),ctx.mkEq(nctx.pf.get("transport_protocol").apply(p_0),nctx.pf.get("transport_protocol").apply(p_1)),ctx.mkEq(nctx.pf.get("oldSrc").apply(p_0),nctx.pf.get("oldSrc").apply(p_1)),ctx.mkEq(nctx.pf.get("oldDest").apply(p_0),nctx.pf.get("oldDest").apply(p_1))),1,null,null,null,null)),1,null,null,null,null));
   }
 }

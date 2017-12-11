@@ -1,5 +1,6 @@
 package it.polito.rule.generator;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import it.polito.nfdev.jaxb.*;
+import it.polito.nfdev.lib.Packet;
+import it.polito.nfdev.lib.Packet.PacketField;
 import it.polito.parser.Constants;
 import it.polito.parser.Variable;
 import it.polito.parser.context.ReturnSnapshot;
@@ -29,10 +32,13 @@ public class RuleContext {
 	private ReturnSnapshot returnSnapshot;
 	private LogicalOperator entryPoint_p1;
 	private LogicalOperator entryPoint_p2;
+	//private LogicalOperator entryPoint_p0;
+	//private LogicalOperator entryPoint_p3;
 	private Map<String,List<Variable>> localVariable;
 	private Map<String,List<Variable>> globalVariable;
 	
 	public boolean isDataDriven;
+	//public boolean isIndirectNF;/
 	
 	private String netFunction;
 	
@@ -54,6 +60,7 @@ public class RuleContext {
 		this.localVariable = returnSnapshot.getMethodContext().getMethodVariablesMap();
 		this.globalVariable = returnSnapshot.getMethodContext().getContext().getVariablesMap();
 		this.isDataDriven = returnSnapshot.getMethodContext().getContext().isDataDriven();
+	//	this.isIndirectNF = returnSnapshot.getMethodContext().getContext().isIndirectNF();
 		setDefaultRule(returnSnapshot.getMethodContext().getMethodName());
 		
 		
@@ -61,7 +68,7 @@ public class RuleContext {
 	
 	public void setDefaultRule(String methodName){
 		switch(methodName){
-			case Constants.MAIN_NF_METHOD:
+			case Constants.MAIN_NF_METHOD:				//------------------------------------------
 				
 				LUNode dest = factory.createLUNode();
 				LUNode source = factory.createLUNode();
@@ -89,7 +96,7 @@ public class RuleContext {
 				implies.setConsequentExpression(factory.createExpressionObject());
 				
 				
-				if(returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE)==0){
+				if(returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE)==0){		//------------------in case normal "forwardInterface ?????"
 					LOAnd and = factory.createLOAnd();				
 					LFIsInternal isInternal = isInternalRule(packet.getName(), Constants.IP_DESTINATION);
 					ExpressionObject temp = factory.createExpressionObject();		
@@ -124,7 +131,7 @@ public class RuleContext {
 				LUPacket p1 = factory.createLUPacket();
 				LUTime t1 = factory.createLUTime();
 				
-				n1.setName("n_"+ ++nodeCounter);
+				n1.setName("n_"+ ++nodeCounter);		//--> p1
 				p1.setName("p_"+ ++packetCounter);
 				t1.setName("t_"+ ++timeCounter);
 				
@@ -152,10 +159,10 @@ public class RuleContext {
 				
 				LOAnd and = factory.createLOAnd();
 				ExpressionObject temp = factory.createExpressionObject();
-				temp.setRecv(recv);
+				temp.setRecv(recv);	// 'recv'
 				and.getExpression().add(temp);
 				temp = factory.createExpressionObject();
-				temp.setLessThan(less);
+				temp.setLessThan(less);	// 'time less than'
 				and.getExpression().add(temp);
 				
 				exist.getExpression().setAnd(and);
@@ -164,6 +171,68 @@ public class RuleContext {
 				result.setImplies(implies);
 				
 				entryPoint_p1 = and;
+				break;
+			case Constants.DEFINE_SENDING_PACKET_METHOD:
+				LUNode dest1 = factory.createLUNode();
+				LUNode source1 = factory.createLUNode();
+				LUPacket packet1 = factory.createLUPacket();
+				LUTime time1 = factory.createLUTime();
+				
+				dest1.setName("n_"+ ++nodeCounter);
+				source1.setName(netFunction);
+				packet1.setName("p_"+ ++packetCounter);
+				time1.setName("t_"+ ++timeCounter);
+				
+				units.add(dest1);
+				units.add(source1);
+				units.add(time1);
+				units.add(packet1);
+				
+				LFSend send1 = factory.createLFSend();
+				send1.setDestination(dest1.getName());
+				send1.setSource(source1.getName());
+				send1.setPacketOut(packet1.getName());
+				send1.setTimeOut(time1.getName());
+				
+				LOImplies implies1 = factory.createLOImplies();
+				implies1.setAntecedentExpression(factory.createExpressionObject());
+				implies1.setConsequentExpression(factory.createExpressionObject());
+				
+				LOAnd and1 = factory.createLOAnd();
+				ExpressionObject temp1 = factory.createExpressionObject();
+				temp1.setSend(send1);
+				and1.getExpression().add(temp1);
+				
+				if(returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE)==0){		//------------------in case normal "forwardInterface ?????"
+								
+					LFIsInternal isInternal = isInternalRule(packet1.getName(), Constants.IP_DESTINATION);
+				
+					temp1 = factory.createExpressionObject();
+					temp1.setIsInternal(isInternal);
+					and1.getExpression().add(temp1);
+					implies1.getAntecedentExpression().setAnd(and1);
+					
+				}else if(returnSnapshot.getInterfaceName().compareTo(Constants.EXTERNAL_INTERFACE)==0){
+				
+					LONot not = factory.createLONot();
+					LFIsInternal isInternal = isInternalRule(packet1.getName(), Constants.IP_DESTINATION);
+					
+					temp1 = factory.createExpressionObject();
+					temp1.setIsInternal(isInternal);
+					not.setExpression(temp1);
+					temp1 = factory.createExpressionObject();
+					temp1.setNot(not);
+					and1.getExpression().add(temp1);	
+					implies1.getAntecedentExpression().setAnd(and1);
+					
+				}else{			
+					implies1.getAntecedentExpression().setSend(send1);
+				}
+				
+				and1 = factory.createLOAnd();
+				implies1.getConsequentExpression().setAnd(and1);
+				
+				result.setImplies(implies1);
 				break;
 				
 			default:
@@ -181,7 +250,11 @@ public class RuleContext {
 		field_names.add(Constants.TRANSPORT_PROTOCOL);
 		field_names.add(Constants.APPLICATION_PROTOCOL);
 		field_names.add(Constants.L7DATA);
+		field_names.add(Constants.OLD_SRC);
+		field_names.add(Constants.OLD_DST);
 		
+	//  if(!returnSnapshot.isIndirectSnapshot()){
+		 // System.out.println("line 248: <<<<<<,,,,,NOT idirectsnapshot  removeField= "+ removeField);
 		if(removeField != null){
 			if(!removeField.isEmpty()){
 				field_names.removeAll(removeField);
@@ -200,6 +273,47 @@ public class RuleContext {
 			temp.setEqual(equals_temp);
 			setLastExpression(temp);
 		}
+	/*}else{
+		if(removeField != null){
+			if(!removeField.isEmpty()){
+				removeField.add(Constants.L7DATA);
+				removeField.add(Constants.APPLICATION_PROTOCOL);
+				field_names.removeAll(removeField);
+			}
+		}
+		System.out.println("line 276: <<<<<<,,,,,YES idirectsnapshot  removeField= "+ removeField);
+		
+		for(String field : field_names){
+			ExpressionObject temp = factory.createExpressionObject();
+			
+			LOEquals equals_temp = factory.createLOEquals();
+			equals_temp.setLeftExpression(factory.createExpressionObject());
+			equals_temp.setRightExpression(factory.createExpressionObject());
+			if(field.equals(Constants.IP_SOURCE)){
+				equals_temp.getLeftExpression().setFieldOf(fieldOf("p_0",field));
+				equals_temp.getRightExpression().setFieldOf(fieldOf("p_2",Constants.IP_DESTINATION));
+			}
+			else if(field.equals(Constants.IP_DESTINATION)){
+				equals_temp.getLeftExpression().setFieldOf(fieldOf("p_0",field));
+				equals_temp.getRightExpression().setFieldOf(fieldOf("p_2",Constants.IP_SOURCE));
+			}
+			else if(field.equals(Constants.PORT_SOURCE)){
+				equals_temp.getLeftExpression().setFieldOf(fieldOf("p_0",field));
+				equals_temp.getRightExpression().setFieldOf(fieldOf("p_2",Constants.PORT_DESTINATION));
+			}
+			else if(field.equals(Constants.PORT_DESTINATION)){
+				equals_temp.getLeftExpression().setFieldOf(fieldOf("p_0",field));
+				equals_temp.getRightExpression().setFieldOf(fieldOf("p_2",Constants.PORT_SOURCE));
+			}
+			else{
+				equals_temp.getLeftExpression().setFieldOf(fieldOf("p_0",field));
+				equals_temp.getRightExpression().setFieldOf(fieldOf("p_2",field));
+			}
+			temp.setEqual(equals_temp);
+			setExpressionForPacket(temp,"p_2");
+			System.out.println("line 286:>>>>>>>>>>>>>>>>>>>>..set left fields p0=p2" +field);
+		}
+	}	*/
 		
 	}
 	
@@ -291,7 +405,8 @@ public class RuleContext {
 		return entryPoint_p1;
 	}
 	
-	public boolean generateRuleForExitingPacket(String packetField, String value){
+	
+	public boolean generateRuleForExitingPacket(String packetField, String value){   //-->packet_in.setField(PacketField.IP_SRC, natIp);
 		
 		if(checkPacketField(packetField) && containsLogicalUnit("p_0")){
 			LOEquals equal = factory.createLOEquals();
@@ -303,11 +418,77 @@ public class RuleContext {
 			fieldOf.setField(packetField);
 			
 			equal.getLeftExpression().setFieldOf(fieldOf);
-			equal.getRightExpression().setParam(value);
+	// p0 = p2		
+	/*		List<Variable> vars = globalVariable.get(value);
+		/*	if(returnSnapshot.isIndirectSnapshot()){
+				System.out.println("line 395:>>>>.>..value = "+value+"  vars size="+vars.size());
+				System.out.println("vars(0)="+vars.get(0).getExp()+"  vars(1)= "+ vars.get(1).getExp());
+			}
+		
+			if(vars!=null && vars.size()==2){
+				Variable var = vars.get(1);	   // vars.get(0) = null if it is a global variable;
+				if(var.getExp()!=null){
+					StringBuilder methodName = new StringBuilder();
+					var.getExp().accept(new ASTVisitor(){
+						public boolean visit(MethodInvocation node){
+							methodName.append(node.getName());
+							return false;
+						}
+					});
+				
+					if(methodName.toString().compareTo(Constants.GET_FIELD_METHOD)==0){
+						StringBuilder fieldName = new StringBuilder();
+						var.getExp().accept(new ASTVisitor(){
+							public boolean visit(MethodInvocation node){
+								QualifiedName field = (QualifiedName)node.arguments().get(0);
+								fieldName.append(field.getName().getFullyQualifiedName());
+							return false;
+							}
+						});
+					
+					
+						fieldOf = factory.createLFFieldOf();
+						fieldOf.setUnit("p_2");
+						fieldOf.setField(fieldName.toString());
+					
+						equal.getRightExpression().setFieldOf(fieldOf);
+						System.out.println("'line 423' >>>>>>>>>>>>>>>>>>>running p0_ip = p2_ip  =>"+packetField+"= p2"+fieldName);
+					}else{
+						equal.getRightExpression().setParam(value);
+						if(returnSnapshot.isIndirectSnapshot())
+						System.out.println("line426 >>>>>>>>>>>>>>>>>>>running p0_ip = value");
+				     }
+				}else{
+					equal.getRightExpression().setParam(value);
+					if(returnSnapshot.isIndirectSnapshot())
+					System.out.println("line429 >>>>>>>>>>>>>>>>>>>running p0_ip = value");
+				}	
+			}else{ */
+					equal.getRightExpression().setParam(value);
+			//		if(returnSnapshot.isIndirectSnapshot())
+			//		System.out.println("line432 >>>>>>>>>>>>>>>>>>>running p0_ip = value "+value);
+		//	}
+						
+			//equal.getRightExpression().setParam(value);
 			
 			ExpressionObject exp = factory.createExpressionObject();
 			exp.setEqual(equal);
-			setLastExpression(exp);
+		/*	if(returnSnapshot.isIndirectSnapshot()){
+				setExpressionForPacket(exp, "p_2");	
+				System.out.println("--------------seting p0_ip=p2_ip for entryPoint_p2 ");
+			}
+			else{   */
+				if(!returnSnapshot.isInitialPacket()){			
+					setLastExpression(exp);
+				}
+				else{
+					System.out.println(">>>>>>>>>>>>seting for the initial packet fields now\n");
+					if(result.getImplies()!=null){
+					result.getImplies().getConsequentExpression().getAnd().getExpression().add(exp);   // if it is a initial packet from a endhHost, set up for p0
+					
+					}	
+				}
+		//	}	
 			return true;
 		}
 		
@@ -317,7 +498,7 @@ public class RuleContext {
 	public boolean generateRuleForExitingPacket(String packetField, MethodInvocation node){
 		
 		if(checkPacketField(packetField) && containsLogicalUnit("p_0")){
-			String methodName = node.getName().getFullyQualifiedName();
+			String methodName = node.getName().getFullyQualifiedName();		//-->p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			String name;
 			StringBuilder builder = new StringBuilder();
 			
@@ -329,13 +510,14 @@ public class RuleContext {
 				}
 			});
 						
-			name = builder.toString();
+			name = builder.toString();		//-->name='packet'
+			
 			if(methodName.compareTo(Constants.GET_FIELD_METHOD)==0 && name.compareTo(Constants.PACKET_PARAMETER)==0){
 				
 				QualifiedName field = (QualifiedName)node.arguments().get(0);
 				String fieldName = field.getName().getFullyQualifiedName();
 				
-				if(checkPacketField(fieldName)){
+				if(checkPacketField(fieldName)){	//-->IP_DST
 					LOEquals equal = factory.createLOEquals();
 					equal.setLeftExpression(factory.createExpressionObject());
 					equal.setRightExpression(factory.createExpressionObject());
@@ -377,7 +559,7 @@ public class RuleContext {
 					});
 					int index = Integer.parseInt(builder.toString());
 					List<TableEntryContext> list = returnSnapshot.getMethodContext().getEntryValues();
-					String value = list.get(index).getValue();
+					String value = list.get(index).getValue();   //--> value is a packet field
 					if(checkPacketField(value) && containsLogicalUnit("p_0")){
 						LOEquals equal = factory.createLOEquals();
 						equal.setLeftExpression(factory.createExpressionObject());
@@ -415,10 +597,10 @@ public class RuleContext {
 						return true;
 					}
 					else
-						return generateRuleForExitingPacket(packetField, value);
+						return generateRuleForExitingPacket(packetField, value);	// when value is a new defined variable: new_port or natIp	
 				}
 				
-			}else{
+			}else{		//--> when it is used
 		
 				@SuppressWarnings("unchecked")
 				List<Expression> list = (List<Expression>)node.arguments();
@@ -436,7 +618,7 @@ public class RuleContext {
 		
 		return false;
 	}
-	
+								//--> iface.isInternal() or equalsField()
 	public ExpressionObject generateRuleForMethod(String variableName,MethodInvocation method){
 		
 		if(checkVariable(variableName).compareTo(Constants.NONE)==0)
@@ -467,15 +649,20 @@ public class RuleContext {
 			String fieldValue = field.getName().getFullyQualifiedName();
 			StringBuilder builder = new StringBuilder();			
 			
-			ASTNode node = (ASTNode)method.arguments().get(1);
+			ASTNode node = (ASTNode)method.arguments().get(1);	//-->Packet.POP3_REQUEST
 			node.accept(new ASTVisitor() {
 				
 				public boolean visit(QualifiedName node){
 					builder.append(node.getName().getFullyQualifiedName());
 					return false;
 				}
+				
+				public boolean visit(SimpleName node){
+					builder.append(node.getFullyQualifiedName());
+					return false;
+				}
 			});
-			String value = builder.toString();
+			String value = builder.toString();		//-->POP3_REQUEST
 			
 			LOEquals equals = factory.createLOEquals();
 			equals.setLeftExpression(factory.createExpressionObject());
@@ -488,15 +675,323 @@ public class RuleContext {
 			equals.getRightExpression().setParam(value);
 			
 			exp.setEqual(equals);
-			return exp;
 			
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>* generate entry_point_p3 */
+
+		//	if(!((value.equals(Constants.DNS_RESPONSE) || value.equals(Constants.HTTP_RESPONSE)) && returnSnapshot.getInterfaceName().equals(Constants.INTERNAL_INTERFACE))){
+				return exp;
+		/*	}
+			else{
+				this.returnSnapshot.setIndirectSnapshot();
+				System.out.println("line 647~~~~~~~~~~~~~equals field~~~~~~~~~~~~~~~~returnSnapshot.setIndirectSnapshot();");
+				
+				LUNode dest = factory.createLUNode();
+				LUNode source = factory.createLUNode();
+				LUPacket packet = factory.createLUPacket();
+				LUTime time = factory.createLUTime();
+				
+				dest.setName("n_0");
+				source.setName(netFunction);
+				packet.setName("p_0");
+				time.setName("t_0");
+				
+				units.add(dest);
+				units.add(source);
+				units.add(time);
+				units.add(packet);
+				
+				LFSend send = factory.createLFSend();
+				send.setDestination(dest.getName());
+				send.setSource(source.getName());
+				send.setPacketOut(packet.getName());
+				send.setTimeOut(time.getName());
+				
+				LOImplies implies = factory.createLOImplies();
+				implies.setAntecedentExpression(factory.createExpressionObject());
+				implies.setConsequentExpression(factory.createExpressionObject());
+								
+					LOAnd and = factory.createLOAnd();				
+					LFIsInternal isInternal = isInternalRule(packet.getName(), Constants.IP_DESTINATION);
+					ExpressionObject temp1 = factory.createExpressionObject();		
+					
+					temp1.setSend(send);
+					and.getExpression().add(temp1);
+					temp1 = factory.createExpressionObject();
+					temp1.setIsInternal(isInternal);
+					and.getExpression().add(temp1);
+					implies.getAntecedentExpression().setAnd(and);
+				
+				
+				LUNode n1 = factory.createLUNode();
+				LUPacket p1 = factory.createLUPacket();
+				LUTime t1 = factory.createLUTime();
+				
+				n1.setName("n_1");		
+				p1.setName("p_1");
+				t1.setName("t_1");
+				
+				units.add(t1);
+				units.add(p1);
+				units.add(n1);
+				
+				LOExist exist = factory.createLOExist();
+				exist.getUnit().add(n1.getName());
+				exist.getUnit().add(p1.getName());
+				exist.getUnit().add(t1.getName());
+				exist.setExpression(factory.createExpressionObject());
+				
+				LFRecv recv = factory.createLFRecv();
+				recv.setSource(n1.getName());
+				recv.setDestination(netFunction);
+				recv.setPacketIn(p1.getName());
+				recv.setTimeIn(t1.getName());
+				
+				LOLessThan less = factory.createLOLessThan();
+				less.setLeftExpression(factory.createExpressionObject());
+				less.setRightExpression(factory.createExpressionObject());
+				less.getLeftExpression().setParam(t1.getName());
+				less.getRightExpression().setParam(time.getName());
+				
+				and = factory.createLOAnd();
+				temp1 = factory.createExpressionObject();
+				temp1.setRecv(recv);	// 'recv'
+				and.getExpression().add(temp1);
+				temp1 = factory.createExpressionObject();
+				temp1.setLessThan(less);	// 'time less than'
+				and.getExpression().add(temp1);
+				
+				LONot not = factory.createLONot();
+				isInternal = isInternalRule(p1.getName(), Constants.IP_SOURCE);
+				temp1 = factory.createExpressionObject();
+				temp1.setIsInternal(isInternal);
+				not.setExpression(temp1);
+				temp1 = factory.createExpressionObject();
+				temp1.setNot(not);
+				and.getExpression().add(temp1);
+				
+				equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_1");
+				fieldOf.setField(fieldValue);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				equals.getRightExpression().setParam(value);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and.getExpression().add(temp1);
+		//----		
+				LUNode n2 = factory.createLUNode();
+				LUPacket p2 = factory.createLUPacket();
+				LUTime t2 = factory.createLUTime();
+				
+				n2.setName("n_2");		
+				p2.setName("p_2");
+				t2.setName("t_2");
+				
+				units.add(t2);
+				units.add(p2);
+				units.add(n2);
+				
+				LOExist exist1 = factory.createLOExist();
+				exist1.getUnit().add(n2.getName());
+				exist1.getUnit().add(p2.getName());
+				exist1.getUnit().add(t2.getName());
+				exist1.setExpression(factory.createExpressionObject());
+				
+				recv = factory.createLFRecv();
+				recv.setSource(n2.getName());
+				recv.setDestination(netFunction);
+				recv.setPacketIn(p2.getName());
+				recv.setTimeIn(t2.getName());
+				
+				less = factory.createLOLessThan();
+				less.setLeftExpression(factory.createExpressionObject());
+				less.setRightExpression(factory.createExpressionObject());
+				less.getLeftExpression().setParam(t2.getName());
+				less.getRightExpression().setParam(t1.getName());
+				
+				LOAnd and1 = factory.createLOAnd();
+				temp1 = factory.createExpressionObject();
+				temp1.setRecv(recv);	// 'recv'
+				and1.getExpression().add(temp1);
+				temp1 = factory.createExpressionObject();
+				temp1.setLessThan(less);	// 'time less than'
+				and1.getExpression().add(temp1);
+								
+				isInternal = isInternalRule(p2.getName(), Constants.IP_SOURCE);
+			    temp1 = factory.createExpressionObject();		
+				temp1.setIsInternal(isInternal);
+				and1.getExpression().add(temp1);
+		*/		
+		/*		equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_0");
+				fieldOf.setField(Constants.IP_SOURCE);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_2");
+				fieldOf.setField(Constants.IP_DESTINATION);
+				equals.getRightExpression().setFieldOf(fieldOf);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and1.getExpression().add(temp1);
+				
+				equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_0");
+				fieldOf.setField(Constants.PORT_SOURCE);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_2");
+				fieldOf.setField(Constants.PORT_DESTINATION);
+				equals.getRightExpression().setFieldOf(fieldOf);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and1.getExpression().add(temp1);
+				
+		/*		equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_0");
+				fieldOf.setField(Constants.IP_DESTINATION);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_2");
+				fieldOf.setField(Constants.IP_SOURCE);
+				equals.getRightExpression().setFieldOf(fieldOf);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and1.getExpression().add(temp1);
+				
+				equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_0");
+				fieldOf.setField(Constants.PORT_DESTINATION);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_2");
+				fieldOf.setField(Constants.PORT_DESTINATION);
+				equals.getRightExpression().setFieldOf(fieldOf);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and1.getExpression().add(temp1);
+		*/		
+		/*		entryPoint_p2 = and1;
+				System.out.println("line:829>>>>>>>>>>>>>>>>>entryPoint_p2 = and1;");
+				
+				exist1.getExpression().setAnd(and1);
+				
+				temp1 = factory.createExpressionObject();
+				temp1.setExist(exist1);
+				and.getExpression().add(temp1);
+				
+	//(p_0.APPLICATION_PROTOCOL == p_1.APPLICATION_PROTOCOL) && (p_0.L7DATA == p_1.L7DATA)			
+				equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_0");
+				fieldOf.setField(Constants.L7DATA);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_1");
+				fieldOf.setField(Constants.L7DATA);
+				equals.getRightExpression().setFieldOf(fieldOf);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and.getExpression().add(temp1);
+				
+				equals = factory.createLOEquals();
+				equals.setLeftExpression(factory.createExpressionObject());
+				equals.setRightExpression(factory.createExpressionObject());
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_0");
+				fieldOf.setField(Constants.APPLICATION_PROTOCOL);
+				
+				equals.getLeftExpression().setFieldOf(fieldOf);
+				fieldOf = factory.createLFFieldOf();
+				fieldOf.setUnit("p_1");
+				fieldOf.setField(Constants.APPLICATION_PROTOCOL);
+				equals.getRightExpression().setFieldOf(fieldOf);
+				temp1 = factory.createExpressionObject();
+				temp1.setEqual(equals);
+				and.getExpression().add(temp1);
+				
+				entryPoint_p1 = and;
+				System.out.println("line:871>>>>>>>>>>>>>>>>>>>>.entryPoint_p1 = and;");
+				
+				exist.getExpression().setAnd(and);
+				implies.getConsequentExpression().setExist(exist);
+				
+				result.setImplies(implies);
+			}
+		*/	
+			
+			
+		
+	/*	case Constants.ENTRY_GETTER:
+			@SuppressWarnings("unchecked") 
+			List<Expression> args = (List<Expression>)method.arguments();
+			builder = new StringBuilder();
+				if(args.size()==1){
+					builder.delete(0, builder.length());
+					
+					Expression expression = args.get(0);
+					expression.accept(new ASTVisitor() {
+						
+						public boolean visit(NumberLiteral node){
+							builder.append(node.getToken());
+							return false;
+						}
+					});
+					int index = Integer.parseInt(builder.toString());
+					List<TableEntryContext> list = returnSnapshot.getMethodContext().getEntryValues();
+
+				    value=null;
+				    for(TableEntryContext tnc: list){						
+						if(tnc.getPosition()==index){		    
+				            value = tnc.getValue(); 
+				            if(!checkPacketField(value) && containsLogicalUnit("p_2")){
+				            	LOEquals equal = factory.createLOEquals();
+				            	equal.setLeftExpression(factory.createExpressionObject());
+				            	equal.setRightExpression(factory.createExpressionObject());
+						
+				            	fieldOf = factory.createLFFieldOf();
+				            	fieldOf.setUnit("p_2");
+				            	fieldOf.setField(Constants.L7DATA);
+						
+								equal.getLeftExpression().setFieldOf(fieldOf);
+								equal.getRightExpression().setParam(value);;
+								
+								exp = factory.createExpressionObject();
+								exp.setEqual(equal);
+								setExpressionForPacket(exp,"p_2");
+				            }
+						}
+					break;
+				    }
+				}	*/
 		default:
 			break;
 		}
 		
 		return null;
 	}
-	
+														//-->example: entry  !=null
 	public ExpressionObject generateRuleForVariable(String variableName, Operator operator, int startPosition){
 		boolean negated = false;
 		List<Variable> vars = getVariable(variableName);
@@ -684,7 +1179,7 @@ public class RuleContext {
 					//setLastExpression(end);
 					entryPoint_p2 = and;
 					return end;
-				}else{
+				}else{		//--> !isDataDriven
 				
 					if(operator.equals(Operator.EQUALS))	
 						negated=true;
@@ -723,6 +1218,7 @@ public class RuleContext {
 				}
 								
 				return null;
+			// case Constants.STRING_TYPE:
 			default:
 				return null;
 		}
@@ -745,6 +1241,10 @@ public class RuleContext {
 			case Constants.APPLICATION_PROTOCOL:
 				return true;
 			case Constants.L7DATA:
+				return true;
+			case Constants.OLD_SRC:
+				return true;
+			case Constants.OLD_DST:
 				return true;
 			default:
 				return false;

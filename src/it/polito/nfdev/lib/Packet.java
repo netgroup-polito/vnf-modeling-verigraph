@@ -15,13 +15,21 @@ public class Packet {
 		PORT_DST,
 		TRANSPORT_PROTOCOL,
 		APPLICATION_PROTOCOL,
-		L7DATA
+		L7DATA,
+		OLD_SRC,
+		OLD_DST
 	};
 	
 	public static final String HTTP_REQUEST = "HTTP_REQ";
 	public static final String HTTP_RESPONSE = "HTTP_RESP";
 	public static final String POP3_REQUEST = "POP3_REQ";
-	public static final String POP3_RESPONSE = "POP3_RESP";
+	public static final String POP3_RESPONSE = "POP3_RESP";  // if app_protocol=pop3_resp && l7data contains specified keyword, must DROP the packet
+	public static final String DNS_REQUEST = "DNS_REQ";
+	public static final String DNS_RESPONSE = "DNS_RESP";
+	
+	public static final String  DNS_PORT_53 = "Dns_53";
+	public static final String  HTTP_PORT_80 = "Http_80";
+	
 	
 	private Map<PacketField, String> fields;
 	

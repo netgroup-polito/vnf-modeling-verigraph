@@ -19,6 +19,9 @@ public class ReturnSnapshot {
 	private String interfaceName;
 	private int nestingLevel;
 	
+	private boolean initialPacket;
+	private boolean indirectSnapshot = false;
+	
 
 	public ReturnSnapshot(MethodContext methodContex,
 						  List<IfElseBranch> conditions, 
@@ -26,7 +29,8 @@ public class ReturnSnapshot {
 						  List<MyExpression> returnPredicates,
 						  String packetName,
 						  String interfaceName,
-						  int nestingLevel) {
+						  int nestingLevel,
+						  boolean initialPacket) {
 		
 		assert methodContex != null;
 		assert conditions != null;
@@ -42,8 +46,20 @@ public class ReturnSnapshot {
 		this.packetName = packetName;
 		this.interfaceName = interfaceName;
 		this.nestingLevel = nestingLevel;
+		this.initialPacket = initialPacket;
 	}
 
+	public boolean isInitialPacket(){
+		return initialPacket;
+	}
+	
+	public boolean isIndirectSnapshot(){
+		return indirectSnapshot;
+	}
+	
+	public void setIndirectSnapshot(){
+		indirectSnapshot = true;
+	}
 
 	public MethodContext getMethodContext() {
 		return methodContext;

@@ -4,6 +4,7 @@ public class Constants {
 	
 	//Methods
 	public static final String MAIN_NF_METHOD = "onReceivedPacket";
+	public static final String DEFINE_SENDING_PACKET_METHOD = "defineSendingPacket";
 	public static final String ENTRY_SETTER = "setValue";
 	public static final String ENTRY_GETTER = "getValue";
 	public static final String SET_FIELD_METHOD = "setField";
@@ -13,6 +14,7 @@ public class Constants {
 	public static final String SEND_METHOD_NAME = "sendPacket";
 	public static final String STORE_ENTRY_METHOD_NAME = "storeEntry";
 	public static final String DATA_DRIVEN = "setDataDriven";
+	public static final String INDIRECT_NF = "setIndirectNF";
 	public static final String IS_INTERNAL_METHOD = "isInternal";
 	public static final String EQUALS_FIELD_METHOD = "equalsField";
 	public static final String SET_TYPES = "setTypes";
@@ -20,10 +22,14 @@ public class Constants {
 	//Function' parameters
 	public static final String INTERNAL_INTERFACE = "internalInterface";
 	public static final String EXTERNAL_INTERFACE = "externalInterface";
+	public static final String INITIAL_FORWARDING_INTERFACE = "initialForwardingInterface";
 	public static final String INTERFACE_PARAMETER = "iface";
 	public static final String PACKET_PARAMETER = "packet";
+	public static final String DNS_RESPONSE = "DNS_RESPONSE";   //used at line573 in RuleContext.java
+	public static final String HTTP_RESPONSE = "HTTP_RESPONSE";
 	
 	//Types
+	public static final String STRING_TYPE = "String";
 	public static final String TABLE_ENTRY_TYPE = "TableEntry";
 	public static final String PACKET_TYPE = "Packet";
 	public static final String INTERFACE_TYPE = "Interface";
@@ -40,6 +46,8 @@ public class Constants {
 	public static final String TRANSPORT_PROTOCOL = "TRANSPORT_PROTOCOL";
 	public static final String APPLICATION_PROTOCOL = "APPLICATION_PROTOCOL";
 	public static final String L7DATA = "L7DATA"; 
+	public static final String OLD_SRC = "OLD_SRC";
+	public static final String OLD_DST = "OLD_DST";
 	
 	//Z3 packet fields
 	public static final String Z3_ETH_SOURCE = "src_eth";
@@ -51,6 +59,8 @@ public class Constants {
 	public static final String Z3_TRANSPORT_PROTOCOL = "transport_protocol";
 	public static final String Z3_APPLICATION_PROTOCOL = "proto";
 	public static final String Z3_L7DATA = "application_data";
+	public static final String Z3_OLD_SRC = "oldSrc";
+	public static final String Z3_OLD_DEST = "oldDest";
 	
 	//Placeholder
 	public static final String ANY_VALUE = "ANY_VALUE";

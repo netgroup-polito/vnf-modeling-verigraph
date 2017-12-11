@@ -16,9 +16,11 @@ public class Variable extends ASTVisitor{
 	private Expression exp;
 	private Type type;
 	private List<FieldValuePair> fields;
-	private List<Expression> matchedFieldOnTableEntry;
-	private List<String> matchedFieldNameOnTableEntry;
+	private List<Expression> matchedFieldOnTableEntry; //-->packet_in.getField(PacketField.PORT_SRC),Verifier.ANY_VALUE
+	private List<String> matchedFieldNameOnTableEntry; //-->PacketField.PORT_SRC, Verifier.ANY_VALUE
 	private String[] fieldsType;
+	
+	private boolean valueFromClient = false;	// specify whether its value comes from client, used in indirect NF to record client IP 
 	
 	public Variable(String name, Expression exp, Type type, String typeName) {
 		this.name = name;
@@ -28,6 +30,14 @@ public class Variable extends ASTVisitor{
 		this.fields = new ArrayList<>();
 		this.matchedFieldOnTableEntry = new ArrayList<>();
 		this.matchedFieldNameOnTableEntry = new ArrayList<>();
+	}
+	
+	public void setValueFromClient(){
+		this.valueFromClient = true;
+	}
+	
+	public boolean getValueFromClient(){
+		return valueFromClient;
 	}
 
 	public Expression getExp() {

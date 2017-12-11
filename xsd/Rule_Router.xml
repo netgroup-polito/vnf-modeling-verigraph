@@ -2,11 +2,11 @@
 <Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
     <TableSize>2</TableSize>
     <DataDriven>false</DataDriven>
-    <TableFields>ApplicationData</TableFields>
-    <TableFields>ApplicationData</TableFields>
+    <TableFields>Ip</TableFields>
+    <TableFields>Ip</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
-    <Node Name="n_WebServer"/>
+    <Node Name="n_Router"/>
     <Packet Name="p_0"/>
     <Packet Name="p_1"/>
     <Time Name="t_0"/>
@@ -15,7 +15,7 @@
         <Implies>
             <AntecedentExpression>
                 <Send>
-                    <Source>n_WebServer</Source>
+                    <Source>n_Router</Source>
                     <Destination>n_0</Destination>
                     <Packet_out>p_0</Packet_out>
                     <Time_out>t_0</Time_out>
@@ -31,7 +31,7 @@
                             <Expression>
 <Recv>
     <Source>n_1</Source>
-    <Destination>n_WebServer</Destination>
+    <Destination>n_Router</Destination>
     <Packet_in>p_1</Packet_in>
     <Time_in>t_1</Time_in>
 </Recv>
@@ -47,23 +47,10 @@
 </LessThan>
                             </Expression>
                             <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>HTTP_REQUEST</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
 <MatchEntry>
     <Value>
         <Unit>p_1</Unit>
-        <Field>L7DATA</Field>
+        <Field>IP_DST</Field>
     </Value>
 </MatchEntry>
                             </Expression>
@@ -78,38 +65,6 @@
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>IP_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
             <Field>IP_SRC</Field>
         </FieldOf>
     </RightExpression>
@@ -120,13 +75,61 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>PORT_SRC</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>PORT_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>PORT_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PORT_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>TRANSPORT_PROTOCOL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>TRANSPORT_PROTOCOL</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -140,7 +143,10 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>HTTP_RESPONSE</Param>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>APPLICATION_PROTOCOL</Field>
+        </FieldOf>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -153,54 +159,9 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>value_0</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
+            <Field>L7DATA</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

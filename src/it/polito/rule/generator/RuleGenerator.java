@@ -46,6 +46,7 @@ public class RuleGenerator {
 	private String fileNameTxt;
 	private boolean verbose = false;
 	private boolean isDataDriven = false;
+//	private boolean isIndirectNF = false;
 	private int tableSize = 0;
 	private List<String> tableTypes;
 	
@@ -67,6 +68,7 @@ public class RuleGenerator {
 		this.ruleContext = new RuleContext(factory, returnSnapshot);
 		this.tableSize = returnSnapshot.getMethodContext().getContext().tableSize;
 		this.isDataDriven = returnSnapshot.getMethodContext().getContext().isDataDriven();
+	//	this.isIndirectNF = returnSnapshot.getMethodContext().getContext().isIndirectNF();
 		this.tableTypes = returnSnapshot.getMethodContext().getContext().tableTypes;
 		
 		if(tableTypes.size() != tableSize)
@@ -94,14 +96,14 @@ public class RuleGenerator {
 			ExpressionObject temp =visitor.getExpression();
 			if(temp!=null){
 				
-				if(negated){
+				if(negated){ 	
 					if(temp.getNot()!=null)
 						ruleContext.setLastExpression(temp.getNot().getExpression());
 					else{
 						LONot not = factory.createLONot();
 						not.setExpression(temp);
 						ExpressionObject exp = factory.createExpressionObject();
-						exp.setNot(not);
+						exp.setNot(not);  //"!!"
 						ruleContext.setLastExpression(exp);
 					}
 					
@@ -152,6 +154,8 @@ public class RuleGenerator {
 						fields.add(field);
 						field = null;
 					}
+				}else{
+					System.out.println(">>>>>>>>>>>>returnSnapshot.getReturnPredicates().isEmpty()\n");
 				}
 			
 				ruleContext.setExitPacketConditions(fields);
@@ -177,6 +181,7 @@ public class RuleGenerator {
 		result.getNodeOrPacketOrTime().addAll(units.values());
 		result.setTableSize(tableSize);
 		result.setDataDriven(isDataDriven);
+	//	result.setIndirectNF(isIndirectNF);
 		result.getTableFields().addAll(tableTypes);
 		Collections.sort(result.getNodeOrPacketOrTime(), new Comparator<LogicalUnit>() {
 

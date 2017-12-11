@@ -20,6 +20,7 @@ public class Context {
 	private CompilationUnit compilationUnit;
 	
 	private boolean isDataDriven = false;
+	//private boolean isIndirectNF = false;
 	public int tableSize = 0;
 	public List<String> tableTypes = new ArrayList<>();
 	
@@ -91,5 +92,5 @@ public class Context {
 	public void setDataDriven(boolean isDataDriven) {
 		this.isDataDriven = isDataDriven;
 	}
-
+	
 }

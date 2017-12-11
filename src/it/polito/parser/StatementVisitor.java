@@ -273,8 +273,12 @@ public class StatementVisitor extends ASTVisitor {
 			for(MyExpression expr : predicatesOnSentPacket)
 				System.out.println("\t\t\tpacket." + expr.getField() + "\t= " + expr.getValue());
 			System.out.println("\t\tThe remaining fields are unchanged");
-			
-			statementContext.getMethodContext().addReturnSnapshots(statementContext.createSnapshot(r.getPacketName(),r.getInterfaceName()));
+			if(!statementContext.getMethodContext().getMethodName().equals(Constants.DEFINE_SENDING_PACKET_METHOD))
+				statementContext.getMethodContext().addReturnSnapshots(statementContext.createSnapshot(r.getPacketName(),r.getInterfaceName(), false));
+			else{
+				statementContext.getMethodContext().addReturnSnapshots(statementContext.createSnapshot(r.getPacketName(),r.getInterfaceName(), true));
+				System.out.println(">>>>>>>>>>>>>>>>>get new snapshot for initial packet\n");
+			}
 		}
 		
 		System.out.println();
@@ -405,6 +409,25 @@ public class StatementVisitor extends ASTVisitor {
 							}
 								
 						}
+					/*	if(node.getName().toString().equalsIgnoreCase(Constants.GET_FIELD_METHOD))
+						{
+							System.out.println("\tFound getField() method in variable initialization!");
+							for(Expression exp : (List<Expression>) node.arguments()){
+								
+								exp.accept(new ASTVisitor() {
+									public boolean visit(QualifiedName node){
+										StringBuilder builder = new StringBuilder();
+										builder.append(node.getName().getFullyQualifiedName());
+										System.out.println("//////////getField="+builder.toString());								
+										return false;
+									}
+								});
+								
+								//v.addMatchedField(exp);
+							}
+								
+						}*/
+						
 						return false;
 					}
 				});

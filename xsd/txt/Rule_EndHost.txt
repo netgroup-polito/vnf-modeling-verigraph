@@ -1,0 +1,5 @@
+Rule_0:
+
+( send(n_EndHost,n_0,p_0,t_0) ==> 
+	((p_0.IP_SRC == ip_EndHost) && (p_0.PORT_SRC == value_0) && (p_0.IP_DST == ip_WebServer) && (p_0.OLD_DST == ip_WebServer) && (p_0.OLD_SRC == ip_EndHost) && (p_0.PORT_DST == HTTP_PORT_80) && (p_0.APPLICATION_PROTOCOL == HTTP_REQUEST) && (p_0.L7DATA == REQUESTED_URL)))
+

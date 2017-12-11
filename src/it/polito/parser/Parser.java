@@ -3,7 +3,6 @@ package it.polito.parser;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
@@ -44,10 +43,8 @@ public class Parser {
 		char[] source = null;
 		try{
 			/* Load the source file */
-			//InputStream resourceAsStream = this.getClass().getResourceAsStream(fileName);
-			InputStream resourceAsStream =  new FileInputStream(fileName);
-			reader = new BufferedReader(new InputStreamReader(resourceAsStream));
-			
+//			reader = new BufferedReader(new InputStreamReader(Parser.class.getResourceAsStream(fileName)));
+			reader = new BufferedReader(new InputStreamReader( new FileInputStream(fileName)));
 			String line = null;
 			String classCode = "";
 			while(true)
@@ -73,7 +70,7 @@ public class Parser {
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
-		parser.setUnitName("Nat.src");
+		//parser.setUnitName("Nat.src");
 		
 		parser.setSource(source);
 		
@@ -89,7 +86,8 @@ public class Parser {
 		compilationUnit.accept(v1);
 			
 		RuleGenerator ruler = new RuleGenerator(classContext.getClassName(),true);
-		MethodContext methodContext = classContext.getMethodContext(Constants.MAIN_NF_METHOD);
+	// specify that analyze "onReceivedPacket()" method
+		MethodContext methodContext = classContext.getMethodContext(Constants.MAIN_NF_METHOD);		
 		if(methodContext!=null){
 			
 			for(ReturnSnapshot returnSnapshot : methodContext.getReturnSnapshots()){
@@ -98,9 +96,22 @@ public class Parser {
 				ruler.generateRule();
 				
 			}
-			ruler.saveRule();
+		//	ruler.saveRule();
 		}
-	
+	// specify that analyze "onReceivedPacket()" method
+		methodContext = classContext.getMethodContext(Constants.DEFINE_SENDING_PACKET_METHOD);		
+		if(methodContext!=null){
+			
+			for(ReturnSnapshot returnSnapshot : methodContext.getReturnSnapshots()){
+				
+				ruler.setSnapshot(returnSnapshot);
+				ruler.generateRule();
+				
+			}
+		//	ruler.saveRule();
+		}
+		ruler.saveRule();
+		
 		ClassGenerator generator = new ClassGenerator(classContext.getClassName());
 		generator.startGeneration();
 		System.out.println("!All Done!");
@@ -122,7 +133,6 @@ public class Parser {
 		System.out.println("Reading VNF model...");
 		
 		/* Instantiate a parser */
-		//ex. src/it/polito/nfdev/nat/Nat.java
 		Parser parser = new Parser(args[0]);
 		try {
 			/* Parse the VNF code */
