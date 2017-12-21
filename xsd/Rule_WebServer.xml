@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
-    <TableSize>2</TableSize>
+    <TableSize>1</TableSize>
     <DataDriven>false</DataDriven>
-    <TableFields>ApplicationData</TableFields>
     <TableFields>ApplicationData</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
@@ -63,7 +62,7 @@
 <MatchEntry>
     <Value>
         <Unit>p_1</Unit>
-        <Field>L7DATA</Field>
+        <Field>URL</Field>
     </Value>
 </MatchEntry>
                             </Expression>
@@ -153,22 +152,9 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>value_0</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
+            <Field>L7DATA</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -178,13 +164,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
+            <Field>ORIGIN</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
+            <Field>ORIGIN</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -194,13 +180,93 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
+            <Field>ORIG_BODY</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

@@ -29,7 +29,7 @@ public class Antispam extends NetworkFunction {
 	@Override
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
 		
-		TableEntry e = antiSpamTable.matchEntry(packet.getField(PacketField.L7DATA));
+		TableEntry e = antiSpamTable.matchEntry(packet.getField(PacketField.EMAIL_FROM));
 		
 		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.POP3_REQUEST) || (packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.POP3_RESPONSE) && e == null)){		
 			return new RoutingResult(Action.FORWARD, packet, iface);

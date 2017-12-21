@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
@@ -88,7 +89,7 @@ class RuleUnmarshaller {
 		constants.add("DNS_RESPONSE");
 		constants.add("DNS_PORT_53");
 		constants.add("HTTP_PORT_80");
-		constants.add("REQUESTED_URL");
+	//	constants.add("REQUESTED_URL");
 	/*	constants.add("new_port");
 		constants.add("value_0");*/
 		
@@ -347,6 +348,7 @@ class RuleUnmarshaller {
 	}
 	
 
+	//@SuppressWarnings("unchecked")
 	private Expression getType(ExpressionObject obj){
 		if(obj.getAnd()!=null){
 			
@@ -409,12 +411,33 @@ class RuleUnmarshaller {
 				
 				return mi;
 			}
+		/*	try{	// used in MailServer in case the response is always 1, corresponding to the content of Antispam ( similar in webClient,EndHost)
+				Integer.parseInt(obj.getParam());
 				
+				MethodInvocation mi = ast.newMethodInvocation();
+				mi.setName(ast.newSimpleName("mkInt"));
+				mi.setExpression(ast.newName("ctx"));
+				
+				FieldAccess fa = ast.newFieldAccess();
+				System.out.println("----------param= "+obj.getParam());
+				fa.setName(ast.newSimpleName(obj.getParam()));
+				//fa.setExpression(ast.newName("nctx"));
+//				NumberLiteral num = new NumberLiteral();
+//				num.setToken(obj.getParam());
+				
+				mi.arguments().add(fa);
+				
+				return mi;
+				
+		     }catch(NumberFormatException ex){
+		  */  	 
+		     
 			
 			if(!logicalUnits.contains(obj.getParam()) && !additionalParam.contains(obj.getParam()))
 				additionalParam.add(obj.getParam());
 			
 			return ast.newSimpleName(obj.getParam());
+		  //   }
 		}else
 			return null;
 	}
@@ -734,9 +757,11 @@ class RuleUnmarshaller {
 		ce.setExpression(mi);
 		
 		
-		for(Object temp : matchEntry.getValue())
+		for(LFFieldOf temp : matchEntry.getValue()){
 			mi.arguments().add(generateFieldOf((LFFieldOf)temp));
-		
+//		System.out.println("----------------??????????????"+temp.getField());
+//		System.out.println("------Z3----------??????????????"+mapToZ3PacketField(temp.getField()));
+		}
 		
 	return ce;
 		
@@ -772,7 +797,28 @@ class RuleUnmarshaller {
 				return Constants.Z3_APPLICATION_PROTOCOL;
 				
 			case Constants.L7DATA:
-				return Constants.Z3_L7DATA;
+				return Constants.Z3_BODY;
+				
+			case Constants.ORIGIN:
+				return Constants.Z3_ORIGIN;
+				
+			case Constants.ORIG_BODY:
+				return Constants.Z3_ORIG_BODY;
+				
+			case Constants.BODY:
+				return Constants.Z3_BODY;
+				
+			case Constants.SEQUENCE:
+				return Constants.Z3_SEQUENCE;
+				
+			case Constants.EMAIL_FROM:
+				return Constants.Z3_EMAIL_FROM;
+				
+			case Constants.URL:
+				return Constants.Z3_URL;
+				
+			case Constants.OPTIONS:
+				return Constants.Z3_OPTIONS;
 				
 			case Constants.OLD_SRC:
 				return Constants.Z3_OLD_SRC;

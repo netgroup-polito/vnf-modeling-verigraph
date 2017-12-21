@@ -46,7 +46,7 @@ public class WebCache extends NetworkFunction {
 		if(iface.isInternal())
 		{
 			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_REQUEST)){
-				TableEntry entry = cacheTable.matchEntry(packet.getField(PacketField.L7DATA), Verifier.ANY_VALUE);
+				TableEntry entry = cacheTable.matchEntry(packet.getField(PacketField.URL), Verifier.ANY_VALUE);
 				if(entry != null)
 				{
 					Packet p = null;
@@ -57,7 +57,7 @@ public class WebCache extends NetworkFunction {
 						p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 						p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
 						p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE);
-						p.setField(PacketField.L7DATA, (String)entry.getValue(0));
+						p.setField(PacketField.URL, (String)entry.getValue(0));
 						return new RoutingResult(Action.FORWARD, p, internalInterface);
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
@@ -72,9 +72,9 @@ public class WebCache extends NetworkFunction {
 		{
 			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_RESPONSE)){
 				try {
-					Content content = new Content(new URL(packet.getField(PacketField.L7DATA)));
+					Content content = new Content(new URL(packet.getField(PacketField.URL)));
 					CacheTableEntry cacheEntry = new CacheTableEntry(2);
-					cacheEntry.setValue(0, packet.getField(PacketField.L7DATA));
+					cacheEntry.setValue(0, packet.getField(PacketField.URL));
 					cacheEntry.setValue(1, content);
 					cacheTable.storeEntry(cacheEntry);
 					return new RoutingResult(Action.FORWARD, packet, internalInterface);

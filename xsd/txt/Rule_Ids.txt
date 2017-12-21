@@ -1,6 +1,12 @@
 Rule_0:
 
-( send(n_Ids,n_0,p_0,t_0) ==> 
+(( send(n_Ids,n_0,p_0,t_0) && (p_1.APPLICATION_PROTOCOL == HTTP_REQUEST)) ==> 
 	 E(n_1, p_1, t_1 | 
-		( recv(n_1,n_Ids,p_1,t_1) && (t_1 < t_0) && ((p_1.APPLICATION_PROTOCOL == HTTP_REQUEST) || (p_1.APPLICATION_PROTOCOL == HTTP_RESPONSE)) && !(matchEnty(p_1.L7DATA)) && (p_0.IP_SRC == p_1.IP_SRC) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PORT_SRC == p_1.PORT_SRC) && (p_0.PORT_DST == p_1.PORT_DST) && (p_0.TRANSPORT_PROTOCOL == p_1.TRANSPORT_PROTOCOL) && (p_0.APPLICATION_PROTOCOL == p_1.APPLICATION_PROTOCOL) && (p_0.L7DATA == p_1.L7DATA))))
+		( recv(n_1,n_Ids,p_1,t_1) && (t_1 < t_0) && (p_1.APPLICATION_PROTOCOL == HTTP_REQUEST) && !(matchEnty(p_1.BODY)) && (p_0.IP_SRC == p_1.IP_SRC) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PORT_SRC == p_1.PORT_SRC) && (p_0.PORT_DST == p_1.PORT_DST) && (p_0.APPLICATION_PROTOCOL == p_1.APPLICATION_PROTOCOL) && (p_0.L7DATA == p_1.L7DATA) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS))))
+
+Rule_1:
+
+(( send(n_Ids,n_0,p_0,t_0) && (p_1.APPLICATION_PROTOCOL == HTTP_RESPONSE)) ==> 
+	 E(n_1, p_1, t_1 | 
+		( recv(n_1,n_Ids,p_1,t_1) && (t_1 < t_0) && !((p_1.APPLICATION_PROTOCOL == HTTP_REQUEST)) && (p_1.APPLICATION_PROTOCOL == HTTP_RESPONSE) && !(matchEnty(p_1.BODY)) && (p_0.IP_SRC == p_1.IP_SRC) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PORT_SRC == p_1.PORT_SRC) && (p_0.PORT_DST == p_1.PORT_DST) && (p_0.APPLICATION_PROTOCOL == p_1.APPLICATION_PROTOCOL) && (p_0.L7DATA == p_1.L7DATA) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS))))
 

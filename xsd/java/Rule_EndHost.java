@@ -9,10 +9,10 @@ import com.microsoft.z3.FuncDecl;
 import com.microsoft.z3.IntExpr;
 import com.microsoft.z3.Solver;
 import com.microsoft.z3.Sort;
-import mcnet.components.NetContext;
-import mcnet.components.Network;
-import mcnet.components.NetworkObject;
-import mcnet.components.Tuple;
+import it.polito.verigraph.mcnet.components.NetContext;
+import it.polito.verigraph.mcnet.components.Network;
+import it.polito.verigraph.mcnet.components.NetworkObject;
+import it.polito.verigraph.mcnet.components.Tuple;
 public class Rule_EndHost extends NetworkObject {
   List<BoolExpr> constraints;
   Context ctx;
@@ -48,13 +48,10 @@ public class Rule_EndHost extends NetworkObject {
     BoolExpr[] constrs=new BoolExpr[constr.size()];
     constraints.add(ctx.mkForall(new Expr[]{in_0},ctx.mkEq(isInternal.apply(in_0),ctx.mkOr(constr.toArray(constrs))),1,null,null,null,null));
   }
-  public void installEndHost(  Expr ip_EndHost,  Expr value_0,  Expr ip_WebServer){
+  public void installEndHost(  Expr ip_EndHost,  Expr ip_WebServer,  Expr REQUESTED_URL){
     Expr n_0=ctx.mkConst("n_EndHost_" + n_EndHost + "_n_0",nctx.node);
     Expr p_0=ctx.mkConst("n_EndHost_" + n_EndHost + "_p_0",nctx.packet);
     IntExpr t_0=ctx.mkIntConst("n_EndHost_" + n_EndHost + "_t_0");
-    constraints.add(ctx.mkForall(new Expr[]{t_0,p_0,n_0},
-    		ctx.mkImplies((BoolExpr)nctx.send.apply(n_EndHost,n_0,p_0,t_0),
-    				ctx.mkAnd(ctx.mkEq(nctx.pf.get("src").apply(p_0),ip_EndHost),
-    						ctx.mkEq(nctx.src_port.apply(p_0),value_0),ctx.mkEq(nctx.pf.get("dest").apply(p_0),ip_WebServer),ctx.mkEq(nctx.pf.get("oldDest").apply(p_0),ip_WebServer),ctx.mkEq(nctx.pf.get("oldSrc").apply(p_0),ip_EndHost),ctx.mkEq(nctx.dest_port.apply(p_0),ctx.mkInt(nctx.HTTP_PORT_80)),ctx.mkEq(nctx.pf.get("proto").apply(p_0),ctx.mkInt(nctx.HTTP_REQUEST)),ctx.mkEq(nctx.pf.get("application_data").apply(p_0),ctx.mkInt(nctx.REQUESTED_URL)))),1,null,null,null,null));
+    constraints.add(ctx.mkForall(new Expr[]{t_0,p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_EndHost,n_0,p_0,t_0),ctx.mkAnd(ctx.mkEq(nctx.pf.get("src").apply(p_0),ip_EndHost),ctx.mkEq(nctx.pf.get("dest").apply(p_0),ip_WebServer),ctx.mkEq(nctx.pf.get("proto").apply(p_0),ctx.mkInt(nctx.HTTP_REQUEST)),ctx.mkEq(nctx.pf.get("url").apply(p_0),REQUESTED_URL))),1,null,null,null,null));
   }
 }

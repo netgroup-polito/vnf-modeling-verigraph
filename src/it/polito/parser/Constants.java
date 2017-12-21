@@ -45,7 +45,15 @@ public class Constants {
 	public static final String PORT_DESTINATION = "PORT_DST";
 	public static final String TRANSPORT_PROTOCOL = "TRANSPORT_PROTOCOL";
 	public static final String APPLICATION_PROTOCOL = "APPLICATION_PROTOCOL";
-	public static final String L7DATA = "L7DATA"; 
+	public static final String L7DATA = "L7DATA";
+	
+	public static final String ORIGIN = "ORIGIN";
+	public static final String ORIG_BODY = "ORIG_BODY";
+	public static final String BODY = "BODY";
+	public static final String SEQUENCE = "SEQUENCE";
+	public static final String EMAIL_FROM = "EMAIL_FROM";
+	public static final String URL = "URL";
+	public static final String OPTIONS = "OPTIONS";
 	public static final String OLD_SRC = "OLD_SRC";
 	public static final String OLD_DST = "OLD_DST";
 	
@@ -59,6 +67,14 @@ public class Constants {
 	public static final String Z3_TRANSPORT_PROTOCOL = "transport_protocol";
 	public static final String Z3_APPLICATION_PROTOCOL = "proto";
 	public static final String Z3_L7DATA = "application_data";
+	
+	public static final String Z3_ORIGIN = "origin";
+	public static final String Z3_ORIG_BODY = "orig_body";
+	public static final String Z3_BODY = "body";
+	public static final String Z3_SEQUENCE = "seq";
+	public static final String Z3_EMAIL_FROM = "emailFrom";
+	public static final String Z3_URL = "url";
+	public static final String Z3_OPTIONS = "options";
 	public static final String Z3_OLD_SRC = "oldSrc";
 	public static final String Z3_OLD_DEST = "oldDest";
 	

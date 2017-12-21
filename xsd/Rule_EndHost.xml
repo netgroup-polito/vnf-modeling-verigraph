@@ -36,63 +36,11 @@
                             <LeftExpression>
 <FieldOf>
     <Unit>p_0</Unit>
-    <Field>PORT_SRC</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>value_0</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
     <Field>IP_DST</Field>
 </FieldOf>
                             </LeftExpression>
                             <RightExpression>
 <Param>ip_WebServer</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>OLD_DST</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>ip_WebServer</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>OLD_SRC</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>ip_EndHost</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>PORT_DST</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>HTTP_PORT_80</Param>
                             </RightExpression>
                         </Equal>
                     </Expression>
@@ -114,7 +62,7 @@
                             <LeftExpression>
 <FieldOf>
     <Unit>p_0</Unit>
-    <Field>L7DATA</Field>
+    <Field>URL</Field>
 </FieldOf>
                             </LeftExpression>
                             <RightExpression>

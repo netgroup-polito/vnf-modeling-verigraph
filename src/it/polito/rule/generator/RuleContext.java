@@ -247,11 +247,19 @@ public class RuleContext {
 		field_names.add(Constants.IP_DESTINATION);
 		field_names.add(Constants.PORT_SOURCE);
 		field_names.add(Constants.PORT_DESTINATION);
-		field_names.add(Constants.TRANSPORT_PROTOCOL);
+	//	field_names.add(Constants.TRANSPORT_PROTOCOL);
 		field_names.add(Constants.APPLICATION_PROTOCOL);
 		field_names.add(Constants.L7DATA);
-		field_names.add(Constants.OLD_SRC);
-		field_names.add(Constants.OLD_DST);
+		
+		field_names.add(Constants.ORIGIN);
+		field_names.add(Constants.ORIG_BODY);
+		field_names.add(Constants.BODY);
+		field_names.add(Constants.SEQUENCE);
+		field_names.add(Constants.EMAIL_FROM);
+		field_names.add(Constants.URL);
+		field_names.add(Constants.OPTIONS);
+//		field_names.add(Constants.OLD_SRC);
+//		field_names.add(Constants.OLD_DST);
 		
 	//  if(!returnSnapshot.isIndirectSnapshot()){
 		 // System.out.println("line 248: <<<<<<,,,,,NOT idirectsnapshot  removeField= "+ removeField);
@@ -362,10 +370,40 @@ public class RuleContext {
 		if(entryPoint_p1!=null && entryPoint_p1 instanceof LOAnd){
 			if(expression.getAnd()!=null)
 				((LOAnd)entryPoint_p1).getExpression().addAll(expression.getAnd().getExpression());
-			else
+			else{
 				((LOAnd)entryPoint_p1).getExpression().add(expression);
+				
+				if(result.getImplies().getAntecedentExpression().getAnd()!=null){
+					//System.out.println("------------>1      ");
+					//if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.APPLICATION_PROTOCOL)==0){
+										// used in IDS, left part of Imply ,only for ctx.mkEq(nctx.pf.get("proto").apply(p_1), ctx.mkInt(nctx.HTTP_REQUEST))
+					if(expression.getEqual()!=null && expression.getEqual().getRightExpression().getParam()!=null){
+					//	System.out.println("------------>2      ");
+						result.getImplies().getAntecedentExpression().getAnd().getExpression().add(expression);
+					}
+				}
+				else{
+					//if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.APPLICATION_PROTOCOL)==0){
+					if(expression.getEqual()!=null && expression.getEqual().getRightExpression().getParam()!=null){
+					//	System.out.println("------------>3        "+expression.getEqual().getRightExpression().getParam());
+					LFSend send = result.getImplies().getAntecedentExpression().getSend();
+					LOAnd and = factory.createLOAnd();	
+					ExpressionObject temp = factory.createExpressionObject();
+					temp.setSend(send);
+					and.getExpression().add(temp);
+					and.getExpression().add(expression);
+					result.getImplies().getAntecedentExpression().setAnd(and);
+					result.getImplies().getAntecedentExpression().setSend(null);
+					}
+				}
+			}
 			return true;
-		}else
+		}/*else if(result.getImplies()!=null){
+			result.getImplies().getConsequentExpression().getAnd().getExpression().add(expression);   // if it is a initial packet from a endhHost
+			System.out.println("lallalallalaaaaaaaaaaaaaaaaa");
+			return true;
+	
+		}*/else
 			return false;
 	}
 	
@@ -464,7 +502,9 @@ public class RuleContext {
 					System.out.println("line429 >>>>>>>>>>>>>>>>>>>running p0_ip = value");
 				}	
 			}else{ */
+			     
 					equal.getRightExpression().setParam(value);
+					
 			//		if(returnSnapshot.isIndirectSnapshot())
 			//		System.out.println("line432 >>>>>>>>>>>>>>>>>>>running p0_ip = value "+value);
 		//	}
@@ -512,7 +552,7 @@ public class RuleContext {
 						
 			name = builder.toString();		//-->name='packet'
 			
-			if(methodName.compareTo(Constants.GET_FIELD_METHOD)==0 && name.compareTo(Constants.PACKET_PARAMETER)==0){
+			if(methodName.compareTo(Constants.GET_FIELD_METHOD)==0 /* && name.compareTo(Constants.PACKET_PARAMETER)==0 */){  /* remove it, because for p0.body = p0.orig_body in EndHost, the packet name can be anyone */
 				
 				QualifiedName field = (QualifiedName)node.arguments().get(0);
 				String fieldName = field.getName().getFullyQualifiedName();
@@ -529,7 +569,14 @@ public class RuleContext {
 					equal.getLeftExpression().setFieldOf(fieldOf);
 					
 					fieldOf = factory.createLFFieldOf();
-					fieldOf.setUnit("p_1");
+					if(returnSnapshot.isInitialPacket()){
+						fieldOf.setUnit("p_0");		/* used for p0.body = p0.orig_body in EndHost*/
+					System.out.println("-------p0----------???????  packetField= "+packetField + "   fieldName = " +fieldName);
+					}
+					else{
+						fieldOf.setUnit("p_1");
+						System.out.println("-------p1----------???????  packetField= "+packetField + "   fieldName = " +fieldName);
+					}
 					fieldOf.setField(fieldName);
 					
 					equal.getRightExpression().setFieldOf(fieldOf);
@@ -604,7 +651,7 @@ public class RuleContext {
 		
 				@SuppressWarnings("unchecked")
 				List<Expression> list = (List<Expression>)node.arguments();
-				if(list!=null && !list.isEmpty() && isDataDriven){
+				if(list!=null && !list.isEmpty() /*&& isDataDriven */){		// if isDataDriven is here , this case will only for nat in current NFs
 					String value = list.get(0).toString();
 					return generateRuleForExitingPacket(packetField, value);
 				}
@@ -1241,6 +1288,20 @@ public class RuleContext {
 			case Constants.APPLICATION_PROTOCOL:
 				return true;
 			case Constants.L7DATA:
+				return true;
+			case Constants.ORIGIN:
+				return true;
+			case Constants.ORIG_BODY:
+				return true;
+			case Constants.BODY:
+				return true;
+			case Constants.SEQUENCE:
+				return true;
+			case Constants.EMAIL_FROM:
+				return true;
+			case Constants.URL:
+				return true;
+			case Constants.OPTIONS:
 				return true;
 			case Constants.OLD_SRC:
 				return true;

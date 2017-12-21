@@ -42,7 +42,7 @@ public class WebServer extends NetworkFunction {
 		
 		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
 		
-			TableEntry entry = urlList.matchEntry(packet.getField(PacketField.L7DATA));
+			TableEntry entry = urlList.matchEntry(packet.getField(PacketField.URL));
 			if(entry!=null){
 				
 				p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
@@ -50,7 +50,7 @@ public class WebServer extends NetworkFunction {
 				p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 				p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 				p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE);
-				p.setField(PacketField.L7DATA, (String)entry.getValue(0));
+			//	p.setField(PacketField.L7DATA, (String)entry.getValue(0));
 				
 				return new RoutingResult(Action.FORWARD,p,iface);
 			}

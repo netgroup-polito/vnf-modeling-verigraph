@@ -32,7 +32,7 @@ public class MailServer extends NetworkFunction {
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 			p.setField(PacketField.APPLICATION_PROTOCOL, Packet.POP3_RESPONSE);
-			p.setField(PacketField.L7DATA, RESPONSE);
+			p.setField(PacketField.EMAIL_FROM, RESPONSE);
 			
 			return new RoutingResult(Action.FORWARD,p,iface);
 		}

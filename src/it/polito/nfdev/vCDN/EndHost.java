@@ -36,13 +36,14 @@ public class EndHost extends NetworkFunction {
 			return new RoutingResult(Action.DROP, null, null);
 		
 		p.setField(PacketField.IP_SRC, ip_EndHost);
-		p.setField(PacketField.PORT_SRC, String.valueOf(new_port));
+	//	p.setField(PacketField.PORT_SRC, String.valueOf(new_port));
 		p.setField(PacketField.IP_DST, ip_WebServer);
-		p.setField(PacketField.OLD_DST, ip_WebServer);
-		p.setField(PacketField.OLD_SRC, ip_EndHost);
-		p.setField(PacketField.PORT_DST, Packet.HTTP_PORT_80);
+		p.setField(PacketField.BODY, p.getField(PacketField.ORIG_BODY));
+//		p.setField(PacketField.OLD_DST, ip_WebServer);
+//		p.setField(PacketField.OLD_SRC, ip_EndHost);
+	//	p.setField(PacketField.PORT_DST, Packet.HTTP_PORT_80);
 		p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST);
-		p.setField(PacketField.L7DATA, REQUESTED_URL);
+		p.setField(PacketField.URL, REQUESTED_URL);
 		
 		return new RoutingResult(Action.FORWARD,p,initialForwardingInterface);
 	}

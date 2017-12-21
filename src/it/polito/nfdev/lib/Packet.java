@@ -16,8 +16,16 @@ public class Packet {
 		TRANSPORT_PROTOCOL,
 		APPLICATION_PROTOCOL,
 		L7DATA,
-		OLD_SRC,
-		OLD_DST
+		
+		ORIGIN,
+		ORIG_BODY,
+		BODY,
+		SEQUENCE,
+		EMAIL_FROM,
+		URL,
+		OPTIONS,
+	//	OLD_SRC,
+	//	OLD_DST
 	};
 	
 	public static final String HTTP_REQUEST = "HTTP_REQ";
@@ -72,8 +80,8 @@ public class Packet {
 			fields.get(PacketField.PORT_SRC.name()) +
 			" [PORT_DST] " +
 			fields.get(PacketField.PORT_DST.name()) +
-			" [TRANSPORT_PROTOCOL] " +
-			fields.get(PacketField.TRANSPORT_PROTOCOL.name()) +
+//			" [TRANSPORT_PROTOCOL] " +
+//			fields.get(PacketField.TRANSPORT_PROTOCOL.name()) +
 			" [APPLICATION_PROTOCOL] " +
 			fields.get(PacketField.APPLICATION_PROTOCOL.name()) +
 			" [L7DATA] " +
