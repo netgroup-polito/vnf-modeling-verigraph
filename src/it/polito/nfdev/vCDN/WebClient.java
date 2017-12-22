@@ -10,7 +10,7 @@ import it.polito.nfdev.lib.Packet.PacketField;
 import it.polito.nfdev.lib.RoutingResult.Action;
 import it.polito.nfdev.nat.PortPool;
 
-public class EndHost extends NetworkFunction {
+public class WebClient extends NetworkFunction {
 
 	public static final String  REQUESTED_URL = "Requested_url";
 	
@@ -19,7 +19,7 @@ public class EndHost extends NetworkFunction {
 	private PortPool portPool;
 	protected Interface initialForwardingInterface;
 	
-	public EndHost(List<Interface> interfaces, String ip_EndHost, String ip_WebServer) {
+	public WebClient(List<Interface> interfaces, String ip_EndHost, String ip_WebServer) {
 		super(interfaces);
 		
 		this.ip_EndHost = ip_EndHost;

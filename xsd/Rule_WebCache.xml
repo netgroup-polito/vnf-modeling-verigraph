@@ -32,6 +32,32 @@
                             </FieldOf>
                         </IsInternal>
                     </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_1</Unit>
+    <Field>APPLICATION_PROTOCOL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>HTTP_REQUEST</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>APPLICATION_PROTOCOL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>HTTP_RESPONSE</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
                 </And>
             </AntecedentExpression>
             <ConsequentExpression>
@@ -640,6 +666,19 @@
 <Field>IP_DST</Field>
                             </FieldOf>
                         </IsInternal>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_1</Unit>
+    <Field>APPLICATION_PROTOCOL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>HTTP_RESPONSE</Param>
+                            </RightExpression>
+                        </Equal>
                     </Expression>
                 </And>
             </AntecedentExpression>

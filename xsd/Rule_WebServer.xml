@@ -13,12 +13,42 @@
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_WebServer</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                    <Time_out>t_0</Time_out>
-                </Send>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_WebServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                            <Time_out>t_0</Time_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_1</Unit>
+    <Field>APPLICATION_PROTOCOL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>HTTP_REQUEST</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>APPLICATION_PROTOCOL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>HTTP_RESPONSE</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
