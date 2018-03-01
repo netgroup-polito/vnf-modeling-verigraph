@@ -40,7 +40,7 @@ public class LocalDnsServer extends NetworkFunction {
 		this.TIMEOUT = timeout;
 		this.ip_GlobalBalancer = ip_GlobalBalancer;
 		dnsTable = new Table(2, 0);
-		this.dnsTable.setTypes(Table.TableTypes.ApplicationData, Table.TableTypes.Ip);
+		this.dnsTable.setTypes(Table.TableTypes.URL, Table.TableTypes.Ip);
 		this.dnsTable.setDataDriven();
 		
 	}
@@ -57,7 +57,7 @@ public class LocalDnsServer extends NetworkFunction {
 		{
 			if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST))
 			{
-				TableEntry entry = dnsTable.matchEntry(packet.getField(PacketField.L7DATA), Verifier.ANY_VALUE);
+				TableEntry entry = dnsTable.matchEntry(packet.getField(PacketField.URL), Verifier.ANY_VALUE);
 				if (entry != null) {
 					p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
 					p.setField(PacketField.IP_DST, (String) entry.getValue(1));
@@ -80,17 +80,28 @@ public class LocalDnsServer extends NetworkFunction {
 		   }
 			return new RoutingResult(Action.DROP, null, null);
 		} 
-		else 
+		else //! iface.isInternal()
 		{
-			if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE)) 
+			if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.DNS_RESPONSE)) 
 			{
 				TableEntry entry = new TableEntry(2);
-				entry.setValue(0, packet.getField(PacketField.L7DATA));
-				entry.setValue(1, packet.getField(PacketField.OLD_DST));
+				entry.setValue(0, packet.getField(PacketField.URL));
+				entry.setValue(1, packet.getField(PacketField.OLD_SRC));  // IP_CACHE
 				dnsTable.storeEntry(entry);
 				
-				return new RoutingResult(Action.FORWARD, p, internalInterface);
+			//	p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
+				//p.setField(PacketField.PORT_SRC, String.valueOf(new_port));
+				p.setField(PacketField.IP_DST, packet.getField(PacketField.OLD_SRC));
+			//	p.setField(PacketField.PORT_DST, Packet.DNS_PORT_53);
+				p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST);
+				
+				return new RoutingResult(Action.FORWARD, p, externalInterface);
+			}else if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE))
+			{
+				
+				return new RoutingResult(Action.FORWARD, packet, internalInterface);
 			}
+			
 		}
 		return new RoutingResult(Action.DROP, null, null);
 	}

@@ -63,9 +63,10 @@ public class WebCache extends NetworkFunction {
 						e.printStackTrace();
 						return new RoutingResult(Action.DROP, null, null);
 					}
-				}
+				}else
+					return new RoutingResult(Action.FORWARD, packet, externalInterface);
 			}
-			return new RoutingResult(Action.FORWARD, packet, externalInterface);
+			return new RoutingResult(Action.DROP, null, null);
 			
 		}
 		else

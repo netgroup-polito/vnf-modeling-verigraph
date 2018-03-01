@@ -3,228 +3,43 @@
     <TableSize>3</TableSize>
     <DataDriven>false</DataDriven>
     <TableFields>Ip</TableFields>
-    <TableFields>ApplicationData</TableFields>
+    <TableFields>URL</TableFields>
     <TableFields>Ip</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
     <Node Name="n_GlobalDnsBalancer"/>
     <Packet Name="p_0"/>
     <Packet Name="p_1"/>
-    <Time Name="t_0"/>
-    <Time Name="t_1"/>
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_GlobalDnsBalancer</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                    <Time_out>t_0</Time_out>
-                </Send>
-            </AntecedentExpression>
-            <ConsequentExpression>
-                <Exist>
-                    <Unit>n_1</Unit>
-                    <Unit>p_1</Unit>
-                    <Unit>t_1</Unit>
+                <And>
                     <Expression>
-                        <And>
-                            <Expression>
-<Recv>
-    <Source>n_1</Source>
-    <Destination>n_GlobalDnsBalancer</Destination>
-    <Packet_in>p_1</Packet_in>
-    <Time_in>t_1</Time_in>
-</Recv>
-                            </Expression>
-                            <Expression>
-<LessThan>
-    <LeftExpression>
-        <Param>t_1</Param>
-    </LeftExpression>
-    <RightExpression>
-        <Param>t_0</Param>
-    </RightExpression>
-</LessThan>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>HTTP_REQUEST</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>IP_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>IP_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>L7DATA</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>L7DATA</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                        </And>
+                        <Send>
+                            <Source>n_GlobalDnsBalancer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
                     </Expression>
-                </Exist>
-            </ConsequentExpression>
-        </Implies>
-    </LogicalExpressionResult>
-    <LogicalExpressionResult>
-        <Implies>
-            <AntecedentExpression>
-                <Send>
-                    <Source>n_GlobalDnsBalancer</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                    <Time_out>t_0</Time_out>
-                </Send>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_1</Unit>
+    <Field>APPLICATION_PROTOCOL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>DNS_REQUEST</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
                     <Unit>n_1</Unit>
                     <Unit>p_1</Unit>
-                    <Unit>t_1</Unit>
                     <Expression>
                         <And>
                             <Expression>
@@ -232,35 +47,7 @@
     <Source>n_1</Source>
     <Destination>n_GlobalDnsBalancer</Destination>
     <Packet_in>p_1</Packet_in>
-    <Time_in>t_1</Time_in>
 </Recv>
-                            </Expression>
-                            <Expression>
-<LessThan>
-    <LeftExpression>
-        <Param>t_1</Param>
-    </LeftExpression>
-    <RightExpression>
-        <Param>t_0</Param>
-    </RightExpression>
-</LessThan>
-                            </Expression>
-                            <Expression>
-<Not>
-    <Expression>
-        <Equal>
-            <LeftExpression>
-                <FieldOf>
-                    <Unit>p_1</Unit>
-                    <Field>APPLICATION_PROTOCOL</Field>
-                </FieldOf>
-            </LeftExpression>
-            <RightExpression>
-                <Param>HTTP_REQUEST</Param>
-            </RightExpression>
-        </Equal>
-    </Expression>
-</Not>
                             </Expression>
                             <Expression>
 <Equal>
@@ -283,9 +70,25 @@
     </Value>
     <Value>
         <Unit>p_1</Unit>
-        <Field>L7DATA</Field>
+        <Field>URL</Field>
     </Value>
 </MatchEntry>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
                             </Expression>
                             <Expression>
 <Equal>
@@ -296,22 +99,9 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>value_0</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>IP_SRC</Field>
+            <Field>IP_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -385,13 +175,109 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>L7DATA</Field>
+            <Field>ORIGIN</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>L7DATA</Field>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -424,6 +310,54 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OLD_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

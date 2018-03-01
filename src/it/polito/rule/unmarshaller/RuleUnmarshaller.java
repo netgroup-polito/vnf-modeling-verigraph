@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.xml.sax.SAXException;
 
+//import com.microsoft.z3.AST;
 import com.microsoft.z3.IntExpr;
 
 import it.polito.nfdev.jaxb.ExpressionObject;
@@ -89,6 +90,12 @@ class RuleUnmarshaller {
 		constants.add("DNS_RESPONSE");
 		constants.add("DNS_PORT_53");
 		constants.add("HTTP_PORT_80");
+		constants.add("SIP_INVITE");
+		constants.add("SIP_OK");
+		constants.add("SIP_REGISTER");
+		constants.add("SIP_ENDING");
+		constants.add("null");
+	//	constants.add("ip_sipServer");	// if not add these leements, they will be requested when install this model
 	//	constants.add("REQUESTED_URL");
 	/*	constants.add("new_port");
 		constants.add("value_0");*/
@@ -122,12 +129,12 @@ class RuleUnmarshaller {
 	
 	public MethodDeclaration generateRule(){
 		
-		if(reuslt.getLogicalExpressionResult().size() < 1 || reuslt.getNodeOrPacketOrTime().size() < 1)	
+		if(reuslt.getLogicalExpressionResult().size() < 1 || reuslt.getNodeOrPacket().size() < 1)	
 			return null;
 		
 		logicalUnits = new ArrayList<>();
 		
-		for(LogicalUnit temp : reuslt.getNodeOrPacketOrTime())
+		for(LogicalUnit temp : reuslt.getNodeOrPacket())
 			logicalUnits.add(temp.getName());
 		
 		MethodDeclaration method = ast.newMethodDeclaration();
@@ -142,7 +149,7 @@ class RuleUnmarshaller {
 		method.setBody(ast.newBlock());
 		
 		
-		for(LogicalUnit temp : reuslt.getNodeOrPacketOrTime()){
+		for(LogicalUnit temp : reuslt.getNodeOrPacket()){
 			char firstChar = temp.getName().charAt(0);
 			if(Character.compare(firstChar, 'n')==0 || Character.compare(firstChar, 'p')==0 || Character.compare(firstChar, 't')==0){
 				if(Character.compare(firstChar, 'n')==0 && !Character.isDigit(temp.getName().charAt(2)))
@@ -316,7 +323,7 @@ class RuleUnmarshaller {
 			ArrayCreation ac = ast.newArrayCreation();
 			ac.setType(ast.newArrayType(ast.newSimpleType(ast.newName("Expr"))));
 			ArrayInitializer ai = ast.newArrayInitializer();
-			ai.expressions().add(ast.newName("t_"+counter));
+		//	ai.expressions().add(ast.newName("t_"+counter));
 			ai.expressions().add(ast.newName("p_"+counter));
 			ai.expressions().add(ast.newName("n_"+counter));
 			counter++;
@@ -399,8 +406,23 @@ class RuleUnmarshaller {
 			
 			//Check if the string is a well-known constant in the netcontext class
 			if(constants.contains(obj.getParam())){
-				
 				MethodInvocation mi = ast.newMethodInvocation();
+				if(obj.getParam().compareTo("null")==0)  // for inner_src == null
+				{
+					
+					mi.setName(ast.newSimpleName("get"));
+					
+					FieldAccess fa = ast.newFieldAccess();
+					fa.setName(ast.newSimpleName("am"));
+					fa.setExpression(ast.newName("nctx"));
+					
+					mi.setExpression(fa);
+					StringLiteral sl = ast.newStringLiteral();
+					sl.setLiteralValue("null");
+					mi.arguments().add(sl);
+				}else{
+				
+				
 				mi.setName(ast.newSimpleName("mkInt"));
 				mi.setExpression(ast.newName("ctx"));
 				
@@ -408,7 +430,7 @@ class RuleUnmarshaller {
 				fa.setName(ast.newSimpleName(obj.getParam()));
 				fa.setExpression(ast.newName("nctx"));
 				mi.arguments().add(fa);
-				
+				}
 				return mi;
 			}
 		/*	try{	// used in MailServer in case the response is always 1, corresponding to the content of Antispam ( similar in webClient,EndHost)
@@ -600,7 +622,7 @@ class RuleUnmarshaller {
 		ArrayCreation ac = ast.newArrayCreation();
 		ac.setType(ast.newArrayType(ast.newSimpleType(ast.newName("Expr"))));
 		ArrayInitializer ai = ast.newArrayInitializer();
-		ai.expressions().add(ast.newName("t_"+counter));
+	//	ai.expressions().add(ast.newName("t_"+counter));
 		ai.expressions().add(ast.newName("p_"+counter));
 		ai.expressions().add(ast.newName("n_"+counter));
 		counter++;
@@ -637,7 +659,7 @@ class RuleUnmarshaller {
 		mi.arguments().add(ast.newName(send.getSource()));
 		mi.arguments().add(ast.newName(send.getDestination()));
 		mi.arguments().add(ast.newName(send.getPacketOut()));
-		mi.arguments().add(ast.newName(send.getTimeOut()));
+	//	mi.arguments().add(ast.newName(send.getTimeOut()));
 		
 		ce.setExpression(mi);
 		return ce;
@@ -661,7 +683,7 @@ class RuleUnmarshaller {
 		mi.arguments().add(ast.newName(recv.getSource()));
 		mi.arguments().add(ast.newName(recv.getDestination()));
 		mi.arguments().add(ast.newName(recv.getPacketIn()));
-		mi.arguments().add(ast.newName(recv.getTimeIn()));
+	//	mi.arguments().add(ast.newName(recv.getTimeIn()));
 		
 		ce.setExpression(mi);
 		return ce;
@@ -796,8 +818,8 @@ class RuleUnmarshaller {
 			case Constants.APPLICATION_PROTOCOL:
 				return Constants.Z3_APPLICATION_PROTOCOL;
 				
-			case Constants.L7DATA:
-				return Constants.Z3_BODY;
+//			case Constants.L7DATA:
+//				return Constants.Z3_BODY;
 				
 			case Constants.ORIGIN:
 				return Constants.Z3_ORIGIN;
@@ -825,6 +847,17 @@ class RuleUnmarshaller {
 				
 			case Constants.OLD_DST:
 				return Constants.Z3_OLD_DEST;
+				
+			case Constants.INNER_SRC:
+				return Constants.Z3_INNER_SRC;
+				
+			case Constants.INNER_DEST:
+				return Constants.Z3_INNER_DEST;
+				
+			case Constants.ENCRYPTED:
+				return Constants.Z3_ENCRYPTED;
+				
+			
 							
 		}
 		

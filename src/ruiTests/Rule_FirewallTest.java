@@ -25,7 +25,7 @@ public class Rule_FirewallTest {
 	
 	public Checker checker;
 	public Context ctx;
-	public WebClient a,b;
+	public PolitoEndHost a,b;
 	public Rule_AclFirewall firewall;
 
 	public	Rule_FirewallTest(){
@@ -35,8 +35,8 @@ public class Rule_FirewallTest {
 												new String[]{"ip_a", "ip_b", "ip_firewall"});
 		Network net = new Network (ctx,new Object[]{nctx});
 		
-		a = new WebClient(ctx, new Object[]{nctx.nm.get("a"), net, nctx});
-		b = new WebClient(ctx, new Object[]{nctx.nm.get("b"), net, nctx});
+		a = new PolitoEndHost(ctx, new Object[]{nctx.nm.get("a"), net, nctx});
+		b = new PolitoEndHost(ctx, new Object[]{nctx.nm.get("b"), net, nctx});
 		firewall = new Rule_AclFirewall(ctx, new Object[]{nctx.nm.get("firewall"), net, nctx});
 	    
 		
@@ -72,7 +72,7 @@ public class Rule_FirewallTest {
 	    
 	    firewall.setInternalAddress(al1);
 	 //   firewall.addEntry(nctx.am.get("ip_a"), nctx.am.get("ip_b"));
-	//    firewall.addEntry(nctx.am.get("ip_b"), nctx.am.get("ip_a"));
+	    firewall.addEntry(nctx.am.get("ip_b"), nctx.am.get("ip_a"));
 	    firewall.installAclFirewall();
 	    	    
 	    checker = new Checker(ctx,nctx,net);

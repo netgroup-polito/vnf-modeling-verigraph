@@ -14,21 +14,21 @@ public class Router extends NetworkFunction {
 	public Router(List<Interface> interfaces) {
 		super(interfaces);
 	
-		this.routeTable = new Table(2,0); // dstIP, forwardInterface;   no consider the fields 'nextHop' and 'hopCount',because related to ArpTable(MAC) and shortest path
-		this.routeTable.setTypes(Table.TableTypes.Ip,Table.TableTypes.Ip);
+		this.routeTable = new Table(1,0); // dstIP, forwardInterface;   no consider the fields 'nextHop' and 'hopCount',because related to ArpTable(MAC) and shortest path
+		this.routeTable.setTypes(Table.TableTypes.Ip/*,Table.TableTypes.Ip*/);
 	}
 
 	@Override
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
-		Packet packet_in = null;
+	/*	Packet packet_in = null;
 		try {			
 			packet_in = packet.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			return new RoutingResult(Action.DROP, null, null); 
 		}
-	
-		TableEntry entry = routeTable.matchEntry(packet_in.getField(PacketField.IP_DST));
+	*/
+		TableEntry entry = routeTable.matchEntry(packet.getField(PacketField.IP_DST));
 	
 		if(entry!=null){
 			String interfaceIp = (String)entry.getValue(1); 
@@ -40,7 +40,7 @@ public class Router extends NetworkFunction {
 				}
 			}
 			
-			return new RoutingResult(Action.FORWARD, packet_in, forwardInterface);
+			return new RoutingResult(Action.FORWARD, packet, forwardInterface);
 			
 		}
 		else{

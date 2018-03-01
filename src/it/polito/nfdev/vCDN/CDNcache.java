@@ -60,7 +60,7 @@ public class CDNcache extends NetworkFunction {
 		if(iface.isInternal())
 		{
 			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_REQUEST)){
-				TableEntry entry = cdnCacheTable.matchEntry(packet.getField(PacketField.L7DATA));				
+				TableEntry entry = cdnCacheTable.matchEntry(packet.getField(PacketField.URL));				
 				
 				if(entry != null)   
 				{
@@ -70,14 +70,14 @@ public class CDNcache extends NetworkFunction {
 					p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 					p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
 					p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE);
-					p.setField(PacketField.L7DATA, (String)entry.getValue(0));   
+				//	p.setField(PacketField.L7DATA, (String)entry.getValue(0));   
 					return new RoutingResult(Action.FORWARD, p, internalInterface); 
 				
 				}
 				else 
 				{
 					p.setField(PacketField.IP_DST, packet.getField(PacketField.OLD_DST));
-					p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
+			//		p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
 					
 					
 					return new RoutingResult(Action.FORWARD, p, externalInterface); 
@@ -92,10 +92,10 @@ public class CDNcache extends NetworkFunction {
 				
 					Content content;
 					try {
-						content = new Content(new URL(packet.getField(PacketField.L7DATA)));
+						content = new Content(new URL(packet.getField(PacketField.URL)));
 					
 					CacheTableEntry newEntry = new CacheTableEntry(2);
-					newEntry.setValue(0, packet.getField(PacketField.L7DATA));
+					newEntry.setValue(0, packet.getField(PacketField.URL));
 					newEntry.setValue(1, content);
 					cdnCacheTable.storeEntry(newEntry);
 					} catch (Exception e) {

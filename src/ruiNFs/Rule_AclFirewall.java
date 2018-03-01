@@ -96,13 +96,11 @@ public class Rule_AclFirewall extends NetworkObject {
 		Expr n_1 = ctx.mkConst("n_AclFirewall_" + n_AclFirewall + "_n_1", nctx.node);
 		Expr p_0 = ctx.mkConst("n_AclFirewall_" + n_AclFirewall + "_p_0", nctx.packet);
 		Expr p_1 = ctx.mkConst("n_AclFirewall_" + n_AclFirewall + "_p_1", nctx.packet);
-		IntExpr t_0 = ctx.mkIntConst("n_AclFirewall_" + n_AclFirewall + "_t_0");
-		IntExpr t_1 = ctx.mkIntConst("n_AclFirewall_" + n_AclFirewall + "_t_1");
-		constraints.add(ctx.mkForall(new Expr[] { t_0, p_0, n_0 }, ctx.mkImplies(
-				ctx.mkAnd((BoolExpr) nctx.send.apply(n_AclFirewall, n_0, p_0, t_0),
+		constraints.add(ctx.mkForall(new Expr[] { p_0, n_0 }, ctx.mkImplies(
+				ctx.mkAnd((BoolExpr) nctx.send.apply(n_AclFirewall, n_0, p_0),
 						ctx.mkNot((BoolExpr) isInternal.apply(nctx.pf.get("dest").apply(p_0)))),
-				ctx.mkExists(new Expr[] { t_1, p_1, n_1 },
-						ctx.mkAnd((BoolExpr) nctx.recv.apply(n_1, n_AclFirewall, p_1, t_1), ctx.mkLt(t_1, t_0),
+				ctx.mkExists(new Expr[] { p_1, n_1 },
+						ctx.mkAnd((BoolExpr) nctx.recv.apply(n_1, n_AclFirewall, p_1),
 								(BoolExpr) isInternal.apply(nctx.pf.get("src").apply(p_1)),
 								ctx.mkNot((BoolExpr) matchEntry.apply(nctx.pf.get("src").apply(p_1),
 										nctx.pf.get("dest").apply(p_1))),
@@ -110,22 +108,28 @@ public class Rule_AclFirewall extends NetworkObject {
 								ctx.mkEq(nctx.pf.get("dest").apply(p_0), nctx.pf.get("dest").apply(p_1)),
 								ctx.mkEq(nctx.src_port.apply(p_0), nctx.src_port.apply(p_1)),
 								ctx.mkEq(nctx.dest_port.apply(p_0), nctx.dest_port.apply(p_1)),
+								ctx.mkEq(nctx.pf.get("transport_protocol").apply(p_0),
+										nctx.pf.get("transport_protocol").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("proto").apply(p_0), nctx.pf.get("proto").apply(p_1)),
-								ctx.mkEq(nctx.pf.get("body").apply(p_0), nctx.pf.get("body").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("origin").apply(p_0), nctx.pf.get("origin").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("orig_body").apply(p_0), nctx.pf.get("orig_body").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("body").apply(p_0), nctx.pf.get("body").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("seq").apply(p_0), nctx.pf.get("seq").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("emailFrom").apply(p_0), nctx.pf.get("emailFrom").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("url").apply(p_0), nctx.pf.get("url").apply(p_1)),
-								ctx.mkEq(nctx.pf.get("options").apply(p_0), nctx.pf.get("options").apply(p_1))),
+								ctx.mkEq(nctx.pf.get("options").apply(p_0), nctx.pf.get("options").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("oldSrc").apply(p_0), nctx.pf.get("oldSrc").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("oldDest").apply(p_0), nctx.pf.get("oldDest").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("inner_src").apply(p_0), nctx.pf.get("inner_src").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("inner_dest").apply(p_0), nctx.pf.get("inner_dest").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("encrypted").apply(p_0), nctx.pf.get("encrypted").apply(p_1))),
 						1, null, null, null, null)),
 				1, null, null, null, null));
-		constraints.add(ctx.mkForall(new Expr[] { t_0, p_0, n_0 }, ctx.mkImplies(
-				ctx.mkAnd((BoolExpr) nctx.send.apply(n_AclFirewall, n_0, p_0, t_0),
+		constraints.add(ctx.mkForall(new Expr[] { p_0, n_0 }, ctx.mkImplies(
+				ctx.mkAnd((BoolExpr) nctx.send.apply(n_AclFirewall, n_0, p_0),
 						(BoolExpr) isInternal.apply(nctx.pf.get("dest").apply(p_0))),
-				ctx.mkExists(new Expr[] { t_1, p_1, n_1 },
-						ctx.mkAnd((BoolExpr) nctx.recv.apply(n_1, n_AclFirewall, p_1, t_1), ctx.mkLt(t_1, t_0),
+				ctx.mkExists(new Expr[] { p_1, n_1 },
+						ctx.mkAnd((BoolExpr) nctx.recv.apply(n_1, n_AclFirewall, p_1),
 								ctx.mkNot((BoolExpr) isInternal.apply(nctx.pf.get("src").apply(p_1))),
 								ctx.mkNot((BoolExpr) matchEntry.apply(nctx.pf.get("src").apply(p_1),
 										nctx.pf.get("dest").apply(p_1))),
@@ -133,15 +137,21 @@ public class Rule_AclFirewall extends NetworkObject {
 								ctx.mkEq(nctx.pf.get("dest").apply(p_0), nctx.pf.get("dest").apply(p_1)),
 								ctx.mkEq(nctx.src_port.apply(p_0), nctx.src_port.apply(p_1)),
 								ctx.mkEq(nctx.dest_port.apply(p_0), nctx.dest_port.apply(p_1)),
+								ctx.mkEq(nctx.pf.get("transport_protocol").apply(p_0),
+										nctx.pf.get("transport_protocol").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("proto").apply(p_0), nctx.pf.get("proto").apply(p_1)),
-								ctx.mkEq(nctx.pf.get("body").apply(p_0), nctx.pf.get("body").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("origin").apply(p_0), nctx.pf.get("origin").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("orig_body").apply(p_0), nctx.pf.get("orig_body").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("body").apply(p_0), nctx.pf.get("body").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("seq").apply(p_0), nctx.pf.get("seq").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("emailFrom").apply(p_0), nctx.pf.get("emailFrom").apply(p_1)),
 								ctx.mkEq(nctx.pf.get("url").apply(p_0), nctx.pf.get("url").apply(p_1)),
-								ctx.mkEq(nctx.pf.get("options").apply(p_0), nctx.pf.get("options").apply(p_1))),
+								ctx.mkEq(nctx.pf.get("options").apply(p_0), nctx.pf.get("options").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("oldSrc").apply(p_0), nctx.pf.get("oldSrc").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("oldDest").apply(p_0), nctx.pf.get("oldDest").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("inner_src").apply(p_0), nctx.pf.get("inner_src").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("inner_dest").apply(p_0), nctx.pf.get("inner_dest").apply(p_1)),
+								ctx.mkEq(nctx.pf.get("encrypted").apply(p_0), nctx.pf.get("encrypted").apply(p_1))),
 						1, null, null, null, null)),
 				1, null, null, null, null));
 	}

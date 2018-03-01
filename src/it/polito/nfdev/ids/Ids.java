@@ -42,8 +42,8 @@ public class Ids extends NetworkFunction {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
-			TableEntry e = blackList.matchEntry(packet.getField(PacketField.BODY));
+		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST) || packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE)){
+			TableEntry e = blackList.matchEntry(packet.getField(PacketField.URL));
 			
 			if(e!=null)
 				return new RoutingResult(Action.DROP,null,null);
@@ -51,15 +51,7 @@ public class Ids extends NetworkFunction {
 				return new RoutingResult(Action.FORWARD,p,iface);
 			
 			
-		}else if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE)){
-			TableEntry e = blackList.matchEntry(packet.getField(PacketField.BODY));
-			
-			if(e!=null)
-				return new RoutingResult(Action.DROP,null,null);
-			else
-				return new RoutingResult(Action.FORWARD,p,iface);
-		}else
-		
+		}
 		return new RoutingResult(Action.DROP,null,null);
 	}
 	

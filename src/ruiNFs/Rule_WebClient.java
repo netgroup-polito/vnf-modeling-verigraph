@@ -18,7 +18,7 @@ import it.polito.verigraph.mcnet.components.Tuple;
 public class Rule_WebClient extends NetworkObject {
 	List<BoolExpr> constraints;
 	Context ctx;
-	DatatypeExpr n_EndHost;
+	DatatypeExpr n_WebClient;
 	Network net;
 	NetContext nctx;
 	FuncDecl isInternal;
@@ -33,16 +33,16 @@ public class Rule_WebClient extends NetworkObject {
 		isEndHost = false;
 		constraints = new ArrayList<BoolExpr>();
 		z3Node = ((NetworkObject) args[0][0]).getZ3Node();
-		n_EndHost = z3Node;
+		n_WebClient = z3Node;
 		net = (Network) args[0][1];
 		nctx = (NetContext) args[0][2];
 		net.saneSend(this);
-		isInternal = ctx.mkFuncDecl(n_EndHost + "_isInternal", nctx.address, ctx.mkBoolSort());
+		isInternal = ctx.mkFuncDecl(n_WebClient + "_isInternal", nctx.address, ctx.mkBoolSort());
 	}
 
 	@Override
 	public DatatypeExpr getZ3Node() {
-		return n_EndHost;
+		return n_WebClient;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class Rule_WebClient extends NetworkObject {
 
 	public void setInternalAddress(ArrayList<DatatypeExpr> internalAddress) {
 		List<BoolExpr> constr = new ArrayList<BoolExpr>();
-		Expr in_0 = ctx.mkConst(n_EndHost + "_internal_node", nctx.address);
+		Expr in_0 = ctx.mkConst(n_WebClient + "_internal_node", nctx.address);
 		for (DatatypeExpr n : internalAddress)
 			constr.add(ctx.mkEq(in_0, n));
 		BoolExpr[] constrs = new BoolExpr[constr.size()];
@@ -62,14 +62,12 @@ public class Rule_WebClient extends NetworkObject {
 	}
 
 	public void installWebClient(Expr ip_EndHost, Expr ip_WebServer, Expr REQUESTED_URL) {
-		Expr n_0 = ctx.mkConst("n_EndHost_" + n_EndHost + "_n_0", nctx.node);
-		Expr p_0 = ctx.mkConst("n_EndHost_" + n_EndHost + "_p_0", nctx.packet);
-		IntExpr t_0 = ctx.mkIntConst("n_EndHost_" + n_EndHost + "_t_0");
-		constraints.add(ctx.mkForall(new Expr[] { t_0, p_0, n_0 },
-				ctx.mkImplies((BoolExpr) nctx.send.apply(n_EndHost, n_0, p_0, t_0),
+		Expr n_0 = ctx.mkConst("n_WebClient_" + n_WebClient + "_n_0", nctx.node);
+		Expr p_0 = ctx.mkConst("n_WebClient_" + n_WebClient + "_p_0", nctx.packet);
+		constraints.add(ctx.mkForall(new Expr[] { p_0, n_0 },
+				ctx.mkImplies((BoolExpr) nctx.send.apply(n_WebClient, n_0, p_0),
 						ctx.mkAnd(ctx.mkEq(nctx.pf.get("src").apply(p_0), ip_EndHost),
 								ctx.mkEq(nctx.pf.get("dest").apply(p_0), ip_WebServer),
-								ctx.mkEq(nctx.pf.get("body").apply(p_0), ctx.mkInt(2)),
 								ctx.mkEq(nctx.pf.get("proto").apply(p_0), ctx.mkInt(nctx.HTTP_REQUEST)),
 								ctx.mkEq(nctx.pf.get("url").apply(p_0), REQUESTED_URL))),
 				1, null, null, null, null));

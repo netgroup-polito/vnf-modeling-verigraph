@@ -206,8 +206,8 @@ public class HumanReadableRule {
 		rule.append(" send(");
 		rule.append(func.getSource()+",");
 		rule.append(func.getDestination()+",");
-		rule.append(func.getPacketOut()+",");
-		rule.append(func.getTimeOut());
+		rule.append(func.getPacketOut());
+	//	rule.append(func.getTimeOut());
 		rule.append(")");
 		
 	}
@@ -217,8 +217,8 @@ public class HumanReadableRule {
 		rule.append(" recv(");
 		rule.append(func.getSource()+",");
 		rule.append(func.getDestination()+",");
-		rule.append(func.getPacketIn()+",");
-		rule.append(func.getTimeIn());
+		rule.append(func.getPacketIn());
+	//	rule.append(func.getTimeIn());
 		rule.append(")");
 		
 	}

@@ -178,12 +178,12 @@ public class RuleGenerator {
 	
 		ExpressionResult result = factory.createExpressionResult();
 		result.getLogicalExpressionResult().addAll(expressions);
-		result.getNodeOrPacketOrTime().addAll(units.values());
+		result.getNodeOrPacket().addAll(units.values());
 		result.setTableSize(tableSize);
 		result.setDataDriven(isDataDriven);
 	//	result.setIndirectNF(isIndirectNF);
 		result.getTableFields().addAll(tableTypes);
-		Collections.sort(result.getNodeOrPacketOrTime(), new Comparator<LogicalUnit>() {
+		Collections.sort(result.getNodeOrPacket(), new Comparator<LogicalUnit>() {
 
 			@Override
 			public int compare(LogicalUnit o1, LogicalUnit o2) {

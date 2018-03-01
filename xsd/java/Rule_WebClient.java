@@ -1,4 +1,4 @@
-package mcnet.netobjs.generated;
+package ruiNFs;
 import java.util.List;
 import java.util.ArrayList;
 import com.microsoft.z3.BoolExpr;
@@ -51,7 +51,6 @@ public class Rule_WebClient extends NetworkObject {
   public void installWebClient(  Expr ip_EndHost,  Expr ip_WebServer,  Expr REQUESTED_URL){
     Expr n_0=ctx.mkConst("n_WebClient_" + n_WebClient + "_n_0",nctx.node);
     Expr p_0=ctx.mkConst("n_WebClient_" + n_WebClient + "_p_0",nctx.packet);
-    IntExpr t_0=ctx.mkIntConst("n_WebClient_" + n_WebClient + "_t_0");
-    constraints.add(ctx.mkForall(new Expr[]{t_0,p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_WebClient,n_0,p_0,t_0),ctx.mkAnd(ctx.mkEq(nctx.pf.get("src").apply(p_0),ip_EndHost),ctx.mkEq(nctx.pf.get("dest").apply(p_0),ip_WebServer),ctx.mkEq(nctx.pf.get("proto").apply(p_0),ctx.mkInt(nctx.HTTP_REQUEST)),ctx.mkEq(nctx.pf.get("url").apply(p_0),REQUESTED_URL))),1,null,null,null,null));
+    constraints.add(ctx.mkForall(new Expr[]{p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_WebClient,n_0,p_0),ctx.mkAnd(ctx.mkEq(nctx.pf.get("src").apply(p_0),ip_EndHost),ctx.mkEq(nctx.pf.get("dest").apply(p_0),ip_WebServer),ctx.mkEq(nctx.pf.get("proto").apply(p_0),ctx.mkInt(nctx.HTTP_REQUEST)),ctx.mkEq(nctx.pf.get("url").apply(p_0),REQUESTED_URL))),1,null,null,null,null));
   }
 }

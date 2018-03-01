@@ -1,5 +1,5 @@
 Rule_0:
 
-( send(n_WebClient,n_0,p_0,t_0) ==> 
+( send(n_WebClient,n_0,p_0) ==> 
 	((p_0.IP_SRC == ip_EndHost) && (p_0.IP_DST == ip_WebServer) && (p_0.APPLICATION_PROTOCOL == HTTP_REQUEST) && (p_0.URL == REQUESTED_URL)))
 

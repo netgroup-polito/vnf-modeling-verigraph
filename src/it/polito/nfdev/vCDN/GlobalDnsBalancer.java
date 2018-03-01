@@ -21,34 +21,36 @@ public class GlobalDnsBalancer extends NetworkFunction {
 		super(new ArrayList<Interface>());
 		
 		this.balanTable = new Table(3,0);	// Ip_Src_of_Requester, url, IP_of_CDNNode
-		this.balanTable.setTypes(Table.TableTypes.Ip, Table.TableTypes.ApplicationData, Table.TableTypes.Ip);
+		this.balanTable.setTypes(Table.TableTypes.Ip, Table.TableTypes.URL, Table.TableTypes.Ip);
 		
 	}
 
 	@Override
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
-		Packet packet_in = null;
+		Packet P = null;
 		try {
-			packet_in = packet.clone();
+			P = packet.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			return new RoutingResult(Action.DROP, null, null); 
 		}
 		
-			if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
+		/*	if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
 				return new RoutingResult(Action.FORWARD,packet_in,iface);
 		
 			}
-			else{
+			else{*/
 				if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.DNS_REQUEST)){
-					TableEntry entry = balanTable.matchEntry(packet_in.getField(PacketField.IP_SRC), packet_in.getField(PacketField.L7DATA), Verifier.ANY_VALUE);
+					TableEntry entry = balanTable.matchEntry(packet.getField(PacketField.IP_SRC), packet.getField(PacketField.URL), Verifier.ANY_VALUE);
 					if(entry != null){
-						packet_in.setField(PacketField.IP_DST, (String) entry.getValue(2));
-						return new RoutingResult(Action.FORWARD,packet_in,iface);
+						P.setField(PacketField.OLD_SRC, (String) entry.getValue(2));						
+						P.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
+						P.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
+						return new RoutingResult(Action.FORWARD,packet,iface);
 					}
 					
 				}
-			}
+	//		}
 		return new RoutingResult(Action.DROP,null,null);
 		
 		}

@@ -7,66 +7,19 @@
     <Node Name="n_MailServer"/>
     <Packet Name="p_0"/>
     <Packet Name="p_1"/>
-    <Time Name="t_0"/>
-    <Time Name="t_1"/>
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <And>
-                    <Expression>
-                        <Send>
-                            <Source>n_MailServer</Source>
-                            <Destination>n_0</Destination>
-                            <Packet_out>p_0</Packet_out>
-                            <Time_out>t_0</Time_out>
-                        </Send>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_1</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>POP3_REQUEST</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>POP3_RESPONSE</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>EMAIL_FROM</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>RESPONSE</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                </And>
+                <Send>
+                    <Source>n_MailServer</Source>
+                    <Destination>n_0</Destination>
+                    <Packet_out>p_0</Packet_out>
+                </Send>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
                     <Unit>n_1</Unit>
                     <Unit>p_1</Unit>
-                    <Unit>t_1</Unit>
                     <Expression>
                         <And>
                             <Expression>
@@ -74,18 +27,7 @@
     <Source>n_1</Source>
     <Destination>n_MailServer</Destination>
     <Packet_in>p_1</Packet_in>
-    <Time_in>t_1</Time_in>
 </Recv>
-                            </Expression>
-                            <Expression>
-<LessThan>
-    <LeftExpression>
-        <Param>t_1</Param>
-    </LeftExpression>
-    <RightExpression>
-        <Param>t_0</Param>
-    </RightExpression>
-</LessThan>
                             </Expression>
                             <Expression>
 <Equal>
@@ -195,13 +137,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>L7DATA</Field>
+            <Field>TRANSPORT_PROTOCOL</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>L7DATA</Field>
+            <Field>TRANSPORT_PROTOCOL</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -298,6 +240,86 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OLD_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OLD_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OLD_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OLD_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

@@ -44,7 +44,7 @@ public class RuleContext {
 	
 	private int packetCounter = -1;
 	private int nodeCounter = -1;
-	private int timeCounter = -1;
+//	private int timeCounter = -1;
 	private int valueCounter = -1;
 	
 	public RuleContext(ObjectFactory factory, ReturnSnapshot returnSnapshot){
@@ -73,23 +73,23 @@ public class RuleContext {
 				LUNode dest = factory.createLUNode();
 				LUNode source = factory.createLUNode();
 				LUPacket packet = factory.createLUPacket();
-				LUTime time = factory.createLUTime();
+		//		LUTime time = factory.createLUTime();
 				
 				dest.setName("n_"+ ++nodeCounter);
 				source.setName(netFunction);
 				packet.setName("p_"+ ++packetCounter);
-				time.setName("t_"+ ++timeCounter);
+		//		time.setName("t_"+ ++timeCounter);
 				
 				units.add(dest);
 				units.add(source);
-				units.add(time);
+		//		units.add(time);
 				units.add(packet);
 				
 				LFSend send = factory.createLFSend();
 				send.setDestination(dest.getName());
 				send.setSource(source.getName());
 				send.setPacketOut(packet.getName());
-				send.setTimeOut(time.getName());
+			//	send.setTimeOut(time.getName());
 				
 				LOImplies implies = factory.createLOImplies();
 				implies.setAntecedentExpression(factory.createExpressionObject());
@@ -129,41 +129,41 @@ public class RuleContext {
 				
 				LUNode n1 = factory.createLUNode();
 				LUPacket p1 = factory.createLUPacket();
-				LUTime t1 = factory.createLUTime();
+			//	LUTime t1 = factory.createLUTime();
 				
 				n1.setName("n_"+ ++nodeCounter);		//--> p1
 				p1.setName("p_"+ ++packetCounter);
-				t1.setName("t_"+ ++timeCounter);
+			//	t1.setName("t_"+ ++timeCounter);
 				
-				units.add(t1);
+			//	units.add(t1);
 				units.add(p1);
 				units.add(n1);
 				
 				LOExist exist = factory.createLOExist();
 				exist.getUnit().add(n1.getName());
 				exist.getUnit().add(p1.getName());
-				exist.getUnit().add(t1.getName());
+			//	exist.getUnit().add(t1.getName());
 				exist.setExpression(factory.createExpressionObject());
 				
 				LFRecv recv = factory.createLFRecv();
 				recv.setSource(n1.getName());
 				recv.setDestination(netFunction);
 				recv.setPacketIn(p1.getName());
-				recv.setTimeIn(t1.getName());
+			/*	recv.setTimeIn(t1.getName());
 				
 				LOLessThan less = factory.createLOLessThan();
 				less.setLeftExpression(factory.createExpressionObject());
 				less.setRightExpression(factory.createExpressionObject());
 				less.getLeftExpression().setParam(t1.getName());
 				less.getRightExpression().setParam(time.getName());
-				
+			*/	
 				LOAnd and = factory.createLOAnd();
 				ExpressionObject temp = factory.createExpressionObject();
 				temp.setRecv(recv);	// 'recv'
 				and.getExpression().add(temp);
 				temp = factory.createExpressionObject();
-				temp.setLessThan(less);	// 'time less than'
-				and.getExpression().add(temp);
+			//	temp.setLessThan(less);	// 'time less than'
+			//	and.getExpression().add(temp);
 				
 				exist.getExpression().setAnd(and);
 				implies.getConsequentExpression().setExist(exist);
@@ -176,23 +176,23 @@ public class RuleContext {
 				LUNode dest1 = factory.createLUNode();
 				LUNode source1 = factory.createLUNode();
 				LUPacket packet1 = factory.createLUPacket();
-				LUTime time1 = factory.createLUTime();
+		//		LUTime time1 = factory.createLUTime();
 				
 				dest1.setName("n_"+ ++nodeCounter);
 				source1.setName(netFunction);
 				packet1.setName("p_"+ ++packetCounter);
-				time1.setName("t_"+ ++timeCounter);
+		//		time1.setName("t_"+ ++timeCounter);
 				
 				units.add(dest1);
 				units.add(source1);
-				units.add(time1);
+		//		units.add(time1);
 				units.add(packet1);
 				
 				LFSend send1 = factory.createLFSend();
 				send1.setDestination(dest1.getName());
 				send1.setSource(source1.getName());
 				send1.setPacketOut(packet1.getName());
-				send1.setTimeOut(time1.getName());
+		//		send1.setTimeOut(time1.getName());
 				
 				LOImplies implies1 = factory.createLOImplies();
 				implies1.setAntecedentExpression(factory.createExpressionObject());
@@ -247,9 +247,9 @@ public class RuleContext {
 		field_names.add(Constants.IP_DESTINATION);
 		field_names.add(Constants.PORT_SOURCE);
 		field_names.add(Constants.PORT_DESTINATION);
-	//	field_names.add(Constants.TRANSPORT_PROTOCOL);
+		field_names.add(Constants.TRANSPORT_PROTOCOL);
 		field_names.add(Constants.APPLICATION_PROTOCOL);
-		field_names.add(Constants.L7DATA);
+	//	field_names.add(Constants.L7DATA);
 		
 		field_names.add(Constants.ORIGIN);
 		field_names.add(Constants.ORIG_BODY);
@@ -258,8 +258,11 @@ public class RuleContext {
 		field_names.add(Constants.EMAIL_FROM);
 		field_names.add(Constants.URL);
 		field_names.add(Constants.OPTIONS);
-//		field_names.add(Constants.OLD_SRC);
-//		field_names.add(Constants.OLD_DST);
+		field_names.add(Constants.OLD_SRC);
+		field_names.add(Constants.OLD_DST);
+		field_names.add(Constants.INNER_SRC);
+		field_names.add(Constants.INNER_DEST);
+		field_names.add(Constants.ENCRYPTED);
 		
 	//  if(!returnSnapshot.isIndirectSnapshot()){
 		 // System.out.println("line 248: <<<<<<,,,,,NOT idirectsnapshot  removeField= "+ removeField);
@@ -373,7 +376,7 @@ public class RuleContext {
 			else{
 				((LOAnd)entryPoint_p1).getExpression().add(expression);
 				
-				if(result.getImplies().getAntecedentExpression().getAnd()!=null){
+			/*	if(result.getImplies().getAntecedentExpression().getAnd()!=null){
 					//System.out.println("------------>1      ");
 					//if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.APPLICATION_PROTOCOL)==0){
 										// used in IDS, left part of Imply ,only for ctx.mkEq(nctx.pf.get("proto").apply(p_1), ctx.mkInt(nctx.HTTP_REQUEST))
@@ -395,12 +398,12 @@ public class RuleContext {
 					result.getImplies().getAntecedentExpression().setAnd(and);
 					result.getImplies().getAntecedentExpression().setSend(null);
 					}
-				}
+				}*/
 			}
 			return true;
 		}/*else if(result.getImplies()!=null){
 			result.getImplies().getConsequentExpression().getAnd().getExpression().add(expression);   // if it is a initial packet from a endhHost
-			System.out.println("lallalallalaaaaaaaaaaaaaaaaa");
+			System.out.println("line406 initial packet for body = orig_body");
 			return true;
 	
 		}*/else
@@ -1073,45 +1076,45 @@ public class RuleContext {
 					
 					LUNode node = factory.createLUNode();
 					LUPacket packet = factory.createLUPacket();
-					LUTime time = factory.createLUTime();
+			//		LUTime time = factory.createLUTime();
 					
 					node.setName("n_"+ ++nodeCounter);
 					packet.setName("p_"+ ++packetCounter);
-					time.setName("t_"+ ++timeCounter);
+			//		time.setName("t_"+ ++timeCounter);
 					
 					units.add(node);
 					units.add(packet);
-					units.add(time);
+			//		units.add(time);
 					
 					LOExist exist = factory.createLOExist();
 					exist.getUnit().add(node.getName());
 					exist.getUnit().add(packet.getName());		
-					exist.getUnit().add(time.getName());
+			//		exist.getUnit().add(time.getName());
 					exist.setExpression(factory.createExpressionObject());
 					
 					LOAnd and = factory.createLOAnd();
 					exist.getExpression().setAnd(and);
 					
-					LOLessThan less = factory.createLOLessThan();
+			/*		LOLessThan less = factory.createLOLessThan();
 					less.setLeftExpression(factory.createExpressionObject());
 					less.setRightExpression(factory.createExpressionObject());
 					less.getLeftExpression().setParam(time.getName());
 					less.getRightExpression().setParam("t_"+ (timeCounter-1));
-					
+			*/		
 					LFRecv recv = factory.createLFRecv();
 					recv.setSource(node.getName());
 					recv.setDestination(netFunction);
 					recv.setPacketIn(packet.getName());
-					recv.setTimeIn(time.getName());
+			//		recv.setTimeIn(time.getName());
 		
 					ExpressionObject temp = factory.createExpressionObject();
 					temp.setRecv(recv);
 					and.getExpression().add(temp);
 					
-					temp = factory.createExpressionObject();
+			/*		temp = factory.createExpressionObject();
 					temp.setLessThan(less);
 					and.getExpression().add(temp);
-				
+			*/	
 					
 					LOAnd internalAnd = factory.createLOAnd();
 					LOAnd externalAnd = factory.createLOAnd();			
@@ -1287,13 +1290,17 @@ public class RuleContext {
 				return true;
 			case Constants.APPLICATION_PROTOCOL:
 				return true;
-			case Constants.L7DATA:
-				return true;
+	//		case Constants.L7DATA:
+	//			return true;
 			case Constants.ORIGIN:
 				return true;
 			case Constants.ORIG_BODY:
 				return true;
 			case Constants.BODY:
+				return true;
+			case Constants.INNER_SRC:
+				return true;
+			case Constants.INNER_DEST:
 				return true;
 			case Constants.SEQUENCE:
 				return true;
@@ -1302,6 +1309,8 @@ public class RuleContext {
 			case Constants.URL:
 				return true;
 			case Constants.OPTIONS:
+				return true;
+			case Constants.ENCRYPTED:
 				return true;
 			case Constants.OLD_SRC:
 				return true;

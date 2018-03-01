@@ -121,7 +121,8 @@ public class ClassGenerator {
 			
 			
 			PackageDeclaration pd = ast.newPackageDeclaration();
-			pd.setName(ast.newName(new String[] { "mcnet", "netobjs", "generated" }));
+		//	pd.setName(ast.newName(new String[] { "mcnet", "netobjs", "generated" }));
+			pd.setName(ast.newName(new String[] { "ruiNFs" }));
 			cu.setPackage(pd);
 
 			for (String[] temp : imports) {

@@ -84,7 +84,7 @@ public class Rule_IdsTest {
 	    ids.installIds();
 	    ids.addEntry(ctx.mkInt(1));
 	    
-	    client.installWebClient( nctx.am.get("ip_client"),  nctx.am.get("ip_webServer"), ctx.mkInt(1));
+	    client.installWebClient( nctx.am.get("ip_client"),  nctx.am.get("ip_webServer"), ctx.mkInt(2));
 	   
 	    webServer.installWebServer();
 	    webServer.addConstraintForTest();

@@ -14,7 +14,8 @@ public class Table {
 		Port,
 		TransportProtocol,
 		ApplicationProtocol,
-		ApplicationData,
+		ApplicationData,   // = Body
+		URL,
 		Generic
 	}
 	

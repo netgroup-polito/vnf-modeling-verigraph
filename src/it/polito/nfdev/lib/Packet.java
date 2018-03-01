@@ -15,17 +15,21 @@ public class Packet {
 		PORT_DST,
 		TRANSPORT_PROTOCOL,
 		APPLICATION_PROTOCOL,
-		L7DATA,
+		//L7DATA,
 		
 		ORIGIN,
 		ORIG_BODY,
-		BODY,
+		BODY,		// same with application data = L7DATA
+		INNER_SRC,
+		INNER_DEST,
 		SEQUENCE,
 		EMAIL_FROM,
 		URL,
 		OPTIONS,
-	//	OLD_SRC,
-	//	OLD_DST
+		ENCRYPTED,
+		OLD_SRC,
+		OLD_DST
+		
 	};
 	
 	public static final String HTTP_REQUEST = "HTTP_REQ";
@@ -37,7 +41,11 @@ public class Packet {
 	
 	public static final String  DNS_PORT_53 = "Dns_53";
 	public static final String  HTTP_PORT_80 = "Http_80";
-	
+	/*public static final String  SIP_INVITE = "Sip_Invitation";
+	public static final String  SIP_OK = "Sip_OK";
+	public static final String  SIP_REGISTER = "Sip_Register";
+	public static final String  SIP_ENDING = "Sip_Ending";
+	*/
 	
 	private Map<PacketField, String> fields;
 	
@@ -80,12 +88,12 @@ public class Packet {
 			fields.get(PacketField.PORT_SRC.name()) +
 			" [PORT_DST] " +
 			fields.get(PacketField.PORT_DST.name()) +
-//			" [TRANSPORT_PROTOCOL] " +
-//			fields.get(PacketField.TRANSPORT_PROTOCOL.name()) +
+			" [TRANSPORT_PROTOCOL] " +
+			fields.get(PacketField.TRANSPORT_PROTOCOL.name()) +
 			" [APPLICATION_PROTOCOL] " +
-			fields.get(PacketField.APPLICATION_PROTOCOL.name()) +
+			fields.get(PacketField.APPLICATION_PROTOCOL.name()) /* +
 			" [L7DATA] " +
-			fields.get(PacketField.L7DATA.name());
+			fields.get(PacketField.L7DATA.name())*/;
 		return out;
 	}
 	

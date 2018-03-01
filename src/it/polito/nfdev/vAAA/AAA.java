@@ -41,17 +41,18 @@ public class AAA extends NetworkFunction {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.PORT_DST, AUTHENTICATION_PORT_1812)){ 
+		if(packet.equalsField(PacketField.PORT_DST, AUTHENTICATION_PORT_1812))
+		{ 
 			 	// if it's a Authentication Packet from NAS Client, CZ authentication port is 1812
 		/*	String Uname_Pwd = packet.getField(PacketField.L7DATA);
 			String[] parts = Uname_Pwd.split(":");   // assume L7DATA is 'Username:Password'
 			String userName = parts[0];
 			String passWord = parts[1];
 		*/	
-			TableEntry entry = userTable.matchEntry(packet.getField(PacketField.L7DATA));
+			TableEntry entry = userTable.matchEntry(packet.getField(PacketField.BODY));
 			
 			if(entry==null){
-				p.setField(PacketField.L7DATA, ACCESS_REJECT);				
+				p.setField(PacketField.BODY, ACCESS_REJECT);				
 				
 				p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 				p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
@@ -60,7 +61,7 @@ public class AAA extends NetworkFunction {
 			
 				return new RoutingResult(Action.FORWARD,p,iface);
 			}else{
-				p.setField(PacketField.L7DATA, AUTHORIZATION_RESPONSE);
+				p.setField(PacketField.BODY, AUTHORIZATION_RESPONSE);
 				
 				p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 				p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
@@ -72,22 +73,25 @@ public class AAA extends NetworkFunction {
 			
 			
 		}
-		else if(packet.equalsField(PacketField.PORT_DST,ACCOUNTING_PORT_1813 )){
-					// if it's a Accounting Packet from NAS Client , CZ accounting port is 1813
-			
-		//	String Uname_Pwd = packet.getField(PacketField.L7DATA);
-			
+		if(packet.equalsField(PacketField.PORT_DST,ACCOUNTING_PORT_1813 ))
+		{
+					// if it's a Accounting Packet from NAS Client , CZ accounting port is 1813		
+		//	String Uname_Pwd = packet.getField(PacketField.L7DATA);			
 			// assume L7DATA is 'Username:	Periodic number of Bytes'
 		/*	String[] parts = Uname_Pwd.split(":");   
 			String userName = parts[0];*/
 		//	Integer byteCount = Integer.parseInt(parts[1]);
+			TableEntry entry = userTable.matchEntry(packet.getField(PacketField.BODY));
 			
-			TableEntry entry = userTable.matchEntry(packet.getField(PacketField.L7DATA));
-			
-			if(entry==null){
-				return new RoutingResult(Action.DROP, null, null);
+			if(entry!=null){
+				p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
+				p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
+				p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
+				p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
+				p.setField(PacketField.BODY, ACCOUNTING_RESPONSE);
+				return new RoutingResult(Action.FORWARD,p,iface);			
 			}
-			else{		// Update the total number of Bytes
+					// Update the total number of Bytes
 			/*	int totalBytes = byteCount + Integer.parseInt((String)entry.getValue(2));
 				TableEntry e = new NatTableEntry(3);
 				e.setValue(0, (String)entry.getValue(0));  // Username
@@ -95,19 +99,10 @@ public class AAA extends NetworkFunction {
 				e.setValue(2, (new Integer(totalBytes)).toString());		   // ByteCount
 				userTable.removeEntry(entry);
 				userTable.storeEntry(e);
-			*/	
-				p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
-				p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
-				p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
-				p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
-				p.setField(PacketField.L7DATA, ACCOUNTING_RESPONSE);
-				return new RoutingResult(Action.FORWARD,p,iface);
-			}
+			*/				
 		}
-		else{
 			return new RoutingResult(Action.DROP,null,null);
-		}
-		
+	
 	}
 	
 	

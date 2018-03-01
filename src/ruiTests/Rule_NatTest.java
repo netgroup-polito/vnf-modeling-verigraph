@@ -30,7 +30,7 @@ public class Rule_NatTest {
 	public Rule_WebClient endHostA;
 	public Rule_Nat nat;
 //	public MyNAT nat;
-	public Rule_WebServer serverB,serverC;
+	public Rule_WebServerForTest serverB,serverC;
 	public Rule_WebCache cache;
 	
 	public	Rule_NatTest(){
@@ -41,8 +41,8 @@ public class Rule_NatTest {
 		Network net = new Network (ctx,new Object[]{nctx});
 		
 		endHostA = new Rule_WebClient(ctx, new Object[]{nctx.nm.get("endHostA"), net, nctx});
-		serverB = new Rule_WebServer(ctx, new Object[]{nctx.nm.get("serverB"), net, nctx});
-		serverC = new Rule_WebServer(ctx, new Object[]{nctx.nm.get("serverC"), net, nctx});
+		serverB = new Rule_WebServerForTest(ctx, new Object[]{nctx.nm.get("serverB"), net, nctx});
+		serverC = new Rule_WebServerForTest(ctx, new Object[]{nctx.nm.get("serverC"), net, nctx});
 		cache = new Rule_WebCache(ctx, new Object[]{nctx.nm.get("cache"), net, nctx});
 		nat = new Rule_Nat(ctx, new Object[]{nctx.nm.get("nat"), net, nctx});
 	//	nat = new MyNAT(ctx, new Object[]{nctx.nm.get("nat"), net, nctx});
@@ -120,10 +120,11 @@ public class Rule_NatTest {
 	    
 	    serverB.addEntry(ctx.mkInt(1));  // By default, endHostA will request the URL to webServer
 	    serverB.installWebServer();
+	    serverB.addConstraintForTest();
 	    
 	    serverC.addEntry(ctx.mkInt(1));
 	    serverC.installWebServer();
-	    	  
+	    serverB.addConstraintForTest();  
 	    
 	    ArrayList<DatatypeExpr> natList = new ArrayList<DatatypeExpr>();
 	    natList.add(nctx.am.get("ip_endHostA"));
