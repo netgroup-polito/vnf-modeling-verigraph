@@ -22,7 +22,7 @@ public class WebServer extends NetworkFunction {
 		super(new ArrayList<Interface>());
 		
 		this.urlList = new Table(1, 0);
-		this.urlList.setTypes(Table.TableTypes.ApplicationData);
+		this.urlList.setTypes(Table.TableTypes.Proto);
 		TableEntry entry = new TableEntry(1);
 		entry.setValue(0, URL);
 		
@@ -40,7 +40,7 @@ public class WebServer extends NetworkFunction {
 			return new RoutingResult(Action.DROP,null,null);
 		}
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
+		if(packet.equalsField(PacketField.PROTO, Packet.HTTP_REQUEST)){
 		
 			TableEntry entry = urlList.matchEntry(packet.getField(PacketField.URL));
 			if(entry!=null){
@@ -49,8 +49,8 @@ public class WebServer extends NetworkFunction {
 				p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
 				p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 				p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
-				p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE);
-			//	p.setField(PacketField.L7DATA, (String)entry.getValue(0));
+				p.setField(PacketField.PROTO, Packet.HTTP_RESPONSE);
+			
 				
 				return new RoutingResult(Action.FORWARD,p,iface);
 			}

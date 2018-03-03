@@ -70,7 +70,6 @@ public class Rule_FirewallTest {
 
 	    net.attach(a, b, firewall);
 	    
-	    firewall.setInternalAddress(al1);
 	 //   firewall.addEntry(nctx.am.get("ip_a"), nctx.am.get("ip_b"));
 	    firewall.addEntry(nctx.am.get("ip_b"), nctx.am.get("ip_a"));
 	    firewall.installAclFirewall();
@@ -86,14 +85,17 @@ public class Rule_FirewallTest {
     	model.resetZ3();
     	
     	//IsolationResult ret
-    	ret = model.checker.checkIsolationProperty(model.b,model.a );
+    	ret = model.checker.checkIsolationProperty(model.a,model.b );
     	
+    	System.out.println("***********************assertions***************************");
     	//model.printVector(ret.assertions);
+    	
     	if (ret.result == Status.UNSATISFIABLE){
      	   System.out.println("UNSAT"); // Nodes a and b are isolated
     	}else{
      		System.out.println("SAT ");
-     		
+     		System.out.println("***********************model***************************");
+     		System.out.println(ret.model);
      	
      	}
     }

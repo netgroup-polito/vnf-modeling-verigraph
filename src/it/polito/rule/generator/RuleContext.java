@@ -247,9 +247,8 @@ public class RuleContext {
 		field_names.add(Constants.IP_DESTINATION);
 		field_names.add(Constants.PORT_SOURCE);
 		field_names.add(Constants.PORT_DESTINATION);
-		field_names.add(Constants.TRANSPORT_PROTOCOL);
-		field_names.add(Constants.APPLICATION_PROTOCOL);
-	//	field_names.add(Constants.L7DATA);
+		field_names.add(Constants.PROTO);
+	
 		
 		field_names.add(Constants.ORIGIN);
 		field_names.add(Constants.ORIG_BODY);
@@ -258,8 +257,6 @@ public class RuleContext {
 		field_names.add(Constants.EMAIL_FROM);
 		field_names.add(Constants.URL);
 		field_names.add(Constants.OPTIONS);
-		field_names.add(Constants.OLD_SRC);
-		field_names.add(Constants.OLD_DST);
 		field_names.add(Constants.INNER_SRC);
 		field_names.add(Constants.INNER_DEST);
 		field_names.add(Constants.ENCRYPTED);
@@ -1286,12 +1283,8 @@ public class RuleContext {
 				return true;
 			case Constants.PORT_DESTINATION:
 				return true;
-			case Constants.TRANSPORT_PROTOCOL:
+			case Constants.PROTO:
 				return true;
-			case Constants.APPLICATION_PROTOCOL:
-				return true;
-	//		case Constants.L7DATA:
-	//			return true;
 			case Constants.ORIGIN:
 				return true;
 			case Constants.ORIG_BODY:
@@ -1312,10 +1305,7 @@ public class RuleContext {
 				return true;
 			case Constants.ENCRYPTED:
 				return true;
-			case Constants.OLD_SRC:
-				return true;
-			case Constants.OLD_DST:
-				return true;
+			
 			default:
 				return false;
 		}

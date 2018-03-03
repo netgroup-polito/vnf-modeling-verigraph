@@ -59,7 +59,7 @@ public class CDNcache extends NetworkFunction {
 		
 		if(iface.isInternal())
 		{
-			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_REQUEST)){
+			if(packet.equalsField(PacketField.PROTO,Packet.HTTP_REQUEST)){
 				TableEntry entry = cdnCacheTable.matchEntry(packet.getField(PacketField.URL));				
 				
 				if(entry != null)   
@@ -69,8 +69,8 @@ public class CDNcache extends NetworkFunction {
 					p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
 					p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 					p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
-					p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE);
-				//	p.setField(PacketField.L7DATA, (String)entry.getValue(0));   
+					p.setField(PacketField.PROTO, Packet.HTTP_RESPONSE);
+				
 					return new RoutingResult(Action.FORWARD, p, internalInterface); 
 				
 				}
@@ -88,7 +88,7 @@ public class CDNcache extends NetworkFunction {
 		}
 		else  
 		{		
-			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_RESPONSE)){
+			if(packet.equalsField(PacketField.PROTO,Packet.HTTP_RESPONSE)){
 				
 					Content content;
 					try {
@@ -114,23 +114,6 @@ public class CDNcache extends NetworkFunction {
 		
 	}
 	
-	
-	/*public boolean addCdnCacheRule(String pagePath, String srcIp, String cacheIp){
-		
-		TableEntry entry = new TableEntry(3);
-		entry.setValue(0, serverName.trim());
-		entry.setValue(1, srcIp.trim());
-		entry.setValue(2, cacheIp.trim());
-			
-		return cdnCacheTable.storeEntry(entry);
-	}
-	
-	public boolean removeCDNRule(String serverName, String srcIp, String cacheIp){
-		TableEntry entry  = cdnTable.matchEntry(serverName, srcIp, cacheIp);
-		
-		return cdnTable.removeEntry(entry);  
-	}*/
-
 	public void clearCdnCacheTable(){
 		cdnCacheTable.clear();
 	}

@@ -40,8 +40,7 @@ public class UserAgentClient extends NetworkFunction {
 		
 		p.setField(PacketField.IP_DST, ip_sipServer);
 		p.setField(PacketField.BODY, num_Callee);
-		p.setField(PacketField.BODY, p.getField(PacketField.ORIG_BODY));
-		p.setField(PacketField.APPLICATION_PROTOCOL, SIP_REGISTER);
+		p.setField(PacketField.PROTO, SIP_REGISTER);
 		
 		return new RoutingResult(Action.FORWARD,p,initialForwardingInterface);
 	}
@@ -57,22 +56,22 @@ public class UserAgentClient extends NetworkFunction {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_INVITE)){
+		if(packet.equalsField(PacketField.PROTO, SIP_INVITE)){
 		
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 			p.setField(PacketField.PORT_SRC,packet.getField(PacketField.PORT_DST));
 			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
-			p.setField(PacketField.APPLICATION_PROTOCOL, SIP_OK);	
+			p.setField(PacketField.PROTO, SIP_OK);	
 			return new RoutingResult(Action.FORWARD,p,iface);		
 		}
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_OK)){
+		if(packet.equalsField(PacketField.PROTO, SIP_OK)){
 			
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 			p.setField(PacketField.PORT_SRC,packet.getField(PacketField.PORT_DST));
 			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
-			p.setField(PacketField.APPLICATION_PROTOCOL, SIP_ENDING);	
+			p.setField(PacketField.PROTO, SIP_ENDING);	
 			return new RoutingResult(Action.FORWARD,p,iface);	
 		}
 	

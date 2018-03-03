@@ -7,19 +7,16 @@ import java.util.Map.Entry;
 public class Packet {
 	
 	public enum PacketField { 
-		ETH_SRC, 
-		ETH_DST, 
+		
 		IP_SRC, 
 		IP_DST, 
-		PORT_SRC, 
-		PORT_DST,
-		TRANSPORT_PROTOCOL,
-		APPLICATION_PROTOCOL,
-		//L7DATA,
+		PORT_SRC,   // == sport
+		PORT_DST,	// == dpor
+		PROTO,  
 		
 		ORIGIN,
 		ORIG_BODY,
-		BODY,		// same with application data = L7DATA
+		BODY,		
 		INNER_SRC,
 		INNER_DEST,
 		SEQUENCE,
@@ -27,8 +24,7 @@ public class Packet {
 		URL,
 		OPTIONS,
 		ENCRYPTED,
-		OLD_SRC,
-		OLD_DST
+		
 		
 	};
 	
@@ -87,13 +83,11 @@ public class Packet {
 			" [PORT_SRC] " +
 			fields.get(PacketField.PORT_SRC.name()) +
 			" [PORT_DST] " +
-			fields.get(PacketField.PORT_DST.name()) +
-			" [TRANSPORT_PROTOCOL] " +
-			fields.get(PacketField.TRANSPORT_PROTOCOL.name()) +
-			" [APPLICATION_PROTOCOL] " +
-			fields.get(PacketField.APPLICATION_PROTOCOL.name()) /* +
-			" [L7DATA] " +
-			fields.get(PacketField.L7DATA.name())*/;
+			fields.get(PacketField.PORT_DST.name()) +	
+			" [PROTO] " +
+			fields.get(PacketField.PROTO.name())  +
+			" [BODY] " +
+			fields.get(PacketField.BODY.name());
 		return out;
 	}
 	

@@ -76,8 +76,10 @@ public class ClassGenerator {
 		this.imports = new ArrayList<String[]>();
 
 		fileNameXml = "./xsd/Rule_" + className + ".xml";
-		fileNameJava = "./xsd/java/Rule_" + className + ".java";
-
+//		fileNameJava = "./xsd/java/Rule_" + className + ".java";
+		
+		fileNameJava = "C:/Users/Rui/git/verigraph-timeless/src/ruiNFs/Rule_" + className + ".java";
+		
 		imports.add(new String[] { "java", "util", "List" });
 		imports.add(new String[] { "java", "util", "ArrayList" });
 		imports.add(new String[] { "com", "microsoft", "z3", "BoolExpr" });

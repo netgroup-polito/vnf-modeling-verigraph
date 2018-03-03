@@ -13,7 +13,7 @@ import it.polito.nfdev.lib.TableEntry;
 import it.polito.nfdev.verification.Verifier;
 import it.polito.nfdev.lib.RoutingResult;
 
-public class SipServer2 extends NetworkFunction {
+public class SipServer extends NetworkFunction {
 	
 	public static final String  SIP_INVITE = "Sip_Invitation";
 	public static final String  SIP_OK = "Sip_OK";
@@ -23,11 +23,11 @@ public class SipServer2 extends NetworkFunction {
 	private Table sipTable;
 	private String ip_sipServer;
 
-	public SipServer2(List<Interface> interfaces, String ip_sipServer) {
+	public SipServer(List<Interface> interfaces, String ip_sipServer) {
 		super(interfaces);
 		this.ip_sipServer = ip_sipServer;
 		sipTable = new Table(2,0);
-		sipTable.setTypes(Table.TableTypes.ApplicationData, Table.TableTypes.Ip);
+		sipTable.setTypes(Table.TableTypes.Proto, Table.TableTypes.Ip);
 		sipTable.setDataDriven();
 	}
 
@@ -41,7 +41,7 @@ public class SipServer2 extends NetworkFunction {
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_REGISTER) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
+		if(packet.equalsField(PacketField.PROTO, SIP_REGISTER) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
 		{
 			
 			TableEntry entry = new TableEntry(2);
@@ -53,14 +53,14 @@ public class SipServer2 extends NetworkFunction {
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 			p.setField(PacketField.PORT_SRC,packet.getField(PacketField.PORT_DST));
 			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
-			p.setField(PacketField.APPLICATION_PROTOCOL, SIP_OK);
+			p.setField(PacketField.PROTO, SIP_OK);
 			
 			return new RoutingResult(Action.FORWARD,p,iface);
 		
 			
 		}
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_INVITE) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
+		if(packet.equalsField(PacketField.PROTO, SIP_INVITE)/* && packet.equalsField(PacketField.IP_DST, ip_sipServer)*/)
 		{
 			
 			TableEntry entry = sipTable.matchEntry(packet.getField(PacketField.BODY), Verifier.ANY_VALUE);
@@ -72,8 +72,8 @@ public class SipServer2 extends NetworkFunction {
 		
 			}
 		}
-		if((packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_INVITE) && !packet.equalsField(PacketField.IP_DST, ip_sipServer))
-				|| packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_OK) || packet.equalsField(PacketField.APPLICATION_PROTOCOL, SIP_ENDING))
+		if((packet.equalsField(PacketField.PROTO, SIP_INVITE) && !packet.equalsField(PacketField.IP_DST, ip_sipServer))
+				|| packet.equalsField(PacketField.PROTO, SIP_OK) || packet.equalsField(PacketField.PROTO, SIP_ENDING))
 		{
 			return new RoutingResult(Action.FORWARD,p,iface);
 		}

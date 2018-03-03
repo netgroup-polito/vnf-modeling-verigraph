@@ -794,12 +794,6 @@ class RuleUnmarshaller {
 		
 		switch(field){
 		
-			case Constants.ETH_SOURCE:
-				return Constants.Z3_ETH_SOURCE;
-				
-			case Constants.ETH_DESTINATION:
-				return Constants.Z3_ETH_DESTINATION;
-				
 			case Constants.IP_SOURCE:
 				return Constants.Z3_IP_SOURCE;
 				
@@ -811,16 +805,10 @@ class RuleUnmarshaller {
 				
 			case Constants.PORT_DESTINATION:
 				return Constants.Z3_PORT_DESTINATION;
-				
-			case Constants.TRANSPORT_PROTOCOL:
-				return Constants.Z3_TRANSPORT_PROTOCOL;
-				
-			case Constants.APPLICATION_PROTOCOL:
-				return Constants.Z3_APPLICATION_PROTOCOL;
-				
-//			case Constants.L7DATA:
-//				return Constants.Z3_BODY;
-				
+			
+			case Constants.PROTO:
+				return Constants.Z3_PROTO;
+	
 			case Constants.ORIGIN:
 				return Constants.Z3_ORIGIN;
 				
@@ -841,13 +829,7 @@ class RuleUnmarshaller {
 				
 			case Constants.OPTIONS:
 				return Constants.Z3_OPTIONS;
-				
-			case Constants.OLD_SRC:
-				return Constants.Z3_OLD_SRC;
-				
-			case Constants.OLD_DST:
-				return Constants.Z3_OLD_DEST;
-				
+			
 			case Constants.INNER_SRC:
 				return Constants.Z3_INNER_SRC;
 				

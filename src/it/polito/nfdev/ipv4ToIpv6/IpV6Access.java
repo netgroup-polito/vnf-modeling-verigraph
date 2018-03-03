@@ -24,7 +24,6 @@ public class IpV6Access extends NetworkFunction{
 	{
 		Packet p = null;
 		try {
-			/* The function may provide the same (modified) packet as output or clone the input one */
 			p = packet.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();

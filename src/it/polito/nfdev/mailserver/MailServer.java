@@ -26,12 +26,12 @@ public class MailServer extends NetworkFunction {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.POP3_REQUEST)){
+		if(packet.equalsField(PacketField.PROTO, Packet.POP3_REQUEST)){
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
 			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
-			p.setField(PacketField.APPLICATION_PROTOCOL, Packet.POP3_RESPONSE);
+			p.setField(PacketField.PROTO, Packet.POP3_RESPONSE);
 			p.setField(PacketField.EMAIL_FROM, RESPONSE);
 			
 			return new RoutingResult(Action.FORWARD,p,iface);

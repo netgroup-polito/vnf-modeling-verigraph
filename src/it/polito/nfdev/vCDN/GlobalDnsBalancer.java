@@ -35,12 +35,7 @@ public class GlobalDnsBalancer extends NetworkFunction {
 			return new RoutingResult(Action.DROP, null, null); 
 		}
 		
-		/*	if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
-				return new RoutingResult(Action.FORWARD,packet_in,iface);
-		
-			}
-			else{*/
-				if (packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.DNS_REQUEST)){
+				if (packet.equalsField(PacketField.PROTO, Packet.DNS_REQUEST)){
 					TableEntry entry = balanTable.matchEntry(packet.getField(PacketField.IP_SRC), packet.getField(PacketField.URL), Verifier.ANY_VALUE);
 					if(entry != null){
 						P.setField(PacketField.OLD_SRC, (String) entry.getValue(2));						
@@ -50,7 +45,6 @@ public class GlobalDnsBalancer extends NetworkFunction {
 					}
 					
 				}
-	//		}
 		return new RoutingResult(Action.DROP,null,null);
 		
 		}

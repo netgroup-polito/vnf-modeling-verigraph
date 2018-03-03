@@ -47,7 +47,7 @@
                             <LeftExpression>
 <FieldOf>
     <Unit>p_0</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
+    <Field>PROTO</Field>
 </FieldOf>
                             </LeftExpression>
                             <RightExpression>

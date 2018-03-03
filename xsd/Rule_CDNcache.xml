@@ -28,32 +28,6 @@
                             </FieldOf>
                         </IsInternal>
                     </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_1</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>HTTP_REQUEST</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>HTTP_RESPONSE</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
                 </And>
             </AntecedentExpression>
             <ConsequentExpression>
@@ -82,7 +56,7 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
@@ -220,27 +194,11 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <Param>HTTP_RESPONSE</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -449,19 +407,6 @@
                             </Expression>
                         </Not>
                     </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_1</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>HTTP_REQUEST</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
                 </And>
             </AntecedentExpression>
             <ConsequentExpression>
@@ -490,7 +435,7 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
@@ -616,29 +561,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -860,19 +789,6 @@
                             </FieldOf>
                         </IsInternal>
                     </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_1</Unit>
-    <Field>APPLICATION_PROTOCOL</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>HTTP_RESPONSE</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
                 </And>
             </AntecedentExpression>
             <ConsequentExpression>
@@ -905,7 +821,7 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
@@ -982,29 +898,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

@@ -9,12 +9,11 @@ import it.polito.nfdev.verification.Verifier;
 public class Table {
 	
 	public static enum TableTypes{
-		Ethernet,
+	
 		Ip,
 		Port,
-		TransportProtocol,
-		ApplicationProtocol,
-		ApplicationData,   // = Body
+		Proto,
+		BodyData,   // = Body
 		URL,
 		Generic
 	}

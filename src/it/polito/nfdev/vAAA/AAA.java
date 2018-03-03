@@ -27,7 +27,7 @@ public class AAA extends NetworkFunction {
 		super(new ArrayList<Interface>());
 		
 		this.userTable = new Table(1,0);   // (authentication data including userName and passWord)
-		this.userTable.setTypes(Table.TableTypes.ApplicationData);
+		this.userTable.setTypes(Table.TableTypes.BodyData);
 		
 	}
 
@@ -43,12 +43,6 @@ public class AAA extends NetworkFunction {
 		
 		if(packet.equalsField(PacketField.PORT_DST, AUTHENTICATION_PORT_1812))
 		{ 
-			 	// if it's a Authentication Packet from NAS Client, CZ authentication port is 1812
-		/*	String Uname_Pwd = packet.getField(PacketField.L7DATA);
-			String[] parts = Uname_Pwd.split(":");   // assume L7DATA is 'Username:Password'
-			String userName = parts[0];
-			String passWord = parts[1];
-		*/	
 			TableEntry entry = userTable.matchEntry(packet.getField(PacketField.BODY));
 			
 			if(entry==null){
@@ -75,12 +69,6 @@ public class AAA extends NetworkFunction {
 		}
 		if(packet.equalsField(PacketField.PORT_DST,ACCOUNTING_PORT_1813 ))
 		{
-					// if it's a Accounting Packet from NAS Client , CZ accounting port is 1813		
-		//	String Uname_Pwd = packet.getField(PacketField.L7DATA);			
-			// assume L7DATA is 'Username:	Periodic number of Bytes'
-		/*	String[] parts = Uname_Pwd.split(":");   
-			String userName = parts[0];*/
-		//	Integer byteCount = Integer.parseInt(parts[1]);
 			TableEntry entry = userTable.matchEntry(packet.getField(PacketField.BODY));
 			
 			if(entry!=null){

@@ -34,7 +34,7 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
@@ -111,7 +111,7 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
@@ -137,22 +137,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>ORIGIN</Field>
         </FieldOf>
     </LeftExpression>
@@ -240,38 +224,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
