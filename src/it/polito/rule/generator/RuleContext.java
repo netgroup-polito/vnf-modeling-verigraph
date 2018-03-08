@@ -503,7 +503,54 @@ public class RuleContext {
 					System.out.println("line429 >>>>>>>>>>>>>>>>>>>running p0_ip = value");
 				}	
 			}else{ */
+			     if(value.compareTo("NOTNULL")==0 || value.compareTo("NULL")==0){
+			    	 System.out.println("ruleContext line507 >>>>>>>>>>>>>>>>>>>found value = NOTNULL OR NULL");
+			    	 ExpressionObject temp = factory.createExpressionObject();
+			    	 if(value.compareTo("NOTNULL")==0){			    		 
+			    		 LONot not = factory.createLONot();			    		 
+			    		 equal.getRightExpression().setParam("null");
+			    		 temp.setEqual(equal);
+			    		 not.setExpression(temp);
+			    		 temp = factory.createExpressionObject();
+			    		 temp.setNot(not);			    		 
+			    	 }else{
+			    		 equal.getRightExpression().setParam("null");
+			    		 temp.setEqual(equal);
+			    	 }
+			    	 
+			    	 if(packetField.compareTo(Constants.INNER_SRC) == 0){	// must point out only when p0.inner_src==null, then can put the equal object in Implies.AntecedentExpression
+			    	 if(result.getImplies().getAntecedentExpression().getAnd()!=null){
+
+							System.out.println("------------>RC line523 implies.and !=null    inner_src ==null or !=null  ");
+							result.getImplies().getAntecedentExpression().getAnd().getExpression().add(temp);
+					}
+					
+					else{
+						System.out.println("------------>RC line528 implies.and ==null  reconstruct 'And'  inner_src ==null or !=null  ");
+						LFSend send = result.getImplies().getAntecedentExpression().getSend();
+						LOAnd and = factory.createLOAnd();	
+						ExpressionObject temp1 = factory.createExpressionObject();
+						temp1.setSend(send);
+						and.getExpression().add(temp1);
+						and.getExpression().add(temp);
+						result.getImplies().getAntecedentExpression().setAnd(and);
+						result.getImplies().getAntecedentExpression().setSend(null);
+						}
+			    	 }
+			    	 if(packetField.compareTo(Constants.INNER_DEST) == 0){
+			    		 setLastExpression(temp);
+			    	 }
+			    	 
+			     }else if(value.compareTo("isInternalAdderss")==0){	// it means the value is only for specifying internal Address, it commes from ExpressionVisitor line 127
+			    	 LFIsInternal internal = isInternalRule("p_0", packetField);	
+			 		ExpressionObject exp = factory.createExpressionObject();
+			 		exp.setIsInternal(internal);
+			 		setLastExpression(exp);
+			 		System.out.println("----->OK, COME TO RuleContext line 546 generateRuleForExitingPacket(packetField,value) method-----");
+			    	 
+			     }
 			     
+			     else{
 					equal.getRightExpression().setParam(value);
 					
 			//		if(returnSnapshot.isIndirectSnapshot())
@@ -529,6 +576,7 @@ public class RuleContext {
 					
 					}	
 				}
+		}
 		//	}	
 			return true;
 		}
@@ -1391,5 +1439,13 @@ public class RuleContext {
 	public ObjectFactory getObjectFactory(){
 		return factory;
 	}
-	
+
+	/*public void generateRuleForPrivateAddress(String packetField) {
+		LFIsInternal internal = isInternalRule("p_0", packetField);	
+		ExpressionObject exp = factory.createExpressionObject();
+		exp.setIsInternal(internal);
+		setLastExpression(exp);
+		System.out.println("----->OK, COME TO RuleContext line1436 enerateRuleForPrivateAddress() method-----");
+	}
+	*/
 }

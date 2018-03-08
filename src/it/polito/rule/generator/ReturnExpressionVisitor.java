@@ -3,6 +3,7 @@ package it.polito.rule.generator;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
@@ -20,7 +21,12 @@ public class ReturnExpressionVisitor extends ASTVisitor {
 		this.ruleContext = ruleContext;
 		this.packetField = packetField;
 	}
-	
+/*	public boolean visit(NullLiteral node){
+		ruleContext.generateRuleForPrivateAddress(packetField);
+		System.out.println("----------OK,ReturnExpressionVisitor line26 come to find  'nullLiteral' packet value");
+		return false;
+	}
+*/	
 	public boolean visit(CastExpression node){
 		node.getExpression().accept(this);
 		

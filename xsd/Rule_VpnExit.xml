@@ -21,12 +21,17 @@
                     <Expression>
                         <Not>
                             <Expression>
-<IsInternal>
-    <FieldOf>
-        <Unit>p_0</Unit>
-        <Field>IP_DST</Field>
-    </FieldOf>
-</IsInternal>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>null</Param>
+    </RightExpression>
+</Equal>
                             </Expression>
                         </Not>
                     </Expression>
@@ -44,14 +49,6 @@
     <Destination>n_VpnExit</Destination>
     <Packet_in>p_1</Packet_in>
 </Recv>
-                            </Expression>
-                            <Expression>
-<IsInternal>
-    <FieldOf>
-        <Unit>p_1</Unit>
-        <Field>IP_SRC</Field>
-    </FieldOf>
-</IsInternal>
                             </Expression>
                             <Expression>
 <Not>
@@ -166,6 +163,14 @@
         <Param>true</Param>
     </RightExpression>
 </Equal>
+                            </Expression>
+                            <Expression>
+<IsInternal>
+    <FieldOf>
+        <Unit>p_0</Unit>
+        <Field>INNER_DEST</Field>
+    </FieldOf>
+</IsInternal>
                             </Expression>
                             <Expression>
 <Equal>
@@ -313,12 +318,17 @@
                         </Send>
                     </Expression>
                     <Expression>
-                        <IsInternal>
-                            <FieldOf>
-<Unit>p_0</Unit>
-<Field>IP_DST</Field>
-                            </FieldOf>
-                        </IsInternal>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>INNER_SRC</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>null</Param>
+                            </RightExpression>
+                        </Equal>
                     </Expression>
                 </And>
             </AntecedentExpression>
@@ -334,18 +344,6 @@
     <Destination>n_VpnExit</Destination>
     <Packet_in>p_1</Packet_in>
 </Recv>
-                            </Expression>
-                            <Expression>
-<Not>
-    <Expression>
-        <IsInternal>
-            <FieldOf>
-                <Unit>p_1</Unit>
-                <Field>IP_SRC</Field>
-            </FieldOf>
-        </IsInternal>
-    </Expression>
-</Not>
                             </Expression>
                             <Expression>
 <Equal>
@@ -436,19 +434,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>INNER_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>null</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>ENCRYPTED</Field>
         </FieldOf>
     </LeftExpression>
@@ -456,6 +441,14 @@
         <Param>false</Param>
     </RightExpression>
 </Equal>
+                            </Expression>
+                            <Expression>
+<IsInternal>
+    <FieldOf>
+        <Unit>p_0</Unit>
+        <Field>IP_SRC</Field>
+    </FieldOf>
+</IsInternal>
                             </Expression>
                             <Expression>
 <Equal>

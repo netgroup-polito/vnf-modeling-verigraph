@@ -16,6 +16,7 @@ import it.polito.nfdev.lib.Packet.PacketField;
 import it.polito.parser.context.Context;
 import it.polito.parser.context.StatementContext;
 import it.polito.parser.context.TableEntryContext;
+import org.eclipse.jdt.core.dom.AST;
 
 public class ExpressionVisitor extends ASTVisitor {
 	
@@ -101,6 +102,41 @@ public class ExpressionVisitor extends ASTVisitor {
 				//if(packet.toString().equals("PacketType.PACKET_OUT"))
 				predicates.add(expression);
 				break;
+			case Constants.ADD_INTERNAL_ADDRESS_METHOD:  //this.addInternalAddress(p.getField(PacketField.IP_DST));
+				if(node.arguments().size() != 1)
+				{
+					System.err.println("[ERROR] Wrong number of arguments passed to the "+Constants.ADD_INTERNAL_ADDRESS_METHOD+" method!");
+					return false;
+				}
+			
+				Expression interAddress = (Expression) node.arguments().get(0);
+				interAddress.accept(new ASTVisitor() {
+					
+					public boolean visit(MethodInvocation node){	//p.getField(PacketField.IP_DST)
+						node.getExpression().accept(new ASTVisitor() {
+							
+							public boolean visit(SimpleName node){
+								builder.append(node.getFullyQualifiedName());
+								return false;
+							}
+						});  // builder stores the exiting packet name =="p"
+						if(node.getName().toString().compareTo(Constants.GET_FIELD_METHOD)  ==0)
+						{
+							Expression packetField = (Expression) node.arguments().get(0);
+							AST ast = AST.newAST(AST.JLS3);
+							Expression value = ast.newSimpleName("isInternalAdderss");
+							MyExpression expression = new MyExpression(packetField, value, nestingLevel);
+							expression.setPacketName(builder.toString());
+							System.out.println("------------ ok, ExpressionVisitor line128 goes in to "+Constants.ADD_INTERNAL_ADDRESS_METHOD+" method, packetname = "+builder.toString());
+							predicates.add(expression);
+							
+						}
+						
+						return false;
+					}
+				});
+				break;
+				
 			case Constants.ENTRY_SETTER:
 				int position = -1;
 				if(node.arguments().size()!=2){

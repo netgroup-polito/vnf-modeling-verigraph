@@ -97,9 +97,13 @@ public class Test_Vpn {
 
         //Configuring middleboxes
         ArrayList<DatatypeExpr> ia = new ArrayList<DatatypeExpr>();
-	    ia.add(nctx.am.get("ip_a"));	 
+	    ia.add(nctx.am.get("ip_a"));
+	    ia.add(nctx.am.get("ip_b"));
+	    
 	    ArrayList<DatatypeExpr> ib = new ArrayList<DatatypeExpr>();
+	    ib.add(nctx.am.get("ip_a"));
 	    ib.add(nctx.am.get("ip_b"));
+	
 	    
 	    access.setInternalAddress(ia);
         access.installVpnAccess(nctx.am.get("ip_access"), nctx.am.get("ip_exit")); 

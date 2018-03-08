@@ -9,6 +9,7 @@ public class Constants {
 	public static final String ENTRY_GETTER = "getValue";
 	public static final String SET_FIELD_METHOD = "setField";
 	public static final String GET_FIELD_METHOD = "getField";
+	public static final String ADD_INTERNAL_ADDRESS_METHOD = "addInternalAddress";
 	public static final String SATISFY_METHOD_NAME = "satisfy";
 	public static final String MATCH_ENTRY_METHOD_NAME = "matchEntry";
 	public static final String SEND_METHOD_NAME = "sendPacket";
@@ -31,6 +32,8 @@ public class Constants {
 	public static final String NULL = "null";
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
+	public static final String NOTNULL = "notNull";
+	
 	//Types
 	public static final String STRING_TYPE = "String";
 	public static final String TABLE_ENTRY_TYPE = "TableEntry";

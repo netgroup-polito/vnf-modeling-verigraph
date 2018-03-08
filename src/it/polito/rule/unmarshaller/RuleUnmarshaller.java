@@ -532,7 +532,8 @@ class RuleUnmarshaller {
 
 		MethodInvocation mi = ast.newMethodInvocation();
 	// when consider encrypted packet field, must construct a different z3 function.
-		if(equal.getRightExpression().getParam()!=null && (equal.getRightExpression().getParam().compareTo("true")==0 || equal.getRightExpression().getParam().compareTo("false")==0)){
+		if(equal.getRightExpression().getParam()!=null && (equal.getRightExpression().getParam().compareTo("true")==0 || equal.getRightExpression().getParam().compareTo("false")==0))
+		{
 			String value = equal.getRightExpression().getParam();
 			if(value.compareTo("true")==0){  //(BoolExpr)nctx.pf.get("encrypted").apply(p_1)
 				System.out.println("ruleUnmasharler line 540 equal.rightObj = true");
