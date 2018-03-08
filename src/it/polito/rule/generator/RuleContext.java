@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.StringLiteral;
 
 import it.polito.nfdev.jaxb.*;
 import it.polito.nfdev.lib.Packet;
@@ -245,8 +246,8 @@ public class RuleContext {
 		List<String> field_names = new ArrayList<String>();
 		field_names.add(Constants.IP_SOURCE);
 		field_names.add(Constants.IP_DESTINATION);
-		field_names.add(Constants.PORT_SOURCE);
-		field_names.add(Constants.PORT_DESTINATION);
+//		field_names.add(Constants.PORT_SOURCE);
+//		field_names.add(Constants.PORT_DESTINATION);
 		field_names.add(Constants.PROTO);
 	
 		
@@ -691,7 +692,7 @@ public class RuleContext {
 		
 			if(variableName.compareTo(Constants.PACKET_PARAMETER)!=0)
 				return null;
-			
+			System.out.println("///////////start to find equalsField method now ");
 			QualifiedName field = (QualifiedName)method.arguments().get(0);
 			String fieldValue = field.getName().getFullyQualifiedName();
 			StringBuilder builder = new StringBuilder();			
@@ -708,6 +709,22 @@ public class RuleContext {
 					builder.append(node.getFullyQualifiedName());
 					return false;
 				}
+				
+				// for analyse packet.equalsField(PacketField.ENCRYPTED,  String.valueOf(true))
+				public boolean visit(MethodInvocation node){
+					if(node.arguments().get(0).toString().compareTo("true")==0){
+						builder.append("true");
+						System.out.println("///////////ruleContex line 725 methodInvocation encrypted value = true");
+					}
+					if(node.arguments().get(0).toString().compareTo("false")==0){
+						builder.append("false");
+					}
+					if(node.arguments().get(0).toString().compareTo("null")==0){
+						builder.append("null");
+					}
+					return false;
+				}
+				
 			});
 			String value = builder.toString();		//-->POP3_REQUEST
 			

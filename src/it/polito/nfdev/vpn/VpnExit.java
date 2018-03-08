@@ -8,6 +8,7 @@ import it.polito.nfdev.lib.Packet;
 import it.polito.nfdev.lib.RoutingResult;
 import it.polito.nfdev.lib.Packet.PacketField;
 import it.polito.nfdev.lib.RoutingResult.Action;
+import it.polito.parser.Constants;
 
 public class VpnExit extends NetworkFunction{
 
@@ -25,7 +26,6 @@ public class VpnExit extends NetworkFunction{
 	{
 		Packet p = null;
 		try {
-			/* The function may provide the same (modified) packet as output or clone the input one */
 			p = packet.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
@@ -33,20 +33,22 @@ public class VpnExit extends NetworkFunction{
 		}
 		if(iface.isInternal())
 		{
-			p.setField(PacketField.IP_DST, accessIp);
-			p.setField(PacketField.IP_SRC, exitIp);
-			p.setField(PacketField.INNER_DEST, packet.getField(PacketField.IP_DST));
-			p.setField(PacketField.INNER_SRC, packet.getField(PacketField.IP_SRC));
-			
-			return new RoutingResult(Action.FORWARD, p, externalInterface);
-			
-		}else if(packet.equalsField(PacketField.IP_SRC,accessIp) && packet.equalsField(PacketField.IP_DST,exitIp))
+			if(!packet.equalsField(PacketField.ENCRYPTED, String.valueOf(true)) && packet.equalsField(PacketField.INNER_SRC,String.valueOf(null)) && packet.equalsField(PacketField.INNER_DEST,String.valueOf(null)))
+			{
+				p.setField(PacketField.IP_DST, accessIp);
+				p.setField(PacketField.IP_SRC, exitIp);
+				p.setField(PacketField.INNER_DEST, packet.getField(PacketField.IP_DST));
+				p.setField(PacketField.INNER_SRC, packet.getField(PacketField.IP_SRC));
+				p.setField(PacketField.ENCRYPTED,  String.valueOf(true));
+				return new RoutingResult(Action.FORWARD, p, externalInterface);
+			}
+		}else if(packet.equalsField(PacketField.IP_SRC,accessIp) && packet.equalsField(PacketField.IP_DST,exitIp) && packet.equalsField(PacketField.ENCRYPTED, String.valueOf(true)))
 		{
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.INNER_DEST));
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.INNER_SRC));
-			p.setField(PacketField.INNER_DEST, null);
-			p.setField(PacketField.INNER_SRC, null);
-			
+			p.setField(PacketField.INNER_DEST, String.valueOf(null));
+			p.setField(PacketField.INNER_SRC, String.valueOf(null));
+			p.setField(PacketField.ENCRYPTED, String.valueOf(false));
 			return new RoutingResult(Action.FORWARD, p, internalInterface);
 			
 		}
@@ -54,7 +56,7 @@ public class VpnExit extends NetworkFunction{
 			return new RoutingResult(Action.DROP, null, null);
 		}
 	
-		
+		return new RoutingResult(Action.DROP, null, null);
 		
 	}
 	

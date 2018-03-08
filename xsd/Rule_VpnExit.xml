@@ -54,6 +54,49 @@
 </IsInternal>
                             </Expression>
                             <Expression>
+<Not>
+    <Expression>
+        <Equal>
+            <LeftExpression>
+                <FieldOf>
+                    <Unit>p_1</Unit>
+                    <Field>ENCRYPTED</Field>
+                </FieldOf>
+            </LeftExpression>
+            <RightExpression>
+                <Param>true</Param>
+            </RightExpression>
+        </Equal>
+    </Expression>
+</Not>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>null</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>null</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
 <Equal>
     <LeftExpression>
         <FieldOf>
@@ -116,30 +159,11 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
+        <Param>true</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -267,22 +291,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ENCRYPTED</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -369,6 +377,19 @@
 <Equal>
     <LeftExpression>
         <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>true</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
             <Unit>p_0</Unit>
             <Field>IP_DST</Field>
         </FieldOf>
@@ -402,14 +423,11 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
+            <Field>INNER_DEST</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
+        <Param>null</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -418,14 +436,24 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
+            <Field>INNER_SRC</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
+        <Param>null</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
         <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>false</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -553,22 +581,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ENCRYPTED</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

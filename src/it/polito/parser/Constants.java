@@ -28,7 +28,9 @@ public class Constants {
 	public static final String PACKET_PARAMETER = "packet";
 	public static final String DNS_RESPONSE = "DNS_RESPONSE";   //used at line573 in RuleContext.java
 	public static final String HTTP_RESPONSE = "HTTP_RESPONSE";
-	
+	public static final String NULL = "null";
+	public static final String TRUE = "true";
+	public static final String FALSE = "false";
 	//Types
 	public static final String STRING_TYPE = "String";
 	public static final String TABLE_ENTRY_TYPE = "TableEntry";

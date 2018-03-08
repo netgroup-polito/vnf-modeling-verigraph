@@ -21,6 +21,14 @@ import ruiNFs.Rule_VpnAccess;
 import ruiNFs.Rule_VpnExit;
 import it.polito.verigraph.mcnet.netobjs.PacketModel;
 
+/**
+ * <p/>
+ * VPN test													<p/>
+ *| a | --------- | access | --------- | exit |	--------- | b |	<p/>
+																	<p/>
+ */
+
+
 public class Test_Vpn {
 
     public Checker check;
@@ -88,12 +96,15 @@ public class Test_Vpn {
         net.attach(a, b, access,exit);
 
         //Configuring middleboxes
-
-        access.installVpnAccess(nctx.am.get("ip_exit"),nctx.am.get("ip_access")); 
-        
-        ArrayList<Tuple<DatatypeExpr,DatatypeExpr>> acl = new ArrayList<Tuple<DatatypeExpr,DatatypeExpr>>();
-        acl.add(new Tuple<DatatypeExpr,DatatypeExpr>());
-        
+        ArrayList<DatatypeExpr> ia = new ArrayList<DatatypeExpr>();
+	    ia.add(nctx.am.get("ip_a"));	 
+	    ArrayList<DatatypeExpr> ib = new ArrayList<DatatypeExpr>();
+	    ib.add(nctx.am.get("ip_b"));
+	    
+	    access.setInternalAddress(ia);
+        access.installVpnAccess(nctx.am.get("ip_access"), nctx.am.get("ip_exit")); 
+       
+        exit.setInternalAddress(ib);
         exit.installVpnExit(nctx.am.get("ip_access"),nctx.am.get("ip_exit"));
         
         PacketModel packet = new PacketModel();
@@ -116,6 +127,8 @@ public class Test_Vpn {
      	   System.out.println("a-->b  UNSAT"); // Nodes a and b are isolated
     	}else{
      		System.out.println("a-->b  SAT ");
+     	//	System.out.println(ret.model);
+     		
      	}
     }
     

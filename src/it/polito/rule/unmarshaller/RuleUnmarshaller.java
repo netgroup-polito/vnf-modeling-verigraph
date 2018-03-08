@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.xml.sax.SAXException;
 
+import com.microsoft.z3.BoolExpr;
 //import com.microsoft.z3.AST;
 import com.microsoft.z3.IntExpr;
 
@@ -95,6 +96,8 @@ class RuleUnmarshaller {
 		constants.add("SIP_REGISTER");
 		constants.add("SIP_ENDING");
 		constants.add("null");
+		constants.add("true");
+		constants.add("false");
 	//	constants.add("ip_sipServer");	// if not add these leements, they will be requested when install this model
 	//	constants.add("REQUESTED_URL");
 	/*	constants.add("new_port");
@@ -405,6 +408,14 @@ class RuleUnmarshaller {
 		}else if(obj.getParam()!=null){
 			
 			//Check if the string is a well-known constant in the netcontext class
+			
+			/*
+			 *  (BoolExpr)nctx.pf.get("encrypted").apply(p_0)
+			 *  ctx.mkNot((BoolExpr)nctx.pf.get("encrypted").apply(p_1)),
+			 *   ctx.mkEq(nctx.pf.get("inner_src").apply(p_1), nctx.am.get("null")),
+			 * 
+			 * */
+			
 			if(constants.contains(obj.getParam())){
 				MethodInvocation mi = ast.newMethodInvocation();
 				if(obj.getParam().compareTo("null")==0)  // for inner_src == null
@@ -420,7 +431,11 @@ class RuleUnmarshaller {
 					StringLiteral sl = ast.newStringLiteral();
 					sl.setLiteralValue("null");
 					mi.arguments().add(sl);
-				}else{
+				}/*else if(obj.getParam().compareTo("true")==0){
+					
+				}
+				*/
+				else{
 				
 				
 				mi.setName(ast.newSimpleName("mkInt"));
@@ -516,15 +531,77 @@ class RuleUnmarshaller {
 	private Expression generateEqual(LOEquals equal) {
 
 		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName("mkEq"));
-		mi.setExpression(ast.newName("ctx"));
-	
-		
+	// when consider encrypted packet field, must construct a different z3 function.
+		if(equal.getRightExpression().getParam()!=null && (equal.getRightExpression().getParam().compareTo("true")==0 || equal.getRightExpression().getParam().compareTo("false")==0)){
+			String value = equal.getRightExpression().getParam();
+			if(value.compareTo("true")==0){  //(BoolExpr)nctx.pf.get("encrypted").apply(p_1)
+				System.out.println("ruleUnmasharler line 540 equal.rightObj = true");
+				if(equal.getLeftExpression().getFieldOf()!=null){
+					CastExpression ce = ast.newCastExpression();
+					ce.setType(ast.newSimpleType(ast.newSimpleName("BoolExpr")));
+					
+					LFFieldOf fieldOf = equal.getLeftExpression().getFieldOf();
+					mi.setName(ast.newSimpleName("apply"));
+					mi.arguments().add(ast.newName(fieldOf.getUnit()));
+					MethodInvocation innerMi = ast.newMethodInvocation();
+					innerMi.setName(ast.newSimpleName("get"));
+					
+					FieldAccess fa = ast.newFieldAccess();
+					fa.setName(ast.newSimpleName("pf"));
+					fa.setExpression(ast.newName("nctx"));
+					
+					innerMi.setExpression(fa);
+					StringLiteral sl = ast.newStringLiteral();
+					sl.setLiteralValue(mapToZ3PacketField(fieldOf.getField()));
+					innerMi.arguments().add(sl);
+					
+					mi.setExpression(innerMi);
+					ce.setExpression(mi);
+					return ce;
+				}
+			}
+			if(value.compareTo("false")==0){ // ctx.mkNot((BoolExpr)nctx.pf.get("encrypted").apply(p_1)),
+				
+				MethodInvocation miNot = ast.newMethodInvocation();
+				miNot.setName(ast.newSimpleName("mkNot"));
+				miNot.setExpression(ast.newName("ctx"));
+				
+				System.out.println("ruleUnmasharler line 596 equal.rightObj = false-------");
+				if(equal.getLeftExpression().getFieldOf()!=null){
+					CastExpression ce = ast.newCastExpression();
+					ce.setType(ast.newSimpleType(ast.newSimpleName("BoolExpr")));
+					
+					LFFieldOf fieldOf = equal.getLeftExpression().getFieldOf();
+					mi.setName(ast.newSimpleName("apply"));
+					mi.arguments().add(ast.newName(fieldOf.getUnit()));
+					MethodInvocation innerMi = ast.newMethodInvocation();
+					innerMi.setName(ast.newSimpleName("get"));
+					
+					FieldAccess fa = ast.newFieldAccess();
+					fa.setName(ast.newSimpleName("pf"));
+					fa.setExpression(ast.newName("nctx"));
+					
+					innerMi.setExpression(fa);
+					StringLiteral sl = ast.newStringLiteral();
+					sl.setLiteralValue(mapToZ3PacketField(fieldOf.getField()));
+					innerMi.arguments().add(sl);
+					
+					mi.setExpression(innerMi);
+					ce.setExpression(mi);
+					miNot.arguments().add(ce);
+					return miNot;
+				}
+			}
+			
+		}
+		else{
+			mi.setName(ast.newSimpleName("mkEq"));
+			mi.setExpression(ast.newName("ctx"));
 		Expression leftExp = getType(equal.getLeftExpression());
 		mi.arguments().add(leftExp);
 		Expression rightExp = getType(equal.getRightExpression());
 		mi.arguments().add(rightExp);
-		
+		}
 		return mi;
 		
 	}
