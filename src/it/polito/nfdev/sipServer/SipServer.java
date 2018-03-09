@@ -27,8 +27,8 @@ public class SipServer extends NetworkFunction {
 		super(interfaces);
 		this.ip_sipServer = ip_sipServer;
 		sipTable = new Table(2,0);
-		sipTable.setTypes(Table.TableTypes.Proto, Table.TableTypes.Ip);
-		sipTable.setDataDriven();
+		sipTable.setTypes(Table.TableTypes.BodyData, Table.TableTypes.Ip); //BodyData stores the account number of callee.
+	//	sipTable.setDataDriven();
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class SipServer extends NetworkFunction {
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		if(packet.equalsField(PacketField.PROTO, SIP_REGISTER) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
+	/*	if(packet.equalsField(PacketField.PROTO, SIP_REGISTER) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
 		{
 			
 			TableEntry entry = new TableEntry(2);
@@ -59,15 +59,15 @@ public class SipServer extends NetworkFunction {
 		
 			
 		}
-		
-		if(packet.equalsField(PacketField.PROTO, SIP_INVITE)/* && packet.equalsField(PacketField.IP_DST, ip_sipServer)*/)
+	*/	
+		if(packet.equalsField(PacketField.PROTO, SIP_INVITE) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
 		{
 			
 			TableEntry entry = sipTable.matchEntry(packet.getField(PacketField.BODY), Verifier.ANY_VALUE);
 			if(entry != null)
 			{
 						
-			p.setField(PacketField.IP_DST, (String)entry.getValue(1));  // second place is the Callee IP						
+		//	p.setField(PacketField.IP_DST, (String)entry.getValue(1));  // second place is the Callee IP						
 			return new RoutingResult(Action.FORWARD,p,iface);
 		
 			}

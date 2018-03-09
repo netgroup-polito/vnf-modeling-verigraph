@@ -40,7 +40,8 @@ public class UserAgentClient extends NetworkFunction {
 		
 		p.setField(PacketField.IP_DST, ip_sipServer);
 		p.setField(PacketField.BODY, num_Callee);
-		p.setField(PacketField.PROTO, SIP_REGISTER);
+	//	p.setField(PacketField.PROTO, SIP_REGISTER);
+		p.setField(PacketField.PROTO, SIP_INVITE);
 		
 		return new RoutingResult(Action.FORWARD,p,initialForwardingInterface);
 	}
@@ -60,8 +61,6 @@ public class UserAgentClient extends NetworkFunction {
 		
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
-			p.setField(PacketField.PORT_SRC,packet.getField(PacketField.PORT_DST));
-			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 			p.setField(PacketField.PROTO, SIP_OK);	
 			return new RoutingResult(Action.FORWARD,p,iface);		
 		}
@@ -69,8 +68,6 @@ public class UserAgentClient extends NetworkFunction {
 			
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
-			p.setField(PacketField.PORT_SRC,packet.getField(PacketField.PORT_DST));
-			p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 			p.setField(PacketField.PROTO, SIP_ENDING);	
 			return new RoutingResult(Action.FORWARD,p,iface);	
 		}
