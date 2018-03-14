@@ -18,8 +18,8 @@ import it.polito.verigraph.mcnet.components.NetworkObject;
 import it.polito.verigraph.mcnet.components.Tuple;
 import it.polito.verigraph.mcnet.netobjs.PacketModel;
 import it.polito.verigraph.mcnet.netobjs.PolitoEndHost;
-import ruiNFs.Rule_IpV6Access;
-import ruiNFs.Rule_IpV6Exit;
+import ruiNFs.Rule_IPv4Access;
+import ruiNFs.Rule_IPv4Exit;
 import ruiNFs.Rule_VpnAccess;
 import ruiNFs.Rule_VpnExit;
 
@@ -28,8 +28,8 @@ public class Test_IpV4inV6 {
     public Context ctx;
     public PolitoEndHost a;
     public PolitoEndHost b;
-    public Rule_IpV6Access access;
-    public Rule_IpV6Exit exit;
+    public Rule_IPv4Access access;
+    public Rule_IPv4Exit exit;
 
     public  Test_IpV4inV6(){
         ctx = new Context();
@@ -40,8 +40,8 @@ public class Test_IpV4inV6 {
 
         a = new PolitoEndHost(ctx, new Object[]{nctx.nm.get("a"), net, nctx});
         b = new PolitoEndHost(ctx, new Object[]{nctx.nm.get("b"), net, nctx});
-        access = new Rule_IpV6Access(ctx, new Object[]{nctx.nm.get("access"), net, nctx});
-        exit = new Rule_IpV6Exit(ctx, new Object[]{nctx.nm.get("exit"), net, nctx});
+        access = new Rule_IPv4Access(ctx, new Object[]{nctx.nm.get("access"), net, nctx});
+        exit = new Rule_IPv4Exit(ctx, new Object[]{nctx.nm.get("exit"), net, nctx});
 
         ArrayList<Tuple<NetworkObject,ArrayList<DatatypeExpr>>> adm = new ArrayList<Tuple<NetworkObject,ArrayList<DatatypeExpr>>>();
         ArrayList<DatatypeExpr> al1 = new ArrayList<DatatypeExpr>();
@@ -89,13 +89,15 @@ public class Test_IpV4inV6 {
         net.attach(a, b, access,exit);
 
         //Configuring middleboxes
-
-        access.installIpV6Access(nctx.am.get("ip_exit"),nctx.am.get("ip_access")); 
+        ArrayList<DatatypeExpr> ia = new ArrayList<DatatypeExpr>();
+	    ia.add(nctx.am.get("ip_a"));
+	    ia.add(nctx.am.get("ip_b"));
+	    
+	    access.setInternalAddress(ia);
+        access.installIPv4Access(nctx.am.get("ip_access"),nctx.am.get("ip_exit")); 
         
-        ArrayList<Tuple<DatatypeExpr,DatatypeExpr>> acl = new ArrayList<Tuple<DatatypeExpr,DatatypeExpr>>();
-        acl.add(new Tuple<DatatypeExpr,DatatypeExpr>());
-        
-        exit.installIpV6Exit(nctx.am.get("ip_access"),nctx.am.get("ip_exit"));
+        exit.setInternalAddress(ia);
+        exit.installIPv4Exit(nctx.am.get("ip_access"),nctx.am.get("ip_exit"));
         
         PacketModel packet = new PacketModel();
         packet.setEmailFrom(4);
@@ -117,7 +119,17 @@ public class Test_IpV4inV6 {
      	   System.out.println("a-->b  UNSAT"); // Nodes a and b are isolated
     	}else{
      		System.out.println("a-->b  SAT ");
+     	//	System.out.println(ret.model);
      	}
+    	
+    	ret =model.check.checkIsolationProperty(model.b,model.a);
+        //model.printVector(ret.assertions);
+      	if (ret.result == Status.UNSATISFIABLE){
+       	   System.out.println("b-->a  UNSAT"); 
+      	}else{
+       		System.out.println("b-->a  SAT ");
+       	//	System.out.println(ret.model);
+       	}
     }
     
     public void resetZ3() throws Z3Exception{

@@ -371,40 +371,46 @@ public class RuleContext {
 		if(entryPoint_p1!=null && entryPoint_p1 instanceof LOAnd){
 			if(expression.getAnd()!=null)
 				((LOAnd)entryPoint_p1).getExpression().addAll(expression.getAnd().getExpression());
-			else{
-				((LOAnd)entryPoint_p1).getExpression().add(expression);
+			else{ 	
+				 /* the following part is analyzed only for IPv4InIPv6 model, put p_1.inner_src=null or p_1.inner_src!=null in the AntecedentExpression of Implies.*/
+			/*	String className = this.returnSnapshot.getMethodContext().getContext().getClassName();
+				if(className.compareTo("IPv4Exit")==0 || className.compareTo("IPv4Access")==0 )
+				{
+					
+					if(expression.getEqual()!=null){
+						LOEquals equal = expression.getEqual();
+						ExpressionObject left = equal.getLeftExpression();
+						ExpressionObject right = equal.getRightExpression();
+						if(left.getFieldOf()!=null && right.getParam()!=null){
+							LFFieldOf fieldOf = left.getFieldOf();
+						if(fieldOf.getUnit().compareTo("p_1")==0 && fieldOf.getField().compareTo(Constants.INNER_SRC)==0 && right.getParam().compareTo("null")==0)
+							System.out.println("++++++++++++++++++ ");
+							constructImpliesAntecedent(expression);							
+						}
+					
+					}
+					if(expression.getNot()!=null){
+						if(expression.getNot().getExpression().getEqual()!=null){
+							LOEquals equal = expression.getNot().getExpression().getEqual();
+							ExpressionObject left = equal.getLeftExpression();
+							ExpressionObject right = equal.getRightExpression();
+							if(left.getFieldOf()!=null && right.getParam()!=null){
+								LFFieldOf fieldOf = left.getFieldOf();
+							if(fieldOf.getUnit().compareTo("p_1")==0 && fieldOf.getField().compareTo(Constants.INNER_SRC)==0 && right.getParam().compareTo("null")==0)
+								System.out.println("++++++++++++++++++ not ");
+								constructImpliesAntecedent(expression);							
+							}
+						}
+						
+					}
 				
-			/*	if(result.getImplies().getAntecedentExpression().getAnd()!=null){
-					//System.out.println("------------>1      ");
-					//if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.APPLICATION_PROTOCOL)==0){
-										// used in IDS, left part of Imply ,only for ctx.mkEq(nctx.pf.get("proto").apply(p_1), ctx.mkInt(nctx.HTTP_REQUEST))
-					if(expression.getEqual()!=null && expression.getEqual().getRightExpression().getParam()!=null){
-					//	System.out.println("------------>2      ");
-						result.getImplies().getAntecedentExpression().getAnd().getExpression().add(expression);
-					}
-				}
-				else{
-					//if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.APPLICATION_PROTOCOL)==0){
-					if(expression.getEqual()!=null && expression.getEqual().getRightExpression().getParam()!=null){
-					//	System.out.println("------------>3        "+expression.getEqual().getRightExpression().getParam());
-					LFSend send = result.getImplies().getAntecedentExpression().getSend();
-					LOAnd and = factory.createLOAnd();	
-					ExpressionObject temp = factory.createExpressionObject();
-					temp.setSend(send);
-					and.getExpression().add(temp);
-					and.getExpression().add(expression);
-					result.getImplies().getAntecedentExpression().setAnd(and);
-					result.getImplies().getAntecedentExpression().setSend(null);
-					}
-				}*/
+				}				
+				else*/
+					((LOAnd)entryPoint_p1).getExpression().add(expression);
+				
 			}
 			return true;
-		}/*else if(result.getImplies()!=null){
-			result.getImplies().getConsequentExpression().getAnd().getExpression().add(expression);   // if it is a initial packet from a endhHost
-			System.out.println("line406 initial packet for body = orig_body");
-			return true;
-	
-		}*/else
+		}else
 			return false;
 	}
 	
@@ -503,8 +509,9 @@ public class RuleContext {
 					System.out.println("line429 >>>>>>>>>>>>>>>>>>>running p0_ip = value");
 				}	
 			}else{ */
-			     if(value.compareTo("NOTNULL")==0 || value.compareTo("NULL")==0){
-			    	 System.out.println("ruleContext line507 >>>>>>>>>>>>>>>>>>>found value = NOTNULL OR NULL");
+			     if(value.compareTo("NOTNULL")==0 || value.compareTo("NULL")==0)
+			     {
+			    	 System.out.println("ruleContext line539 >>>>>>>>>>>>>>>>>>>found value = NOTNULL OR NULL");
 			    	 ExpressionObject temp = factory.createExpressionObject();
 			    	 if(value.compareTo("NOTNULL")==0){			    		 
 			    		 LONot not = factory.createLONot();			    		 
@@ -521,12 +528,12 @@ public class RuleContext {
 			    	 if(packetField.compareTo(Constants.INNER_SRC) == 0){	// must point out only when p0.inner_src==null, then can put the equal object in Implies.AntecedentExpression
 			    	 if(result.getImplies().getAntecedentExpression().getAnd()!=null){
 
-							System.out.println("------------>RC line523 implies.and !=null    inner_src ==null or !=null  ");
+							System.out.println("------------>RC line556 implies.and !=null    inner_src ==null or !=null  ");
 							result.getImplies().getAntecedentExpression().getAnd().getExpression().add(temp);
 					}
 					
 					else{
-						System.out.println("------------>RC line528 implies.and ==null  reconstruct 'And'  inner_src ==null or !=null  ");
+						System.out.println("------------>RC line561 implies.and ==null  reconstruct 'And'  inner_src ==null or !=null  ");
 						LFSend send = result.getImplies().getAntecedentExpression().getSend();
 						LOAnd and = factory.createLOAnd();	
 						ExpressionObject temp1 = factory.createExpressionObject();
@@ -546,7 +553,7 @@ public class RuleContext {
 			 		ExpressionObject exp = factory.createExpressionObject();
 			 		exp.setIsInternal(internal);
 			 		setLastExpression(exp);
-			 		System.out.println("----->OK, COME TO RuleContext line 546 generateRuleForExitingPacket(packetField,value) method-----");
+			 		System.out.println("----->OK, COME TO RuleContext line 584 generateRuleForExitingPacket(packetField,value) method-----");
 			    	 
 			     }
 			     
@@ -759,10 +766,11 @@ public class RuleContext {
 				}
 				
 				// for analyse packet.equalsField(PacketField.ENCRYPTED,  String.valueOf(true))
+				//  or  packet.equalsField(PacketField.INNER_SRC,String.valueOf(null)) 
 				public boolean visit(MethodInvocation node){
 					if(node.arguments().get(0).toString().compareTo("true")==0){
 						builder.append("true");
-						System.out.println("///////////ruleContex line 725 methodInvocation encrypted value = true");
+						System.out.println("///////////ruleContex line 766 methodInvocation encrypted value = true");
 					}
 					if(node.arguments().get(0).toString().compareTo("false")==0){
 						builder.append("false");
@@ -1440,12 +1448,26 @@ public class RuleContext {
 		return factory;
 	}
 
-	/*public void generateRuleForPrivateAddress(String packetField) {
-		LFIsInternal internal = isInternalRule("p_0", packetField);	
-		ExpressionObject exp = factory.createExpressionObject();
-		exp.setIsInternal(internal);
-		setLastExpression(exp);
-		System.out.println("----->OK, COME TO RuleContext line1436 enerateRuleForPrivateAddress() method-----");
+	public void constructImpliesAntecedent(ExpressionObject exp) {
+		 if(result.getImplies().getAntecedentExpression().getAnd()!=null){
+
+				System.out.println("------------>RC line1476 constructImpliesAntecedent left");
+				result.getImplies().getAntecedentExpression().getAnd().getExpression().add(exp);
+		}
+		
+		else{
+			System.out.println("------------>RC line1459 constructImpliesAntecedent left and");
+			LFSend send = result.getImplies().getAntecedentExpression().getSend();
+			LOAnd and = factory.createLOAnd();	
+			ExpressionObject temp1 = factory.createExpressionObject();
+			temp1.setSend(send);
+			and.getExpression().add(temp1);
+			and.getExpression().add(exp);
+			result.getImplies().getAntecedentExpression().setAnd(and);
+			result.getImplies().getAntecedentExpression().setSend(null);
+			System.out.println("----imply,antece and size= "+ result.getImplies().getAntecedentExpression().getAnd().getExpression().size());
+			System.out.println("------ok finish------>RC line1468 constructImpliesAntecedent left and");
+			}
 	}
-	*/
+	
 }

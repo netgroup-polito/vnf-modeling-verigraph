@@ -431,10 +431,7 @@ class RuleUnmarshaller {
 					StringLiteral sl = ast.newStringLiteral();
 					sl.setLiteralValue("null");
 					mi.arguments().add(sl);
-				}/*else if(obj.getParam().compareTo("true")==0){
-					
 				}
-				*/
 				else{
 				
 				

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
-    <TableSize>0</TableSize>
+    <TableSize>1</TableSize>
     <DataDriven>false</DataDriven>
+    <TableFields>Ip</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
-    <Node Name="n_IpV6Access"/>
+    <Node Name="n_IPv4Access"/>
     <Packet Name="p_0"/>
     <Packet Name="p_1"/>
     <LogicalExpressionResult>
@@ -13,7 +14,7 @@
                 <And>
                     <Expression>
                         <Send>
-                            <Source>n_IpV6Access</Source>
+                            <Source>n_IPv4Access</Source>
                             <Destination>n_0</Destination>
                             <Packet_out>p_0</Packet_out>
                         </Send>
@@ -21,12 +22,17 @@
                     <Expression>
                         <Not>
                             <Expression>
-<IsInternal>
-    <FieldOf>
-        <Unit>p_0</Unit>
-        <Field>IP_DST</Field>
-    </FieldOf>
-</IsInternal>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>null</Param>
+    </RightExpression>
+</Equal>
                             </Expression>
                         </Not>
                     </Expression>
@@ -41,28 +47,50 @@
                             <Expression>
 <Recv>
     <Source>n_1</Source>
-    <Destination>n_IpV6Access</Destination>
+    <Destination>n_IPv4Access</Destination>
     <Packet_in>p_1</Packet_in>
 </Recv>
                             </Expression>
                             <Expression>
-<IsInternal>
-    <FieldOf>
-        <Unit>p_1</Unit>
-        <Field>IP_SRC</Field>
-    </FieldOf>
-</IsInternal>
+<Not>
+    <Expression>
+        <Equal>
+            <LeftExpression>
+                <FieldOf>
+                    <Unit>p_1</Unit>
+                    <Field>ENCRYPTED</Field>
+                </FieldOf>
+            </LeftExpression>
+            <RightExpression>
+                <Param>true</Param>
+            </RightExpression>
+        </Equal>
+    </Expression>
+</Not>
                             </Expression>
                             <Expression>
 <Equal>
     <LeftExpression>
         <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_DST</Field>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>exitIp</Param>
+        <Param>null</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>null</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -76,6 +104,19 @@
     </LeftExpression>
     <RightExpression>
         <Param>accessIp</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>exitIp</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -116,32 +157,21 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
+        <Param>true</Param>
     </RightExpression>
 </Equal>
                             </Expression>
                             <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
+<IsInternal>
+    <FieldOf>
+        <Unit>p_0</Unit>
+        <Field>INNER_SRC</Field>
+    </FieldOf>
+</IsInternal>
                             </Expression>
                             <Expression>
 <Equal>
@@ -267,22 +297,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ENCRYPTED</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -299,18 +313,23 @@
                 <And>
                     <Expression>
                         <Send>
-                            <Source>n_IpV6Access</Source>
+                            <Source>n_IPv4Access</Source>
                             <Destination>n_0</Destination>
                             <Packet_out>p_0</Packet_out>
                         </Send>
                     </Expression>
                     <Expression>
-                        <IsInternal>
-                            <FieldOf>
-<Unit>p_0</Unit>
-<Field>IP_DST</Field>
-                            </FieldOf>
-                        </IsInternal>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>INNER_SRC</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>null</Param>
+                            </RightExpression>
+                        </Equal>
                     </Expression>
                 </And>
             </AntecedentExpression>
@@ -323,21 +342,9 @@
                             <Expression>
 <Recv>
     <Source>n_1</Source>
-    <Destination>n_IpV6Access</Destination>
+    <Destination>n_IPv4Access</Destination>
     <Packet_in>p_1</Packet_in>
 </Recv>
-                            </Expression>
-                            <Expression>
-<Not>
-    <Expression>
-        <IsInternal>
-            <FieldOf>
-                <Unit>p_1</Unit>
-                <Field>IP_SRC</Field>
-            </FieldOf>
-        </IsInternal>
-    </Expression>
-</Not>
                             </Expression>
                             <Expression>
 <Equal>
@@ -362,6 +369,19 @@
     </LeftExpression>
     <RightExpression>
         <Param>accessIp</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>true</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -402,14 +422,11 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
+            <Field>INNER_DEST</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
+        <Param>null</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -418,16 +435,21 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
+        <Param>false</Param>
     </RightExpression>
 </Equal>
+                            </Expression>
+                            <Expression>
+<IsInternal>
+    <FieldOf>
+        <Unit>p_0</Unit>
+        <Field>IP_DST</Field>
+    </FieldOf>
+</IsInternal>
                             </Expression>
                             <Expression>
 <Equal>
@@ -553,22 +575,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ENCRYPTED</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
