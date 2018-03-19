@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
-    <TableSize>3</TableSize>
+    <TableSize>2</TableSize>
     <DataDriven>false</DataDriven>
     <TableFields>Ip</TableFields>
     <TableFields>URL</TableFields>
-    <TableFields>Ip</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
     <Node Name="n_GlobalDnsBalancer"/>
@@ -13,11 +12,28 @@
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_GlobalDnsBalancer</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                </Send>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_GlobalDnsBalancer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>DNS_RESPONSE</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
@@ -62,14 +78,11 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>IP_SRC</Field>
+            <Field>INNER_DEST</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>IP_SRC</Field>
-        </FieldOf>
+        <Param>ip_url</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -78,7 +91,7 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>IP_DST</Field>
+            <Field>IP_SRC</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
@@ -94,45 +107,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
+            <Field>IP_DST</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PROTO</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PROTO</Field>
+            <Field>IP_SRC</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -254,38 +235,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>INNER_SRC</Field>
         </FieldOf>
     </LeftExpression>
@@ -293,22 +242,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>INNER_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>INNER_DEST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>INNER_DEST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

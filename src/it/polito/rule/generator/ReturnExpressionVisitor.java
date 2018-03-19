@@ -36,7 +36,8 @@ public class ReturnExpressionVisitor extends ASTVisitor {
 	
 	public boolean visit(MethodInvocation node){
 		counterFlag++;
-		node.getExpression().accept(this);
+		if(node.getExpression()!=null)
+			node.getExpression().accept(this);
 		//TODO evaluate if methodName is necessary for improving rule generation 
 		if(counterFlag == 0){
 			ruleContext.generateRuleForExitingPacket(packetField, node);

@@ -102,6 +102,28 @@ public class ExpressionVisitor extends ASTVisitor {
 				//if(packet.toString().equals("PacketType.PACKET_OUT"))
 				predicates.add(expression);
 				break;
+			case Constants.NOT_EQUALS_FIELD_METHOD:
+				node.getExpression().accept(new ASTVisitor() {
+					
+					public boolean visit(SimpleName node){
+						builder.append(node.getFullyQualifiedName());
+						return false;
+					}
+				});
+				if(node.arguments().size() != 2)
+				{
+					System.err.println("[ERROR] Wrong number of arguments passed to the "+Constants.SET_FIELD_METHOD+" method!");
+					return false;
+				}
+				Expression field1 = (Expression) node.arguments().get(0);
+				Expression value1 = (Expression) node;
+				MyExpression expression1 = new MyExpression(field1, value1, nestingLevel);
+				expression1.setPacketName(builder.toString());
+				predicates.add(expression1);
+				break;
+				
+				
+		
 			case Constants.ADD_INTERNAL_ADDRESS_METHOD:  //this.addInternalAddress(p.getField(PacketField.IP_DST));
 				if(node.arguments().size() != 1)
 				{

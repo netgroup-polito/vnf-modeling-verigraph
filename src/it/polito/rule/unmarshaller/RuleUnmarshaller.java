@@ -92,9 +92,10 @@ class RuleUnmarshaller {
 		constants.add("DNS_PORT_53");
 		constants.add("HTTP_PORT_80");
 		constants.add("SIP_INVITE");
-		constants.add("SIP_OK");
-		constants.add("SIP_REGISTER");
-		constants.add("SIP_ENDING");
+		constants.add("SIP_INVITE_OK");
+		constants.add("SIP_REGISTE_OK");
+		constants.add("SIP_REGISTE");
+		constants.add("SIP_END");
 		constants.add("null");
 		constants.add("true");
 		constants.add("false");
@@ -697,9 +698,12 @@ class RuleUnmarshaller {
 		ArrayCreation ac = ast.newArrayCreation();
 		ac.setType(ast.newArrayType(ast.newSimpleType(ast.newName("Expr"))));
 		ArrayInitializer ai = ast.newArrayInitializer();
-	//	ai.expressions().add(ast.newName("t_"+counter));
-		ai.expressions().add(ast.newName("p_"+counter));
-		ai.expressions().add(ast.newName("n_"+counter));
+		if(exist.getUnit().size()>1){
+			ai.expressions().add(ast.newName("p_"+counter));
+			ai.expressions().add(ast.newName("n_"+counter));
+		}
+		else
+			ai.expressions().add(ast.newName("p_"+counter));
 		counter++;
 		
 		ac.setInitializer(ai);

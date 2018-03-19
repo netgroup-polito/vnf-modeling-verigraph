@@ -10,22 +10,25 @@ import it.polito.nfdev.lib.Packet.PacketField;
 import it.polito.nfdev.lib.RoutingResult.Action;
 import it.polito.nfdev.nat.PortPool;
 
-public class UserAgentClient extends NetworkFunction {
+public class UA extends NetworkFunction {
 	
-	public static final String  SIP_INVITE = "Sip_Invitation";
-	public static final String  SIP_OK = "Sip_OK";
-	public static final String  SIP_REGISTER = "Sip_Register";
-	public static final String  SIP_ENDING = "Sip_Ending";
+	public static final String  SIP_INVITE = "Sip_Invite";
+	public static final String  SIP_INVITE_OK = "Sip_Invite_OK";
+	public static final String  SIP_REGISTE_OK = "Sip_Registe_OK";
+	public static final String  SIP_REGISTE = "Sip_Registe";
+	public static final String  SIP_END = "Sip_End";
 	
-	private String num_Callee;
+	private String num;
 	private String ip_sipServer;
+	private String ip_caller;
 	private PortPool portPool;
 	protected Interface initialForwardingInterface;
 	
-	public UserAgentClient(List<Interface> interfaces, String num_Callee,String ip_sipServer) {
+	public UA(List<Interface> interfaces,String ip_caller, String num,String ip_sipServer) {
 		super(interfaces);
 		
-		this.num_Callee = num_Callee;
+		this.ip_caller = ip_caller;
+		this.num = num;
 		this.ip_sipServer = ip_sipServer;
 	    this.portPool = new PortPool(10000, 1024);
 	    initialForwardingInterface = interfaces.get(0);
@@ -38,10 +41,10 @@ public class UserAgentClient extends NetworkFunction {
 		if(new_port == null)
 			return new RoutingResult(Action.DROP, null, null);
 		
+		p.setField(PacketField.IP_SRC, ip_caller);
 		p.setField(PacketField.IP_DST, ip_sipServer);
-		p.setField(PacketField.BODY, num_Callee);
-	//	p.setField(PacketField.PROTO, SIP_REGISTER);
-		p.setField(PacketField.PROTO, SIP_INVITE);
+		p.setField(PacketField.BODY, num);
+		p.setField(PacketField.PROTO, SIP_REGISTE);
 		
 		return new RoutingResult(Action.FORWARD,p,initialForwardingInterface);
 	}
@@ -61,14 +64,14 @@ public class UserAgentClient extends NetworkFunction {
 		
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
-			p.setField(PacketField.PROTO, SIP_OK);	
+			p.setField(PacketField.PROTO, SIP_INVITE_OK);	
 			return new RoutingResult(Action.FORWARD,p,iface);		
 		}
-		if(packet.equalsField(PacketField.PROTO, SIP_OK)){
+		if(packet.equalsField(PacketField.PROTO, SIP_INVITE_OK)){
 			
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
-			p.setField(PacketField.PROTO, SIP_ENDING);	
+			p.setField(PacketField.PROTO, SIP_END);	
 			return new RoutingResult(Action.FORWARD,p,iface);	
 		}
 	

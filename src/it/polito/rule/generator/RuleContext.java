@@ -33,8 +33,8 @@ public class RuleContext {
 	private ReturnSnapshot returnSnapshot;
 	private LogicalOperator entryPoint_p1;
 	private LogicalOperator entryPoint_p2;
-	//private LogicalOperator entryPoint_p0;
-	//private LogicalOperator entryPoint_p3;
+	private LogicalOperator entryPoint_p3;
+	private LogicalOperator entryPoint_p4;
 	private Map<String,List<Variable>> localVariable;
 	private Map<String,List<Variable>> globalVariable;
 	
@@ -143,29 +143,19 @@ public class RuleContext {
 				LOExist exist = factory.createLOExist();
 				exist.getUnit().add(n1.getName());
 				exist.getUnit().add(p1.getName());
-			//	exist.getUnit().add(t1.getName());
 				exist.setExpression(factory.createExpressionObject());
 				
 				LFRecv recv = factory.createLFRecv();
 				recv.setSource(n1.getName());
 				recv.setDestination(netFunction);
 				recv.setPacketIn(p1.getName());
-			/*	recv.setTimeIn(t1.getName());
-				
-				LOLessThan less = factory.createLOLessThan();
-				less.setLeftExpression(factory.createExpressionObject());
-				less.setRightExpression(factory.createExpressionObject());
-				less.getLeftExpression().setParam(t1.getName());
-				less.getRightExpression().setParam(time.getName());
-			*/	
+			
 				LOAnd and = factory.createLOAnd();
 				ExpressionObject temp = factory.createExpressionObject();
 				temp.setRecv(recv);	// 'recv'
 				and.getExpression().add(temp);
 				temp = factory.createExpressionObject();
-			//	temp.setLessThan(less);	// 'time less than'
-			//	and.getExpression().add(temp);
-				
+			
 				exist.getExpression().setAnd(and);
 				implies.getConsequentExpression().setExist(exist);
 				
@@ -182,19 +172,16 @@ public class RuleContext {
 				dest1.setName("n_"+ ++nodeCounter);
 				source1.setName(netFunction);
 				packet1.setName("p_"+ ++packetCounter);
-		//		time1.setName("t_"+ ++timeCounter);
 				
 				units.add(dest1);
 				units.add(source1);
-		//		units.add(time1);
 				units.add(packet1);
 				
 				LFSend send1 = factory.createLFSend();
 				send1.setDestination(dest1.getName());
 				send1.setSource(source1.getName());
 				send1.setPacketOut(packet1.getName());
-		//		send1.setTimeOut(time1.getName());
-				
+		
 				LOImplies implies1 = factory.createLOImplies();
 				implies1.setAntecedentExpression(factory.createExpressionObject());
 				implies1.setConsequentExpression(factory.createExpressionObject());
@@ -407,8 +394,66 @@ public class RuleContext {
 				}				
 				else*/
 					((LOAnd)entryPoint_p1).getExpression().add(expression);
-				
+				//	System.out.println("-----410------->put in entryPoint_p1  ");
+			//TODO 2-setForLastExpression
+				/*	if(expression.getEqual()!=null )
+					{
+						LOEquals equal = expression.getEqual();
+						String leftfield = equal.getLeftExpression().getFieldOf().getField();
+						ExpressionObject right = equal.getRightExpression();
+					//	System.out.println("------------>equal left field =  "+ leftfield);
+						if(leftfield.compareTo(Constants.PROTO)==0)  
+						{
+							System.out.println("------------>if is proto ");
+						//	if(right.getParam()!=null){
+							System.out.println("-------1----->param= "+right.getParam() );
+							if(result.getImplies().getAntecedentExpression().getAnd()!=null)
+							{
+								result.getImplies().getAntecedentExpression().getAnd().getExpression().add(expression);
+							}else{
+								LFSend send = result.getImplies().getAntecedentExpression().getSend();
+								LOAnd and = factory.createLOAnd();	
+							ExpressionObject temp = factory.createExpressionObject();
+							temp.setSend(send);
+							and.getExpression().add(temp);
+							and.getExpression().add(expression);
+							result.getImplies().getAntecedentExpression().setAnd(and);
+							result.getImplies().getAntecedentExpression().setSend(null);
+								}
+						//	}
+						}
+					}
+					
+				/*	if(result.getImplies().getAntecedentExpression().getAnd()!=null){
+						//System.out.println("------------>1      ");
+						if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.PROTO)==0 &&  expression.getEqual().getRightExpression().getParam()!=null)
+						{
+											// used in IDS, left part of Imply ,only for ctx.mkEq(nctx.pf.get("proto").apply(p_1), ctx.mkInt(nctx.HTTP_REQUEST))
+					//	if(expression.getEqual()!=null && expression.getEqual().getRightExpression().getParam()!=null){
+							System.out.println("-------1----->left=  "+expression.getEqual().getRightExpression().getParam() );
+							result.getImplies().getAntecedentExpression().getAnd().getExpression().add(expression);
+						}
+					}
+					else{
+						if(expression.getEqual()!=null && expression.getEqual().getLeftExpression().getFieldOf().getField().compareTo(Constants.PROTO)==0 && expression.getEqual().getRightExpression().getParam()!=null)
+						{
+					//	if(expression.getEqual()!=null && expression.getEqual().getRightExpression().getParam()!=null){
+							System.out.println("------2------>left=        "+expression.getEqual().getRightExpression().getParam());
+						LFSend send = result.getImplies().getAntecedentExpression().getSend();
+						LOAnd and = factory.createLOAnd();	
+						ExpressionObject temp = factory.createExpressionObject();
+						temp.setSend(send);
+						and.getExpression().add(temp);
+						and.getExpression().add(expression);
+						result.getImplies().getAntecedentExpression().setAnd(and);
+						result.getImplies().getAntecedentExpression().setSend(null);
+						}
+					}*/
 			}
+					
+					
+					
+					
 			return true;
 		}else
 			return false;
@@ -511,7 +556,7 @@ public class RuleContext {
 			}else{ */
 			     if(value.compareTo("NOTNULL")==0 || value.compareTo("NULL")==0)
 			     {
-			    	 System.out.println("ruleContext line539 >>>>>>>>>>>>>>>>>>>found value = NOTNULL OR NULL");
+			    	 System.out.println("ruleContext line543 >>>>>>>>>>>>>>>>>>>found value = NOTNULL OR NULL");
 			    	 ExpressionObject temp = factory.createExpressionObject();
 			    	 if(value.compareTo("NOTNULL")==0){			    		 
 			    		 LONot not = factory.createLONot();			    		 
@@ -524,24 +569,24 @@ public class RuleContext {
 			    		 equal.getRightExpression().setParam("null");
 			    		 temp.setEqual(equal);
 			    	 }
-			    	 
+			    	 //TODO 1-NOTNULL/NULL INNER_SRC
 			    	 if(packetField.compareTo(Constants.INNER_SRC) == 0){	// must point out only when p0.inner_src==null, then can put the equal object in Implies.AntecedentExpression
-			    	 if(result.getImplies().getAntecedentExpression().getAnd()!=null){
+			    		 if(result.getImplies().getAntecedentExpression().getAnd()!=null){
 
-							System.out.println("------------>RC line556 implies.and !=null    inner_src ==null or !=null  ");
+							System.out.println("------------>RC line560 implies.and !=null    inner_src ==null or !=null  ");
 							result.getImplies().getAntecedentExpression().getAnd().getExpression().add(temp);
-					}
+			    		 }
 					
-					else{
-						System.out.println("------------>RC line561 implies.and ==null  reconstruct 'And'  inner_src ==null or !=null  ");
-						LFSend send = result.getImplies().getAntecedentExpression().getSend();
-						LOAnd and = factory.createLOAnd();	
-						ExpressionObject temp1 = factory.createExpressionObject();
-						temp1.setSend(send);
-						and.getExpression().add(temp1);
-						and.getExpression().add(temp);
-						result.getImplies().getAntecedentExpression().setAnd(and);
-						result.getImplies().getAntecedentExpression().setSend(null);
+			    		 else{
+									System.out.println("------------>RC line565 implies.and ==null  reconstruct 'And'  inner_src ==null or !=null  ");
+									LFSend send = result.getImplies().getAntecedentExpression().getSend();
+									LOAnd and = factory.createLOAnd();	
+									ExpressionObject temp1 = factory.createExpressionObject();
+									temp1.setSend(send);
+									and.getExpression().add(temp1);
+									and.getExpression().add(temp);
+									result.getImplies().getAntecedentExpression().setAnd(and);
+									result.getImplies().getAntecedentExpression().setSend(null)	;
 						}
 			    	 }
 			    	 if(packetField.compareTo(Constants.INNER_DEST) == 0){
@@ -568,6 +613,11 @@ public class RuleContext {
 			
 			ExpressionObject exp = factory.createExpressionObject();
 			exp.setEqual(equal);
+			if(packetField.compareTo(Constants.URL) == 0 || packetField.compareTo(Constants.PROTO)==0){
+				//TODO if URL/PROTO put in Antecedent
+				constructImpliesAntecedent(exp);
+				return true;
+			}
 		/*	if(returnSnapshot.isIndirectSnapshot()){
 				setExpressionForPacket(exp, "p_2");	
 				System.out.println("--------------seting p0_ip=p2_ip for entryPoint_p2 ");
@@ -595,19 +645,20 @@ public class RuleContext {
 		
 		if(checkPacketField(packetField) && containsLogicalUnit("p_0")){
 			String methodName = node.getName().getFullyQualifiedName();		//-->p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
-			String name;
+			String name=null;
 			StringBuilder builder = new StringBuilder();
 			
-			node.getExpression().accept(new ASTVisitor() {
+			if(node.getExpression()!=null){
+				node.getExpression().accept(new ASTVisitor() {
 				
 				public boolean visit(SimpleName node){		
 					builder.append(node.getFullyQualifiedName());
 					return false;
 				}
-			});
+				});
 						
-			name = builder.toString();		//-->name='packet'
-			
+				name = builder.toString();		//-->name='packet'
+			}
 			if(methodName.compareTo(Constants.GET_FIELD_METHOD)==0 /* && name.compareTo(Constants.PACKET_PARAMETER)==0 */){  /* remove it, because for p0.body = p0.orig_body in EndHost, the packet name can be anyone */
 				
 				QualifiedName field = (QualifiedName)node.arguments().get(0);
@@ -643,7 +694,8 @@ public class RuleContext {
 					return true;
 				}
 				
-			}else if(methodName.compareTo(Constants.ENTRY_GETTER)==0 && checkVariable(name).compareTo(Constants.TABLE_ENTRY_TYPE)==0 && isDataDriven){
+			}else if(methodName.compareTo(Constants.ENTRY_GETTER)==0 && checkVariable(name).compareTo(Constants.TABLE_ENTRY_TYPE)==0 && isDataDriven)
+			{
 				
 				boolean p2 = false;
 				
@@ -703,7 +755,290 @@ public class RuleContext {
 						return generateRuleForExitingPacket(packetField, value);	// when value is a new defined variable: new_port or natIp	
 				}
 				
-			}else{		//--> when it is used
+			}else if(methodName.compareTo(Constants.SEARCH_IP_METHOD)==0 && isDataDriven){
+				//searchIP(packet.getField(PacketField.URL),ip_sipServer, ip_dns)
+				//TODO SEARCH_IP_METHOD analyse
+				String pname;
+				builder.delete(0, builder.length());
+				((Expression)node.arguments().get(0)).accept(new ASTVisitor() {
+					
+					public boolean visit(MethodInvocation node){
+						node.getExpression().accept(new ASTVisitor() {
+							
+							public boolean visit(SimpleName node){
+								builder.append(node.getFullyQualifiedName()); //= packet
+								return false;
+							}
+						});
+						return false;
+					}
+				});
+				pname = builder.toString();
+				SimpleName v1 = (SimpleName)node.arguments().get(1);
+				String ipServer =v1.getFullyQualifiedName(); //ip_sipServer
+				SimpleName v2 = (SimpleName)node.arguments().get(2);
+				String ipDns =v2.getFullyQualifiedName(); //ip_dns
+				
+				if(pname.compareTo(Constants.PACKET_PARAMETER)==0){
+					// TODO 23-construct p2,p3
+					ExpressionObject temp = factory.createExpressionObject();
+					
+					LOExist exist2 = factory.createLOExist();
+					exist2.setExpression(factory.createExpressionObject());
+					LOAnd and2 = factory.createLOAnd();
+					exist2.getExpression().setAnd(and2);
+					entryPoint_p3 = and2;
+					
+					LFSend send2 = factory.createLFSend();
+					
+					LFFieldOf fieldOf = factory.createLFFieldOf();
+					
+					if(!containsLogicalUnit("p_2")){
+						LUNode node2 = factory.createLUNode();
+						LUPacket packet2 = factory.createLUPacket();
+						
+						node2.setName("n_"+ ++nodeCounter); //n_2
+						packet2.setName("p_"+ ++packetCounter); //p_2
+					System.out.println("====line796=========> node/packet Counter-1= "+nodeCounter+" "+packetCounter );	
+						units.add(node2);;
+						units.add(packet2);
+						
+						exist2.getUnit().add(node2.getName());
+						exist2.getUnit().add(packet2.getName());			
+					}
+					else{
+						exist2.getUnit().add("n_2");
+						exist2.getUnit().add("p_2");
+					}
+					send2.setSource(netFunction);
+					send2.setDestination("n_2");
+					send2.setPacketOut("p_2");
+					temp = factory.createExpressionObject();
+					temp.setSend(send2);
+					and2.getExpression().add(temp);
+					
+					LOEquals equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.IP_SOURCE);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					equals.getRightExpression().setParam(ipServer);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and2.getExpression().add(temp);
+			//---		
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.IP_DESTINATION);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					equals.getRightExpression().setParam(ipDns);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and2.getExpression().add(temp);
+			//---		
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.PROTO);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					equals.getRightExpression().setParam(Constants.DNS_REQUEST);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and2.getExpression().add(temp);
+		//---
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.URL);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_1");
+					fieldOf.setField(Constants.URL);
+					equals.getRightExpression().setFieldOf(fieldOf);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and2.getExpression().add(temp);
+					
+					// TODO p3-Construct p3
+					LOExist exist3 = factory.createLOExist();
+					exist3.setExpression(factory.createExpressionObject());
+					LOAnd and3 = factory.createLOAnd();
+					exist3.getExpression().setAnd(and3);
+					entryPoint_p4 = and3;
+					
+					LUPacket packet3 = factory.createLUPacket();
+					packet3.setName("p_3");
+					units.add(packet3);
+					exist3.getUnit().add(packet3.getName());
+					
+					LFRecv recv3 = factory.createLFRecv();
+					recv3.setSource("n_2");
+					recv3.setDestination(netFunction);
+					recv3.setPacketIn(packet3.getName());
+					temp = factory.createExpressionObject();
+					temp.setRecv(recv3);
+					and3.getExpression().add(temp);
+					
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_3");
+					fieldOf.setField(Constants.IP_SOURCE);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.IP_DESTINATION);
+					equals.getRightExpression().setFieldOf(fieldOf);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and3.getExpression().add(temp);
+			//---		
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_3");
+					fieldOf.setField(Constants.IP_DESTINATION);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.IP_SOURCE);
+					equals.getRightExpression().setFieldOf(fieldOf);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and3.getExpression().add(temp);
+			//---		
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_3");
+					fieldOf.setField(Constants.PROTO);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					equals.getRightExpression().setParam(Constants.DNS_RESPONSE);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and3.getExpression().add(temp);
+		//---
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_3");
+					fieldOf.setField(Constants.URL);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_2");
+					fieldOf.setField(Constants.URL);
+					equals.getRightExpression().setFieldOf(fieldOf);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and3.getExpression().add(temp);
+	//----				
+					equals = factory.createLOEquals();  //p3.inner_dest != null
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_3");
+					fieldOf.setField(Constants.INNER_DEST);
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					equals.getRightExpression().setParam("null");;
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					LONot not3 = factory.createLONot();
+					not3.setExpression(temp);
+					temp = factory.createExpressionObject();
+					temp.setNot(not3);
+					and3.getExpression().add(temp);
+	//-----
+					equals = factory.createLOEquals();
+					equals.setLeftExpression(factory.createExpressionObject());
+					equals.setRightExpression(factory.createExpressionObject());
+					
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_0");
+					fieldOf.setField(packetField);	//Constants.IP_DESTINATION
+					
+					equals.getLeftExpression().setFieldOf(fieldOf);
+					fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_3");
+					fieldOf.setField(Constants.INNER_DEST);
+					equals.getRightExpression().setFieldOf(fieldOf);
+					temp = factory.createExpressionObject();
+					temp.setEqual(equals);
+					and3.getExpression().add(temp);
+					
+					//TODO PUT exist2/exist3 in entryPoint_p1
+					temp = factory.createExpressionObject();
+					temp.setExist(exist2);
+					setLastExpression(temp);
+					temp = factory.createExpressionObject();
+					temp.setExist(exist3);
+					setLastExpression(temp);
+					return true;
+				}
+				
+				
+			}
+			else if(methodName.compareTo(Constants.NOT_EQUALS_FIELD_METHOD)==0)
+			{	//p.notEqualsField(PacketField.URL, domain);
+				//TODO 4-NOT_EQUALS_FIELD_METHOD analyse when arg(1) is a getField() method
+				SimpleName v1 = (SimpleName)node.arguments().get(1);
+				String v2 =v1.getFullyQualifiedName(); //domain
+				if(name.compareTo(this.returnSnapshot.getPacketName())==0){
+					LOEquals equal = factory.createLOEquals();
+					equal.setLeftExpression(factory.createExpressionObject());
+					equal.setRightExpression(factory.createExpressionObject());
+					
+					LFFieldOf fieldOf = factory.createLFFieldOf();
+					fieldOf.setUnit("p_0");
+					fieldOf.setField(packetField);
+					
+					equal.getLeftExpression().setFieldOf(fieldOf);
+					equal.getRightExpression().setParam(v2);
+					ExpressionObject temp = factory.createExpressionObject();
+					temp.setEqual(equal);
+					LONot not = factory.createLONot();
+					not.setExpression(temp);
+					temp = factory.createExpressionObject();
+					temp.setNot(not);
+					System.out.println("==========>LINE1017 not equal method !="+v2);
+					constructImpliesAntecedent(temp);
+					
+					return true;
+				}
+				
+				
+			}
+			else{		//--> when it is used
 		
 				@SuppressWarnings("unchecked")
 				List<Expression> list = (List<Expression>)node.arguments();
@@ -793,7 +1128,7 @@ public class RuleContext {
 			
 			equals.getLeftExpression().setFieldOf(fieldOf);
 			equals.getRightExpression().setParam(value);
-			
+			System.out.println("line 853~~~~~~~~~~~~~found equal: "+fieldValue+" = "+equals.getRightExpression().getParam());	
 			exp.setEqual(equals);
 			
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>* generate entry_point_p3 */
@@ -1451,12 +1786,12 @@ public class RuleContext {
 	public void constructImpliesAntecedent(ExpressionObject exp) {
 		 if(result.getImplies().getAntecedentExpression().getAnd()!=null){
 
-				System.out.println("------------>RC line1476 constructImpliesAntecedent left");
+				System.out.println("------------>RC line1532 constructImpliesAntecedent left");
 				result.getImplies().getAntecedentExpression().getAnd().getExpression().add(exp);
 		}
 		
 		else{
-			System.out.println("------------>RC line1459 constructImpliesAntecedent left and");
+			System.out.println("------------>RC line1536 constructImpliesAntecedent left and");
 			LFSend send = result.getImplies().getAntecedentExpression().getSend();
 			LOAnd and = factory.createLOAnd();	
 			ExpressionObject temp1 = factory.createExpressionObject();
@@ -1466,7 +1801,7 @@ public class RuleContext {
 			result.getImplies().getAntecedentExpression().setAnd(and);
 			result.getImplies().getAntecedentExpression().setSend(null);
 			System.out.println("----imply,antece and size= "+ result.getImplies().getAntecedentExpression().getAnd().getExpression().size());
-			System.out.println("------ok finish------>RC line1468 constructImpliesAntecedent left and");
+			System.out.println("------ok finish------>RC line1547 constructImpliesAntecedent left and");
 			}
 	}
 	

@@ -19,6 +19,8 @@ public class Constants {
 	public static final String INDIRECT_NF = "setIndirectNF";
 	public static final String IS_INTERNAL_METHOD = "isInternal";
 	public static final String EQUALS_FIELD_METHOD = "equalsField";
+	public static final String NOT_EQUALS_FIELD_METHOD = "notEqualsField";
+	public static final String SEARCH_IP_METHOD = "searchIP";
 	public static final String SET_TYPES = "setTypes";
 	
 	//Function' parameters
@@ -28,6 +30,7 @@ public class Constants {
 	public static final String INTERFACE_PARAMETER = "iface";
 	public static final String PACKET_PARAMETER = "packet";
 	public static final String DNS_RESPONSE = "DNS_RESPONSE";   //used at line573 in RuleContext.java
+	public static final String DNS_REQUEST = "DNS_REQUEST";
 	public static final String HTTP_RESPONSE = "HTTP_RESPONSE";
 	public static final String NULL = "null";
 	public static final String TRUE = "true";

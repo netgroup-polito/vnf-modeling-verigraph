@@ -16,13 +16,14 @@ import it.polito.nfdev.verification.Verifier;
 public class GlobalDnsBalancer extends NetworkFunction {
 
 	private Table balanTable;
+	private String ip_url;
 	
-	public GlobalDnsBalancer() {
+	public GlobalDnsBalancer(String ip_url) {
 		super(new ArrayList<Interface>());
 		
-		this.balanTable = new Table(3,0);	// Ip_Src_of_Requester, url, IP_of_CDNNode
-		this.balanTable.setTypes(Table.TableTypes.Ip, Table.TableTypes.URL, Table.TableTypes.Ip);
-		
+		this.balanTable = new Table(2,0);	// Ip_Src_of_Requester, url, IP_of_CDNNode
+		this.balanTable.setTypes(Table.TableTypes.Ip, Table.TableTypes.URL);
+		this.ip_url = ip_url;
 	}
 
 	@Override
@@ -36,12 +37,13 @@ public class GlobalDnsBalancer extends NetworkFunction {
 		}
 		
 				if (packet.equalsField(PacketField.PROTO, Packet.DNS_REQUEST)){
-					TableEntry entry = balanTable.matchEntry(packet.getField(PacketField.IP_SRC), packet.getField(PacketField.URL), Verifier.ANY_VALUE);
+					TableEntry entry = balanTable.matchEntry(packet.getField(PacketField.IP_SRC), packet.getField(PacketField.URL));
 					if(entry != null){
-						P.setField(PacketField.OLD_SRC, (String) entry.getValue(2));						
+						P.setField(PacketField.INNER_DEST, ip_url);						
 						P.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 						P.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
-						return new RoutingResult(Action.FORWARD,packet,iface);
+						P.setField(PacketField.PROTO, Packet.DNS_RESPONSE);
+						return new RoutingResult(Action.FORWARD,P,iface);
 					}
 					
 				}

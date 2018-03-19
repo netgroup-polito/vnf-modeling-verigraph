@@ -37,11 +37,6 @@ public class Packet {
 	
 	public static final String  DNS_PORT_53 = "Dns_53";
 	public static final String  HTTP_PORT_80 = "Http_80";
-	/*public static final String  SIP_INVITE = "Sip_Invitation";
-	public static final String  SIP_OK = "Sip_OK";
-	public static final String  SIP_REGISTER = "Sip_Register";
-	public static final String  SIP_ENDING = "Sip_Ending";
-	*/
 	
 	private Map<PacketField, String> fields;
 	
@@ -68,6 +63,16 @@ public class Packet {
 		String temp = this.fields.get(field);
 		if(temp!=null){
 			if(value.compareTo(temp)==0)
+				return true;
+		}
+		
+		return false;
+	}
+	public boolean notEqualsField(PacketField field, String value){
+		
+		String temp = this.fields.get(field);
+		if(temp!=null){
+			if(value.compareTo(temp)!=0)
 				return true;
 		}
 		

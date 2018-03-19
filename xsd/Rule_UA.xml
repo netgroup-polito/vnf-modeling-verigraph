@@ -4,17 +4,34 @@
     <DataDriven>false</DataDriven>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
-    <Node Name="n_UserAgentClient"/>
+    <Node Name="n_UA"/>
     <Packet Name="p_0"/>
     <Packet Name="p_1"/>
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_UserAgentClient</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                </Send>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_UA</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>SIP_INVITE_OK</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
@@ -25,7 +42,7 @@
                             <Expression>
 <Recv>
     <Source>n_1</Source>
-    <Destination>n_UserAgentClient</Destination>
+    <Destination>n_UA</Destination>
     <Packet_in>p_1</Packet_in>
 </Recv>
                             </Expression>
@@ -79,19 +96,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PROTO</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>SIP_OK</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>ORIGIN</Field>
         </FieldOf>
     </LeftExpression>
@@ -256,11 +260,28 @@
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_UserAgentClient</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                </Send>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_UA</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>SIP_END</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
@@ -271,7 +292,7 @@
                             <Expression>
 <Recv>
     <Source>n_1</Source>
-    <Destination>n_UserAgentClient</Destination>
+    <Destination>n_UA</Destination>
     <Packet_in>p_1</Packet_in>
 </Recv>
                             </Expression>
@@ -284,7 +305,7 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>SIP_OK</Param>
+        <Param>SIP_INVITE_OK</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -317,19 +338,6 @@
             <Unit>p_1</Unit>
             <Field>IP_SRC</Field>
         </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PROTO</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>SIP_ENDING</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -502,14 +510,44 @@
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_UserAgentClient</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                </Send>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_UA</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>SIP_REGISTE</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <And>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>IP_SRC</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>ip_caller</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
                     <Expression>
                         <Equal>
                             <LeftExpression>
@@ -532,20 +570,7 @@
 </FieldOf>
                             </LeftExpression>
                             <RightExpression>
-<Param>num_Callee</Param>
-                            </RightExpression>
-                        </Equal>
-                    </Expression>
-                    <Expression>
-                        <Equal>
-                            <LeftExpression>
-<FieldOf>
-    <Unit>p_0</Unit>
-    <Field>PROTO</Field>
-</FieldOf>
-                            </LeftExpression>
-                            <RightExpression>
-<Param>SIP_INVITE</Param>
+<Param>num</Param>
                             </RightExpression>
                         </Equal>
                     </Expression>
