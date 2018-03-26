@@ -73,6 +73,7 @@ public class ClassVisitor extends ASTVisitor {
 		node.accept(new ASTVisitor() {
 			public boolean visit(SimpleType node){
 				variableTypeName = node.getName().getFullyQualifiedName();
+				System.out.println("--------->find variableTypeName="+variableTypeName);
 				return false;
 			}
 		});
@@ -81,9 +82,10 @@ public class ClassVisitor extends ASTVisitor {
 		/* We have a list because a declaration statement can contain multiple decls separated by commas */
 		for(VariableDeclarationFragment fragment : (List<VariableDeclarationFragment>)fragments)
 		{
-			//System.out.println("\tVariable decl. found => " + fragment.getName() + " = " + fragment.getInitializer());
+			System.out.println("\tVariable decl. found => " + fragment.getName() + " = " + fragment.getInitializer());
 			// put the variable in the map
 			Variable v = new Variable(fragment.getName().toString(), fragment.getInitializer(), Type.GENERIC, variableTypeName);
+			System.out.println("-------->my printer: "+v);
 			if(aVisitor.foundAnnotation())
 			{
 				/* We have two types of class member we are interested in: CONF member (like CONSTANTS) and the TABLE */
@@ -121,10 +123,9 @@ public class ClassVisitor extends ASTVisitor {
 	public boolean visit(MethodDeclaration node) {
 		//System.out.println("Variables -> " + variables.size());
 		String methodName = node.getName().toString();
-		if(!methodName.equals(Constants.MAIN_NF_METHOD) && !methodName.equals(classContext.getClassName())) // Check the method name
+		if(!methodName.equals(Constants.MAIN_NF_METHOD) && !methodName.equals(classContext.getClassName()) && !methodName.equals(Constants.DEFINE_SENDING_PACKET_METHOD)) // Check the method name
 			return true;
 		/* We have found the main method (with a standard name) */
-		
 		MethodContext methodContext = new MethodContext(methodName, classContext);
 		classContext.addMethodContext(methodContext);
 		

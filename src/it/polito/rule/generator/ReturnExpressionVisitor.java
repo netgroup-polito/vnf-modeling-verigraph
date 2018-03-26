@@ -3,6 +3,7 @@ package it.polito.rule.generator;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
@@ -20,7 +21,12 @@ public class ReturnExpressionVisitor extends ASTVisitor {
 		this.ruleContext = ruleContext;
 		this.packetField = packetField;
 	}
-	
+/*	public boolean visit(NullLiteral node){
+		ruleContext.generateRuleForPrivateAddress(packetField);
+		System.out.println("----------OK,ReturnExpressionVisitor line26 come to find  'nullLiteral' packet value");
+		return false;
+	}
+*/	
 	public boolean visit(CastExpression node){
 		node.getExpression().accept(this);
 		
@@ -30,7 +36,8 @@ public class ReturnExpressionVisitor extends ASTVisitor {
 	
 	public boolean visit(MethodInvocation node){
 		counterFlag++;
-		node.getExpression().accept(this);
+		if(node.getExpression()!=null)
+			node.getExpression().accept(this);
 		//TODO evaluate if methodName is necessary for improving rule generation 
 		if(counterFlag == 0){
 			ruleContext.generateRuleForExitingPacket(packetField, node);
@@ -51,7 +58,7 @@ public class ReturnExpressionVisitor extends ASTVisitor {
 	}
 	
 	
-	public boolean visit(StringLiteral node){
+	public boolean visit(StringLiteral node){	//-->String.valueOf(new_port)
 		variableName = node.getLiteralValue();
 		counterFlag++;
 		if(counterFlag == 0){

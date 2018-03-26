@@ -17,7 +17,7 @@ public class Antispam extends NetworkFunction {
 		
 		this.keywords = new ArrayList<String>(keywords);
 		this.antiSpamTable = new Table(1,0);
-		this.antiSpamTable.setTypes(Table.TableTypes.ApplicationData);
+		this.antiSpamTable.setTypes(Table.TableTypes.BodyData);
 		for(String key : this.keywords){
 			TableEntry e = new TableEntry(1);
 			e.setValue(0, key);
@@ -29,9 +29,9 @@ public class Antispam extends NetworkFunction {
 	@Override
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
 		
-		TableEntry e = antiSpamTable.matchEntry(packet.getField(PacketField.L7DATA));
+		TableEntry e = antiSpamTable.matchEntry(packet.getField(PacketField.EMAIL_FROM));
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.POP3_REQUEST) || (packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.POP3_RESPONSE) && e == null)){		
+		if(packet.equalsField(PacketField.PROTO,Packet.POP3_REQUEST) || (packet.equalsField(PacketField.PROTO,Packet.POP3_RESPONSE) && e == null)){		
 			return new RoutingResult(Action.FORWARD, packet, iface);
 		}else			
 			return new RoutingResult(Action.DROP, null, null);

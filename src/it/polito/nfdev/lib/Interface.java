@@ -10,6 +10,7 @@ public class Interface {
 	
 	public enum Type{INTERNAL, EXTERNAL};
 	
+	public String IP_ADRESS; //--used by arpTable and routeTable in 'vRouter' function
 	
 	private Type interfaceType;
 	

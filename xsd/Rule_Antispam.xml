@@ -2,14 +2,12 @@
 <Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
     <TableSize>1</TableSize>
     <DataDriven>false</DataDriven>
-    <TableFields>ApplicationData</TableFields>
+    <TableFields>BodyData</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
     <Node Name="n_Antispam"/>
     <Packet Name="p_0"/>
     <Packet Name="p_1"/>
-    <Time Name="t_0"/>
-    <Time Name="t_1"/>
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
@@ -17,14 +15,12 @@
                     <Source>n_Antispam</Source>
                     <Destination>n_0</Destination>
                     <Packet_out>p_0</Packet_out>
-                    <Time_out>t_0</Time_out>
                 </Send>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
                     <Unit>n_1</Unit>
                     <Unit>p_1</Unit>
-                    <Unit>t_1</Unit>
                     <Expression>
                         <And>
                             <Expression>
@@ -32,18 +28,7 @@
     <Source>n_1</Source>
     <Destination>n_Antispam</Destination>
     <Packet_in>p_1</Packet_in>
-    <Time_in>t_1</Time_in>
 </Recv>
-                            </Expression>
-                            <Expression>
-<LessThan>
-    <LeftExpression>
-        <Param>t_1</Param>
-    </LeftExpression>
-    <RightExpression>
-        <Param>t_0</Param>
-    </RightExpression>
-</LessThan>
                             </Expression>
                             <Expression>
 <Or>
@@ -52,7 +37,7 @@
             <LeftExpression>
                 <FieldOf>
                     <Unit>p_1</Unit>
-                    <Field>APPLICATION_PROTOCOL</Field>
+                    <Field>PROTO</Field>
                 </FieldOf>
             </LeftExpression>
             <RightExpression>
@@ -67,7 +52,7 @@
                     <LeftExpression>
                         <FieldOf>
                             <Unit>p_1</Unit>
-                            <Field>APPLICATION_PROTOCOL</Field>
+                            <Field>PROTO</Field>
                         </FieldOf>
                     </LeftExpression>
                     <RightExpression>
@@ -81,7 +66,7 @@
                         <MatchEntry>
                             <Value>
 <Unit>p_1</Unit>
-<Field>L7DATA</Field>
+<Field>EMAIL_FROM</Field>
                             </Value>
                         </MatchEntry>
                     </Expression>
@@ -160,13 +145,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>TRANSPORT_PROTOCOL</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -176,13 +161,13 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>ORIGIN</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>APPLICATION_PROTOCOL</Field>
+            <Field>ORIGIN</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -192,13 +177,141 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>L7DATA</Field>
+            <Field>ORIG_BODY</Field>
         </FieldOf>
     </LeftExpression>
     <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>L7DATA</Field>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

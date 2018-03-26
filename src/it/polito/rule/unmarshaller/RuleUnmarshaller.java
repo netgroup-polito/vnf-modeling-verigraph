@@ -28,11 +28,16 @@ import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.xml.sax.SAXException;
+
+import com.microsoft.z3.BoolExpr;
+//import com.microsoft.z3.AST;
+import com.microsoft.z3.IntExpr;
 
 import it.polito.nfdev.jaxb.ExpressionObject;
 import it.polito.nfdev.jaxb.ExpressionResult;
@@ -82,6 +87,22 @@ class RuleUnmarshaller {
 		constants.add("HTTP_RESPONSE");
 		constants.add("POP3_REQUEST");
 		constants.add("POP3_RESPONSE");
+		constants.add("DNS_REQUEST");
+		constants.add("DNS_RESPONSE");
+		constants.add("DNS_PORT_53");
+		constants.add("HTTP_PORT_80");
+		constants.add("SIP_INVITE");
+		constants.add("SIP_INVITE_OK");
+		constants.add("SIP_REGISTE_OK");
+		constants.add("SIP_REGISTE");
+		constants.add("SIP_END");
+		constants.add("null");
+		constants.add("true");
+		constants.add("false");
+	//	constants.add("ip_sipServer");	// if not add these leements, they will be requested when install this model
+	//	constants.add("REQUESTED_URL");
+	/*	constants.add("new_port");
+		constants.add("value_0");*/
 		
 		JAXBContext context;
 		try {
@@ -112,12 +133,12 @@ class RuleUnmarshaller {
 	
 	public MethodDeclaration generateRule(){
 		
-		if(reuslt.getLogicalExpressionResult().size() < 1 || reuslt.getNodeOrPacketOrTime().size() < 1)	
+		if(reuslt.getLogicalExpressionResult().size() < 1 || reuslt.getNodeOrPacket().size() < 1)	
 			return null;
 		
 		logicalUnits = new ArrayList<>();
 		
-		for(LogicalUnit temp : reuslt.getNodeOrPacketOrTime())
+		for(LogicalUnit temp : reuslt.getNodeOrPacket())
 			logicalUnits.add(temp.getName());
 		
 		MethodDeclaration method = ast.newMethodDeclaration();
@@ -132,7 +153,7 @@ class RuleUnmarshaller {
 		method.setBody(ast.newBlock());
 		
 		
-		for(LogicalUnit temp : reuslt.getNodeOrPacketOrTime()){
+		for(LogicalUnit temp : reuslt.getNodeOrPacket()){
 			char firstChar = temp.getName().charAt(0);
 			if(Character.compare(firstChar, 'n')==0 || Character.compare(firstChar, 'p')==0 || Character.compare(firstChar, 't')==0){
 				if(Character.compare(firstChar, 'n')==0 && !Character.isDigit(temp.getName().charAt(2)))
@@ -306,7 +327,7 @@ class RuleUnmarshaller {
 			ArrayCreation ac = ast.newArrayCreation();
 			ac.setType(ast.newArrayType(ast.newSimpleType(ast.newName("Expr"))));
 			ArrayInitializer ai = ast.newArrayInitializer();
-			ai.expressions().add(ast.newName("t_"+counter));
+		//	ai.expressions().add(ast.newName("t_"+counter));
 			ai.expressions().add(ast.newName("p_"+counter));
 			ai.expressions().add(ast.newName("n_"+counter));
 			counter++;
@@ -338,6 +359,7 @@ class RuleUnmarshaller {
 	}
 	
 
+	//@SuppressWarnings("unchecked")
 	private Expression getType(ExpressionObject obj){
 		if(obj.getAnd()!=null){
 			
@@ -387,9 +409,33 @@ class RuleUnmarshaller {
 		}else if(obj.getParam()!=null){
 			
 			//Check if the string is a well-known constant in the netcontext class
+			
+			/*
+			 *  (BoolExpr)nctx.pf.get("encrypted").apply(p_0)
+			 *  ctx.mkNot((BoolExpr)nctx.pf.get("encrypted").apply(p_1)),
+			 *   ctx.mkEq(nctx.pf.get("inner_src").apply(p_1), nctx.am.get("null")),
+			 * 
+			 * */
+			
 			if(constants.contains(obj.getParam())){
-				
 				MethodInvocation mi = ast.newMethodInvocation();
+				if(obj.getParam().compareTo("null")==0)  // for inner_src == null
+				{
+					
+					mi.setName(ast.newSimpleName("get"));
+					
+					FieldAccess fa = ast.newFieldAccess();
+					fa.setName(ast.newSimpleName("am"));
+					fa.setExpression(ast.newName("nctx"));
+					
+					mi.setExpression(fa);
+					StringLiteral sl = ast.newStringLiteral();
+					sl.setLiteralValue("null");
+					mi.arguments().add(sl);
+				}
+				else{
+				
+				
 				mi.setName(ast.newSimpleName("mkInt"));
 				mi.setExpression(ast.newName("ctx"));
 				
@@ -397,15 +443,36 @@ class RuleUnmarshaller {
 				fa.setName(ast.newSimpleName(obj.getParam()));
 				fa.setExpression(ast.newName("nctx"));
 				mi.arguments().add(fa);
-				
+				}
 				return mi;
 			}
+		/*	try{	// used in MailServer in case the response is always 1, corresponding to the content of Antispam ( similar in webClient,EndHost)
+				Integer.parseInt(obj.getParam());
 				
+				MethodInvocation mi = ast.newMethodInvocation();
+				mi.setName(ast.newSimpleName("mkInt"));
+				mi.setExpression(ast.newName("ctx"));
+				
+				FieldAccess fa = ast.newFieldAccess();
+				System.out.println("----------param= "+obj.getParam());
+				fa.setName(ast.newSimpleName(obj.getParam()));
+				//fa.setExpression(ast.newName("nctx"));
+//				NumberLiteral num = new NumberLiteral();
+//				num.setToken(obj.getParam());
+				
+				mi.arguments().add(fa);
+				
+				return mi;
+				
+		     }catch(NumberFormatException ex){
+		  */  	 
+		     
 			
 			if(!logicalUnits.contains(obj.getParam()) && !additionalParam.contains(obj.getParam()))
 				additionalParam.add(obj.getParam());
 			
 			return ast.newSimpleName(obj.getParam());
+		  //   }
 		}else
 			return null;
 	}
@@ -462,15 +529,78 @@ class RuleUnmarshaller {
 	private Expression generateEqual(LOEquals equal) {
 
 		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName("mkEq"));
-		mi.setExpression(ast.newName("ctx"));
-	
-		
+	// when consider encrypted packet field, must construct a different z3 function.
+		if(equal.getRightExpression().getParam()!=null && (equal.getRightExpression().getParam().compareTo("true")==0 || equal.getRightExpression().getParam().compareTo("false")==0))
+		{
+			String value = equal.getRightExpression().getParam();
+			if(value.compareTo("true")==0){  //(BoolExpr)nctx.pf.get("encrypted").apply(p_1)
+				System.out.println("ruleUnmasharler line 540 equal.rightObj = true");
+				if(equal.getLeftExpression().getFieldOf()!=null){
+					CastExpression ce = ast.newCastExpression();
+					ce.setType(ast.newSimpleType(ast.newSimpleName("BoolExpr")));
+					
+					LFFieldOf fieldOf = equal.getLeftExpression().getFieldOf();
+					mi.setName(ast.newSimpleName("apply"));
+					mi.arguments().add(ast.newName(fieldOf.getUnit()));
+					MethodInvocation innerMi = ast.newMethodInvocation();
+					innerMi.setName(ast.newSimpleName("get"));
+					
+					FieldAccess fa = ast.newFieldAccess();
+					fa.setName(ast.newSimpleName("pf"));
+					fa.setExpression(ast.newName("nctx"));
+					
+					innerMi.setExpression(fa);
+					StringLiteral sl = ast.newStringLiteral();
+					sl.setLiteralValue(mapToZ3PacketField(fieldOf.getField()));
+					innerMi.arguments().add(sl);
+					
+					mi.setExpression(innerMi);
+					ce.setExpression(mi);
+					return ce;
+				}
+			}
+			if(value.compareTo("false")==0){ // ctx.mkNot((BoolExpr)nctx.pf.get("encrypted").apply(p_1)),
+				
+				MethodInvocation miNot = ast.newMethodInvocation();
+				miNot.setName(ast.newSimpleName("mkNot"));
+				miNot.setExpression(ast.newName("ctx"));
+				
+				System.out.println("ruleUnmasharler line 596 equal.rightObj = false-------");
+				if(equal.getLeftExpression().getFieldOf()!=null){
+					CastExpression ce = ast.newCastExpression();
+					ce.setType(ast.newSimpleType(ast.newSimpleName("BoolExpr")));
+					
+					LFFieldOf fieldOf = equal.getLeftExpression().getFieldOf();
+					mi.setName(ast.newSimpleName("apply"));
+					mi.arguments().add(ast.newName(fieldOf.getUnit()));
+					MethodInvocation innerMi = ast.newMethodInvocation();
+					innerMi.setName(ast.newSimpleName("get"));
+					
+					FieldAccess fa = ast.newFieldAccess();
+					fa.setName(ast.newSimpleName("pf"));
+					fa.setExpression(ast.newName("nctx"));
+					
+					innerMi.setExpression(fa);
+					StringLiteral sl = ast.newStringLiteral();
+					sl.setLiteralValue(mapToZ3PacketField(fieldOf.getField()));
+					innerMi.arguments().add(sl);
+					
+					mi.setExpression(innerMi);
+					ce.setExpression(mi);
+					miNot.arguments().add(ce);
+					return miNot;
+				}
+			}
+			
+		}
+		else{
+			mi.setName(ast.newSimpleName("mkEq"));
+			mi.setExpression(ast.newName("ctx"));
 		Expression leftExp = getType(equal.getLeftExpression());
 		mi.arguments().add(leftExp);
 		Expression rightExp = getType(equal.getRightExpression());
 		mi.arguments().add(rightExp);
-		
+		}
 		return mi;
 		
 	}
@@ -568,9 +698,12 @@ class RuleUnmarshaller {
 		ArrayCreation ac = ast.newArrayCreation();
 		ac.setType(ast.newArrayType(ast.newSimpleType(ast.newName("Expr"))));
 		ArrayInitializer ai = ast.newArrayInitializer();
-		ai.expressions().add(ast.newName("t_"+counter));
-		ai.expressions().add(ast.newName("p_"+counter));
-		ai.expressions().add(ast.newName("n_"+counter));
+		if(exist.getUnit().size()>1){
+			ai.expressions().add(ast.newName("p_"+counter));
+			ai.expressions().add(ast.newName("n_"+counter));
+		}
+		else
+			ai.expressions().add(ast.newName("p_"+counter));
 		counter++;
 		
 		ac.setInitializer(ai);
@@ -605,7 +738,7 @@ class RuleUnmarshaller {
 		mi.arguments().add(ast.newName(send.getSource()));
 		mi.arguments().add(ast.newName(send.getDestination()));
 		mi.arguments().add(ast.newName(send.getPacketOut()));
-		mi.arguments().add(ast.newName(send.getTimeOut()));
+	//	mi.arguments().add(ast.newName(send.getTimeOut()));
 		
 		ce.setExpression(mi);
 		return ce;
@@ -629,7 +762,7 @@ class RuleUnmarshaller {
 		mi.arguments().add(ast.newName(recv.getSource()));
 		mi.arguments().add(ast.newName(recv.getDestination()));
 		mi.arguments().add(ast.newName(recv.getPacketIn()));
-		mi.arguments().add(ast.newName(recv.getTimeIn()));
+	//	mi.arguments().add(ast.newName(recv.getTimeIn()));
 		
 		ce.setExpression(mi);
 		return ce;
@@ -638,11 +771,13 @@ class RuleUnmarshaller {
 
 
 	private Expression generateFieldOf(LFFieldOf fieldOf) {
+		//(IntExpr)src_port.apply(p_0)
 		
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("apply"));
 		mi.arguments().add(ast.newName(fieldOf.getUnit()));
-		
+		if((fieldOf.getField().compareTo(Constants.PORT_SOURCE) != 0) && (fieldOf.getField().compareTo(Constants.PORT_DESTINATION) != 0)){
+			
 		MethodInvocation innerMi = ast.newMethodInvocation();
 		innerMi.setName(ast.newSimpleName("get"));
 		
@@ -656,6 +791,23 @@ class RuleUnmarshaller {
 		innerMi.arguments().add(sl);
 		
 		mi.setExpression(innerMi);
+		}
+		else if(fieldOf.getField().compareTo(Constants.PORT_SOURCE) == 0){
+			FieldAccess fa = ast.newFieldAccess();
+			fa.setName(ast.newSimpleName("src_port"));
+			fa.setExpression(ast.newName("nctx"));
+			
+			mi.setExpression(fa);
+			
+		}
+		else{
+			FieldAccess fa = ast.newFieldAccess();
+			fa.setName(ast.newSimpleName("dest_port"));
+			fa.setExpression(ast.newName("nctx"));
+			
+			mi.setExpression(fa);
+		}
+		
 		return mi;
 		
 	}
@@ -706,9 +858,11 @@ class RuleUnmarshaller {
 		ce.setExpression(mi);
 		
 		
-		for(Object temp : matchEntry.getValue())
+		for(LFFieldOf temp : matchEntry.getValue()){
 			mi.arguments().add(generateFieldOf((LFFieldOf)temp));
-		
+//		System.out.println("----------------??????????????"+temp.getField());
+//		System.out.println("------Z3----------??????????????"+mapToZ3PacketField(temp.getField()));
+		}
 		
 	return ce;
 		
@@ -719,12 +873,6 @@ class RuleUnmarshaller {
 		
 		switch(field){
 		
-			case Constants.ETH_SOURCE:
-				return Constants.Z3_ETH_SOURCE;
-				
-			case Constants.ETH_DESTINATION:
-				return Constants.Z3_ETH_DESTINATION;
-				
 			case Constants.IP_SOURCE:
 				return Constants.Z3_IP_SOURCE;
 				
@@ -736,15 +884,41 @@ class RuleUnmarshaller {
 				
 			case Constants.PORT_DESTINATION:
 				return Constants.Z3_PORT_DESTINATION;
+			
+			case Constants.PROTO:
+				return Constants.Z3_PROTO;
+	
+			case Constants.ORIGIN:
+				return Constants.Z3_ORIGIN;
 				
-			case Constants.TRANSPORT_PROTOCOL:
-				return Constants.Z3_TRANSPORT_PROTOCOL;
+			case Constants.ORIG_BODY:
+				return Constants.Z3_ORIG_BODY;
 				
-			case Constants.APPLICATION_PROTOCOL:
-				return Constants.Z3_APPLICATION_PROTOCOL;
+			case Constants.BODY:
+				return Constants.Z3_BODY;
 				
-			case Constants.L7DATA:
-				return Constants.Z3_L7DATA;
+			case Constants.SEQUENCE:
+				return Constants.Z3_SEQUENCE;
+				
+			case Constants.EMAIL_FROM:
+				return Constants.Z3_EMAIL_FROM;
+				
+			case Constants.URL:
+				return Constants.Z3_URL;
+				
+			case Constants.OPTIONS:
+				return Constants.Z3_OPTIONS;
+			
+			case Constants.INNER_SRC:
+				return Constants.Z3_INNER_SRC;
+				
+			case Constants.INNER_DEST:
+				return Constants.Z3_INNER_DEST;
+				
+			case Constants.ENCRYPTED:
+				return Constants.Z3_ENCRYPTED;
+				
+			
 							
 		}
 		

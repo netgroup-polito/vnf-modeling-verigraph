@@ -76,8 +76,10 @@ public class ClassGenerator {
 		this.imports = new ArrayList<String[]>();
 
 		fileNameXml = "./xsd/Rule_" + className + ".xml";
-		fileNameJava = "./xsd/java/Rule_" + className + ".java";
-
+	//	fileNameJava = "./xsd/java/Rule_" + className + ".java";
+		
+		fileNameJava = "C:/Users/Rui/git/verigraph-timeless/src/ruiNFs/Rule_" + className + ".java";
+		
 		imports.add(new String[] { "java", "util", "List" });
 		imports.add(new String[] { "java", "util", "ArrayList" });
 		imports.add(new String[] { "com", "microsoft", "z3", "BoolExpr" });
@@ -88,10 +90,10 @@ public class ClassGenerator {
 		imports.add(new String[] { "com", "microsoft", "z3", "IntExpr" });
 		imports.add(new String[] { "com", "microsoft", "z3", "Solver" });
 		imports.add(new String[] { "com", "microsoft", "z3", "Sort" });
-		imports.add(new String[] { "mcnet", "components", "NetContext" });
-		imports.add(new String[] { "mcnet", "components", "Network" });
-		imports.add(new String[] { "mcnet", "components", "NetworkObject" });
-		imports.add(new String[] { "mcnet", "components", "Tuple" });
+		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "NetContext" });
+		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "Network" });
+		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "NetworkObject" });
+		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "Tuple" });
 
 		this.ast = AST.newAST(AST.JLS3);
 		this.cu = ast.newCompilationUnit();
@@ -121,7 +123,8 @@ public class ClassGenerator {
 			
 			
 			PackageDeclaration pd = ast.newPackageDeclaration();
-			pd.setName(ast.newName(new String[] { "mcnet", "netobjs", "generated" }));
+		//	pd.setName(ast.newName(new String[] { "mcnet", "netobjs", "generated" }));
+			pd.setName(ast.newName(new String[] { "ruiNFs" }));
 			cu.setPackage(pd);
 
 			for (String[] temp : imports) {
@@ -544,7 +547,7 @@ public class ClassGenerator {
 
 			for (int i = 0; i < tableSize; i++) {
 				
-				if(tableTypes.get(0).compareTo(Constants.ENUM_IP)==0){
+				if(tableTypes.get(i).compareTo(Constants.ENUM_IP)==0){
 					FieldAccess tempFa = ast.newFieldAccess();
 					tempFa.setName(ast.newSimpleName("address"));
 					tempFa.setExpression(ast.newName("nctx"));

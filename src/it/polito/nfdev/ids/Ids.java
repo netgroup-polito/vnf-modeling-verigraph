@@ -20,7 +20,7 @@ public class Ids extends NetworkFunction {
 		super(new ArrayList<Interface>());
 		
 		this.blackList = new Table(1, 0);
-		this.blackList.setTypes(Table.TableTypes.ApplicationData);
+		this.blackList.setTypes(Table.TableTypes.URL);
 	}
 	
 	public Ids(List<String> rules){
@@ -42,24 +42,16 @@ public class Ids extends NetworkFunction {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST)){
-			TableEntry e = blackList.matchEntry(packet.getField(PacketField.L7DATA));
+		if(packet.equalsField(PacketField.PROTO, Packet.HTTP_REQUEST) || packet.equalsField(PacketField.PROTO, Packet.HTTP_RESPONSE)){
+			TableEntry e = blackList.matchEntry(packet.getField(PacketField.URL));
 			
 			if(e!=null)
 				return new RoutingResult(Action.DROP,null,null);
+			else
+				return new RoutingResult(Action.FORWARD,p,iface);
 			
-			return new RoutingResult(Action.FORWARD,p,iface);
 			
-			
-		}else if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE)){
-			TableEntry e = blackList.matchEntry(packet.getField(PacketField.L7DATA));
-			
-			if(e!=null)
-				return new RoutingResult(Action.DROP,null,null);
-			
-			return new RoutingResult(Action.FORWARD,p,iface);
 		}
-		
 		return new RoutingResult(Action.DROP,null,null);
 	}
 	

@@ -109,8 +109,8 @@ public class StatementContext {
 		this.skippedActions = skippedActions;
 	}
 
-	public ReturnSnapshot createSnapshot(String packetName, String interfaceName){
-		return new ReturnSnapshot(methodContext, conditions, previousConditions, returnPredicates, packetName, interfaceName, nestingLevel);
+	public ReturnSnapshot createSnapshot(String packetName, String interfaceName, boolean isInitialPacket){
+		return new ReturnSnapshot(methodContext, conditions, previousConditions, returnPredicates, packetName, interfaceName, nestingLevel, isInitialPacket);
 	}
 
 	public boolean isDeadCode() {

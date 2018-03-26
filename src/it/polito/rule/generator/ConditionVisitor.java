@@ -188,7 +188,7 @@ public class ConditionVisitor extends ASTVisitor {
 					exp = factory.createExpressionObject();
 					exp.setNot(not);
 				}else{
-					exp = visitor.exp.getNot().getExpression();
+					exp = visitor.exp.getNot().getExpression();  //(!! double not)
 				}
 
 				return false;
@@ -210,8 +210,8 @@ public class ConditionVisitor extends ASTVisitor {
 				return false;
 			}	
 		});
-		
-		exp = ruleContext.generateRuleForMethod(varName.toString(), node);
+		//TODO RuleForMethod() Conditionvisitor iface.isInternal() or equalsField()
+		exp = ruleContext.generateRuleForMethod(varName.toString(), node);  // --> iface.isInternal() or equalsField()
 		return false;
 	}
 	

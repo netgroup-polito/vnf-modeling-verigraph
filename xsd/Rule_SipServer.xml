@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
+    <TableSize>2</TableSize>
+    <DataDriven>true</DataDriven>
+    <TableFields>BodyData</TableFields>
+    <TableFields>Ip</TableFields>
+    <Node Name="n_0"/>
+    <Node Name="n_1"/>
+    <Node Name="n_2"/>
+    <Node Name="n_SipServer"/>
+    <Packet Name="p_0"/>
+    <Packet Name="p_1"/>
+    <Packet Name="p_2"/>
+    <Packet Name="p_3"/>
+    <LogicalExpressionResult>
+        <Implies>
+            <AntecedentExpression>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_SipServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>SIP_REGISTE_OK</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
+            </AntecedentExpression>
+            <ConsequentExpression>
+                <Exist>
+                    <Unit>n_1</Unit>
+                    <Unit>p_1</Unit>
+                    <Expression>
+                        <And>
+                            <Expression>
+<Recv>
+    <Source>n_1</Source>
+    <Destination>n_SipServer</Destination>
+    <Packet_in>p_1</Packet_in>
+</Recv>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>SIP_REGISTE</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>ip_sipServer</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                        </And>
+                    </Expression>
+                </Exist>
+            </ConsequentExpression>
+        </Implies>
+    </LogicalExpressionResult>
+    <LogicalExpressionResult>
+        <Implies>
+            <AntecedentExpression>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_SipServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>URL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>domain</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
+            </AntecedentExpression>
+            <ConsequentExpression>
+                <Exist>
+                    <Unit>n_1</Unit>
+                    <Unit>p_1</Unit>
+                    <Expression>
+                        <And>
+                            <Expression>
+<Recv>
+    <Source>n_1</Source>
+    <Destination>n_SipServer</Destination>
+    <Packet_in>p_1</Packet_in>
+</Recv>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>SIP_INVITE</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>ip_sipServer</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>domain</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Exist>
+    <Unit>n_2</Unit>
+    <Unit>p_2</Unit>
+    <Expression>
+        <And>
+            <Expression>
+                <Recv>
+                    <Source>n_2</Source>
+                    <Destination>n_SipServer</Destination>
+                    <Packet_in>p_2</Packet_in>
+                </Recv>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_0</Unit>
+                            <Field>IP_DST</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>IP_SRC</Field>
+                        </FieldOf>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+        </And>
+    </Expression>
+</Exist>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                        </And>
+                    </Expression>
+                </Exist>
+            </ConsequentExpression>
+        </Implies>
+    </LogicalExpressionResult>
+    <LogicalExpressionResult>
+        <Implies>
+            <AntecedentExpression>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_SipServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Not>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>domain</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                        </Not>
+                    </Expression>
+                </And>
+            </AntecedentExpression>
+            <ConsequentExpression>
+                <Exist>
+                    <Unit>n_1</Unit>
+                    <Unit>p_1</Unit>
+                    <Expression>
+                        <And>
+                            <Expression>
+<Recv>
+    <Source>n_1</Source>
+    <Destination>n_SipServer</Destination>
+    <Packet_in>p_1</Packet_in>
+</Recv>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>SIP_INVITE</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>ip_sipServer</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Not>
+    <Expression>
+        <Equal>
+            <LeftExpression>
+                <FieldOf>
+                    <Unit>p_1</Unit>
+                    <Field>URL</Field>
+                </FieldOf>
+            </LeftExpression>
+            <RightExpression>
+                <Param>domain</Param>
+            </RightExpression>
+        </Equal>
+    </Expression>
+</Not>
+                            </Expression>
+                            <Expression>
+<Exist>
+    <Unit>n_2</Unit>
+    <Unit>p_2</Unit>
+    <Expression>
+        <And>
+            <Expression>
+                <Send>
+                    <Source>n_SipServer</Source>
+                    <Destination>n_2</Destination>
+                    <Packet_out>p_2</Packet_out>
+                </Send>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>IP_SRC</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <Param>ip_sipServer</Param>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>IP_DST</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <Param>ip_dns</Param>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>PROTO</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <Param>DNS_REQUEST</Param>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>URL</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <FieldOf>
+                            <Unit>p_1</Unit>
+                            <Field>URL</Field>
+                        </FieldOf>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+        </And>
+    </Expression>
+</Exist>
+                            </Expression>
+                            <Expression>
+<Exist>
+    <Unit>p_3</Unit>
+    <Expression>
+        <And>
+            <Expression>
+                <Recv>
+                    <Source>n_2</Source>
+                    <Destination>n_SipServer</Destination>
+                    <Packet_in>p_3</Packet_in>
+                </Recv>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_3</Unit>
+                            <Field>IP_SRC</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>IP_DST</Field>
+                        </FieldOf>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_3</Unit>
+                            <Field>IP_DST</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>IP_SRC</Field>
+                        </FieldOf>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_3</Unit>
+                            <Field>PROTO</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <Param>DNS_RESPONSE</Param>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_3</Unit>
+                            <Field>URL</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <FieldOf>
+                            <Unit>p_2</Unit>
+                            <Field>URL</Field>
+                        </FieldOf>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+            <Expression>
+                <Not>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_3</Unit>
+    <Field>INNER_DEST</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>null</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </Not>
+            </Expression>
+            <Expression>
+                <Equal>
+                    <LeftExpression>
+                        <FieldOf>
+                            <Unit>p_0</Unit>
+                            <Field>IP_DST</Field>
+                        </FieldOf>
+                    </LeftExpression>
+                    <RightExpression>
+                        <FieldOf>
+                            <Unit>p_3</Unit>
+                            <Field>INNER_DEST</Field>
+                        </FieldOf>
+                    </RightExpression>
+                </Equal>
+            </Expression>
+        </And>
+    </Expression>
+</Exist>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                        </And>
+                    </Expression>
+                </Exist>
+            </ConsequentExpression>
+        </Implies>
+    </LogicalExpressionResult>
+    <LogicalExpressionResult>
+        <Implies>
+            <AntecedentExpression>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_SipServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>SIP_INVITE_OK</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
+            </AntecedentExpression>
+            <ConsequentExpression>
+                <Exist>
+                    <Unit>n_1</Unit>
+                    <Unit>p_1</Unit>
+                    <Expression>
+                        <And>
+                            <Expression>
+<Recv>
+    <Source>n_1</Source>
+    <Destination>n_SipServer</Destination>
+    <Packet_in>p_1</Packet_in>
+</Recv>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>SIP_INVITE_OK</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                        </And>
+                    </Expression>
+                </Exist>
+            </ConsequentExpression>
+        </Implies>
+    </LogicalExpressionResult>
+    <LogicalExpressionResult>
+        <Implies>
+            <AntecedentExpression>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_SipServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>SIP_END</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
+            </AntecedentExpression>
+            <ConsequentExpression>
+                <Exist>
+                    <Unit>n_1</Unit>
+                    <Unit>p_1</Unit>
+                    <Expression>
+                        <And>
+                            <Expression>
+<Recv>
+    <Source>n_1</Source>
+    <Destination>n_SipServer</Destination>
+    <Packet_in>p_1</Packet_in>
+</Recv>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>PROTO</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <Param>SIP_END</Param>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_DST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIGIN</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ORIG_BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>BODY</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>SEQUENCE</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>EMAIL_FROM</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>URL</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>OPTIONS</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_SRC</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>INNER_DEST</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                            <Expression>
+<Equal>
+    <LeftExpression>
+        <FieldOf>
+            <Unit>p_0</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>ENCRYPTED</Field>
+        </FieldOf>
+    </RightExpression>
+</Equal>
+                            </Expression>
+                        </And>
+                    </Expression>
+                </Exist>
+            </ConsequentExpression>
+        </Implies>
+    </LogicalExpressionResult>
+</Result>

@@ -25,21 +25,12 @@ public class AclFirewall extends NetworkFunction {
 	@Override
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
 		
-		if(iface.isInternal()){
 			TableEntry entry = aclTable.matchEntry(packet.getField(PacketField.IP_SRC),packet.getField(PacketField.IP_DST));
 			if(entry!=null)
 				return new RoutingResult(Action.DROP,null,null);
 
-			return new RoutingResult(Action.FORWARD,packet,externalInterface);
+			return new RoutingResult(Action.FORWARD,packet,iface);
 			
-		}else{
-			TableEntry entry = aclTable.matchEntry(packet.getField(PacketField.IP_SRC),packet.getField(PacketField.IP_DST));
-			if(entry!=null)
-				return new RoutingResult(Action.DROP,null,null);
-
-			return new RoutingResult(Action.FORWARD,packet,internalInterface);
-		}
-		
 	}
 	
 	public boolean addAclRule(String ipSrc, String ipDst){

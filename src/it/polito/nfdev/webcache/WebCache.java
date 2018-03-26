@@ -45,8 +45,8 @@ public class WebCache extends NetworkFunction {
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
 		if(iface.isInternal())
 		{
-			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_REQUEST)){
-				TableEntry entry = cacheTable.matchEntry(packet.getField(PacketField.L7DATA), Verifier.ANY_VALUE);
+			if(packet.equalsField(PacketField.PROTO,Packet.HTTP_REQUEST)){
+				TableEntry entry = cacheTable.matchEntry(packet.getField(PacketField.URL), Verifier.ANY_VALUE);
 				if(entry != null)
 				{
 					Packet p = null;
@@ -56,25 +56,26 @@ public class WebCache extends NetworkFunction {
 						p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 						p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 						p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
-						p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE);
-						p.setField(PacketField.L7DATA, (String)entry.getValue(0));
+						p.setField(PacketField.PROTO, Packet.HTTP_RESPONSE);
+						p.setField(PacketField.URL, (String)entry.getValue(0));
 						return new RoutingResult(Action.FORWARD, p, internalInterface);
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 						return new RoutingResult(Action.DROP, null, null);
 					}
-				}
+				}else
+					return new RoutingResult(Action.FORWARD, packet, externalInterface);
 			}
-			return new RoutingResult(Action.FORWARD, packet, externalInterface);
+			return new RoutingResult(Action.DROP, null, null);
 			
 		}
 		else
 		{
-			if(packet.equalsField(PacketField.APPLICATION_PROTOCOL,Packet.HTTP_RESPONSE)){
+			if(packet.equalsField(PacketField.PROTO,Packet.HTTP_RESPONSE)){
 				try {
-					Content content = new Content(new URL(packet.getField(PacketField.L7DATA)));
+					Content content = new Content(new URL(packet.getField(PacketField.URL)));
 					CacheTableEntry cacheEntry = new CacheTableEntry(2);
-					cacheEntry.setValue(0, packet.getField(PacketField.L7DATA));
+					cacheEntry.setValue(0, packet.getField(PacketField.URL));
 					cacheEntry.setValue(1, content);
 					cacheTable.storeEntry(cacheEntry);
 					return new RoutingResult(Action.FORWARD, packet, internalInterface);
@@ -86,10 +87,7 @@ public class WebCache extends NetworkFunction {
 			return new RoutingResult(Action.FORWARD, packet, internalInterface);
 			
 		}
-		/*if(iface.isInternal())
-			return new RoutingResult(Action.FORWARD, packet, externalInterface);
-		else
-			return new RoutingResult(Action.FORWARD, packet, internalInterface);*/
+		
 	}
 
 }

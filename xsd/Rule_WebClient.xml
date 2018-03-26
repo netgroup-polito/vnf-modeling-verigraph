@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Result xmlns="http://www.example.org/LogicalExpressions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LogicalExpressions LogicalExpressions.xsd">
+    <TableSize>0</TableSize>
+    <DataDriven>false</DataDriven>
+    <Node Name="n_0"/>
+    <Node Name="n_WebClient"/>
+    <Packet Name="p_0"/>
+    <LogicalExpressionResult>
+        <Implies>
+            <AntecedentExpression>
+                <Send>
+                    <Source>n_WebClient</Source>
+                    <Destination>n_0</Destination>
+                    <Packet_out>p_0</Packet_out>
+                </Send>
+            </AntecedentExpression>
+            <ConsequentExpression>
+                <And>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>IP_SRC</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>ip_EndHost</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>IP_DST</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>ip_WebServer</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>HTTP_REQUEST</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>URL</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>REQUESTED_URL</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
+            </ConsequentExpression>
+        </Implies>
+    </LogicalExpressionResult>
+</Result>

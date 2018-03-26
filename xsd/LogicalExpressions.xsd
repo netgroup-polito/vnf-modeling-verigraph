@@ -19,11 +19,11 @@
 			<field xpath="@Name"></field>
 		</key>
 		
-		<key name="TimeNameKey">
+	<!-- 	<key name="TimeNameKey">
 			<selector xpath="tns:Time"></selector>
 			<field xpath="@Name"></field>
 		</key>
-		
+	 -->	
 		<!-- keyref name="PacketRecvRef" refer="tns:PacketNameKey">
 			<selector xpath=".//tns:Recv"></selector>
 			<field xpath="@Packet_in"></field>
@@ -77,7 +77,7 @@
 			<choice maxOccurs="unbounded">
 				<element name="Node" type="tns:LU_Node"></element>
 				<element name="Packet" type="tns:LU_Packet"></element>
-				<element name="Time" type="tns:LU_Time"></element>
+			<!--  	<element name="Time" type="tns:LU_Time"></element>	-->
 			</choice>
 			<element name="LogicalExpressionResult" maxOccurs="unbounded" type="tns:ExpressionObject"></element>
 		</sequence>
@@ -214,14 +214,14 @@
     	</complexContent>			 		
     </complexType> 
     
-    <complexType name="LU_Time">
+  <!--    <complexType name="LU_Time">
     	<complexContent>
     		<extension base="tns:LogicalUnit">
     			<attribute name="Value" type="string"></attribute>
     		</extension>
     	</complexContent>
     </complexType>
-    
+  -->  
     <complexType name="LF_Send"> 
     	<complexContent>
     		<extension base="tns:LogicalFunction">
@@ -229,7 +229,7 @@
 					<element name="Source" type="string"></element>
 					<element name="Destination" type="string"></element>
 					<element name="Packet_out" type="string"></element>
-					<element name="Time_out" type="string"></element>
+				<!--  	<element name="Time_out" type="string"></element>  -->
 				</sequence>
     		</extension>
     	</complexContent>
@@ -244,7 +244,7 @@
 					<element name="Source" type="string"></element>
 					<element name="Destination" type="string"></element>
 					<element name="Packet_in" type="string"></element>
-					<element name="Time_in" type="string"></element>
+			<!--  		<element name="Time_in" type="string"></element>  -->
 				</sequence>
     		</extension>
     	</complexContent>
