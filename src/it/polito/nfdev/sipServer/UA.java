@@ -21,14 +21,16 @@ public class UA extends NetworkFunction {
 	private String num;
 	private String ip_sipServer;
 	private String ip_caller;
+	private String domain;
 	private PortPool portPool;
 	protected Interface initialForwardingInterface;
 	
-	public UA(List<Interface> interfaces,String ip_caller, String num,String ip_sipServer) {
+	public UA(List<Interface> interfaces,String ip_caller, String num,String ip_sipServer, String domain) {
 		super(interfaces);
 		
 		this.ip_caller = ip_caller;
 		this.num = num;
+		this.domain = domain;
 		this.ip_sipServer = ip_sipServer;
 	    this.portPool = new PortPool(10000, 1024);
 	    initialForwardingInterface = interfaces.get(0);
@@ -44,6 +46,7 @@ public class UA extends NetworkFunction {
 		p.setField(PacketField.IP_SRC, ip_caller);
 		p.setField(PacketField.IP_DST, ip_sipServer);
 		p.setField(PacketField.BODY, num);
+		p.setField(PacketField.URL, domain);
 		p.setField(PacketField.PROTO, SIP_REGISTE);
 		
 		return new RoutingResult(Action.FORWARD,p,initialForwardingInterface);
@@ -60,7 +63,7 @@ public class UA extends NetworkFunction {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.PROTO, SIP_INVITE)){
+	/*	if(packet.equalsField(PacketField.PROTO, SIP_INVITE)){
 		
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
 			p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
@@ -74,7 +77,7 @@ public class UA extends NetworkFunction {
 			p.setField(PacketField.PROTO, SIP_END);	
 			return new RoutingResult(Action.FORWARD,p,iface);	
 		}
-	
+	*/
 		return new RoutingResult(Action.DROP,null,null);
 
 	}

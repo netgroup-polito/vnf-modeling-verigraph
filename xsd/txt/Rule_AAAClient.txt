@@ -1,0 +1,5 @@
+Rule_0:
+
+( send(n_AAAClient,n_0,p_0) ==> 
+	((p_0.IP_DST == ip_aaa) && (p_0.PORT_DST == new_port) && (p_0.PORT_DST == namePw)))
+

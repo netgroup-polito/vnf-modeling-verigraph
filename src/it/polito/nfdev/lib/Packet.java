@@ -45,7 +45,12 @@ public class Packet {
 	}
 	
 	public Packet(Packet p) {
-		
+		this.fields = new HashMap<>(p.getAllFields());
+	}
+	
+	public HashMap<PacketField, String> getAllFields()
+	{
+		return (HashMap<PacketField, String>) this.fields;
 	}
 	
 	public void setField(PacketField pField, String value)

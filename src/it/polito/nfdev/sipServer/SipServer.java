@@ -47,7 +47,8 @@ public class SipServer extends NetworkFunction {
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		if(packet.equalsField(PacketField.PROTO, SIP_REGISTE) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
+		
+		if(packet.equalsField(PacketField.PROTO, SIP_REGISTE) && packet.equalsField(PacketField.IP_DST, ip_sipServer) && packet.equalsField(PacketField.URL, domain))
 		{
 			
 			TableEntry entry = new TableEntry(2);
@@ -65,7 +66,7 @@ public class SipServer extends NetworkFunction {
 			
 		}
 		
-		if(packet.equalsField(PacketField.PROTO, SIP_INVITE) && packet.equalsField(PacketField.IP_DST, ip_sipServer))
+		if(packet.equalsField(PacketField.PROTO, SIP_INVITE) && packet.equalsField(PacketField.IP_DST, ip_sipServer) && packet.equalsField(PacketField.URL, domain))
 		{
 			
 			if(packet.equalsField(PacketField.URL, domain)){
@@ -87,7 +88,7 @@ public class SipServer extends NetworkFunction {
 			}
 		}
 		
-		
+	/*	
 		if(packet.equalsField(PacketField.PROTO, SIP_INVITE_OK))
 		{
 			p.setField(PacketField.PROTO,SIP_INVITE_OK);
@@ -98,7 +99,7 @@ public class SipServer extends NetworkFunction {
 			p.setField(PacketField.PROTO,SIP_END);
 			return new RoutingResult(Action.FORWARD,p,iface);
 		}
-		
+	*/	
 		return new RoutingResult(Action.DROP,null,null);
 
 	}

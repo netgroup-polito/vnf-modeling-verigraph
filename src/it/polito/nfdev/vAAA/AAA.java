@@ -63,9 +63,7 @@ public class AAA extends NetworkFunction {
 				p.setField(PacketField.PORT_DST, packet.getField(PacketField.PORT_SRC));
 			
 				return new RoutingResult(Action.FORWARD,p,iface);
-			}
-			
-			
+			}						
 		}
 		if(packet.equalsField(PacketField.PORT_DST,ACCOUNTING_PORT_1813 ))
 		{
@@ -79,15 +77,7 @@ public class AAA extends NetworkFunction {
 				p.setField(PacketField.BODY, ACCOUNTING_RESPONSE);
 				return new RoutingResult(Action.FORWARD,p,iface);			
 			}
-					// Update the total number of Bytes
-			/*	int totalBytes = byteCount + Integer.parseInt((String)entry.getValue(2));
-				TableEntry e = new NatTableEntry(3);
-				e.setValue(0, (String)entry.getValue(0));  // Username
-				e.setValue(1, (String)entry.getValue(1));  // Password
-				e.setValue(2, (new Integer(totalBytes)).toString());		   // ByteCount
-				userTable.removeEntry(entry);
-				userTable.storeEntry(e);
-			*/				
+					
 		}
 			return new RoutingResult(Action.DROP,null,null);
 	

@@ -13,7 +13,7 @@ public class Table {
 		Ip,
 		Port,
 		Proto,
-		BodyData,   // = Body
+		BodyData,   
 		URL,
 		Generic
 	}

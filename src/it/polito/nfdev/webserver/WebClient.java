@@ -1,4 +1,4 @@
-package it.polito.nfdev.vCDN;
+package it.polito.nfdev.webserver;
 
 import java.util.List;
 
@@ -15,15 +15,15 @@ public class WebClient extends NetworkFunction {
 	public static final String  REQUESTED_URL = "Requested_url";
 	
 	private String ip_EndHost;
-	private String ip_localDns;
+	private String ip_WebServer;
 	private PortPool portPool;
 	protected Interface initialForwardingInterface;
 	
-	public WebClient(List<Interface> interfaces, String ip_EndHost, String ip_localDns) {
+	public WebClient(List<Interface> interfaces, String ip_EndHost, String ip_WebServer) {
 		super(interfaces);
 		
 		this.ip_EndHost = ip_EndHost;
-	    this.ip_localDns = ip_localDns;
+	    this.ip_WebServer = ip_WebServer;
 	    this.portPool = new PortPool(10000, 1024);
 	    initialForwardingInterface = interfaces.get(0);
 	}
@@ -36,8 +36,9 @@ public class WebClient extends NetworkFunction {
 			return new RoutingResult(Action.DROP, null, null);
 		
 		p.setField(PacketField.IP_SRC, ip_EndHost);
-		p.setField(PacketField.IP_DST, ip_localDns);
-		p.setField(PacketField.PROTO, Packet.DNS_REQUEST);
+		p.setField(PacketField.IP_DST, ip_WebServer);
+		p.setField(PacketField.BODY, p.getField(PacketField.ORIG_BODY));
+		p.setField(PacketField.PROTO, Packet.HTTP_REQUEST);
 		p.setField(PacketField.URL, REQUESTED_URL);
 		
 		return new RoutingResult(Action.FORWARD,p,initialForwardingInterface);
@@ -48,25 +49,26 @@ public class WebClient extends NetworkFunction {
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
 		// Assume that this EndHost received a DNS Response with the ip of cache node  
 	
-		Packet p = null;
+	/*	Packet p = null;
 		try {
 			p = packet.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 		
-		if(packet.equalsField(PacketField.PROTO, Packet.DNS_RESPONSE) && !packet.equalsField(PacketField.INNER_DEST,String.valueOf(null))){
+		if(packet.equalsField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_RESPONSE)){
 		
 			p.setField(PacketField.IP_SRC, packet.getField(PacketField.IP_DST));
-			p.setField(PacketField.IP_DST, packet.getField(PacketField.INNER_DEST));  // INNER_DEST is the Cache IP
+			p.setField(PacketField.PORT_SRC, packet.getField(PacketField.PORT_DST));
+			p.setField(PacketField.IP_DST, packet.getField(PacketField.L7DATA));  // L7DATA is the Cache IP
 			p.setField(PacketField.PORT_DST, Packet.HTTP_PORT_80);
-			p.setField(PacketField.PROTO, Packet.HTTP_REQUEST);
-		//	p.setField(PacketField.URL, REQUESTED_URL);
+			p.setField(PacketField.APPLICATION_PROTOCOL, Packet.HTTP_REQUEST);
+			p.setField(PacketField.L7DATA, REQUESTED_URL);
 		
 			return new RoutingResult(Action.FORWARD,p,iface);
 		
 		}
-		
+		*/
 		return new RoutingResult(Action.DROP,null,null);
 
 	}

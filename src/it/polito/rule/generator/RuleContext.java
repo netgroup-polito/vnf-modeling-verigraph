@@ -613,7 +613,7 @@ public class RuleContext {
 			
 			ExpressionObject exp = factory.createExpressionObject();
 			exp.setEqual(equal);
-			if(packetField.compareTo(Constants.URL) == 0 || packetField.compareTo(Constants.PROTO)==0){
+			if(packetField.compareTo(Constants.URL) == 0 /*|| packetField.compareTo(Constants.PROTO)==0*/){
 				//TODO if URL/PROTO put in Antecedent
 				constructImpliesAntecedent(exp);
 				return true;

@@ -1,6 +1,6 @@
 Rule_0:
 
-(( send(n_GlobalDnsBalancer,n_0,p_0) && (p_0.PROTO == DNS_RESPONSE)) ==> 
+( send(n_GlobalDnsBalancer,n_0,p_0) ==> 
 	 E(n_1, p_1 | 
-		( recv(n_1,n_GlobalDnsBalancer,p_1) && (p_1.PROTO == DNS_REQUEST) && matchEnty(p_1.IP_SRC, p_1.URL) && (p_0.INNER_DEST == ip_url) && (p_0.IP_SRC == p_1.IP_DST) && (p_0.IP_DST == p_1.IP_SRC) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
+		( recv(n_1,n_GlobalDnsBalancer,p_1) && (p_1.PROTO == DNS_REQUEST) && matchEnty(p_1.IP_SRC, p_1.URL) && (p_0.INNER_DEST == ip_url) && (p_0.IP_SRC == p_1.IP_DST) && (p_0.IP_DST == p_1.IP_SRC) && (p_0.PROTO == DNS_RESPONSE) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
 

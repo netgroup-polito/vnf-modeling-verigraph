@@ -151,7 +151,7 @@ public class Test_SIP2 {
      	   System.out.println("a-->b  UNSAT"); // Nodes a and b are isolated
     	}else{
      		System.out.println("a-->b  SAT ");
-     //		System.out.println(ret.model);
+     		System.out.println(ret.model);
      		
      	}
     	model.resetZ3();
@@ -162,7 +162,7 @@ public class Test_SIP2 {
     	     	   System.out.println("c-->a  UNSAT"); // Nodes a and b are isolated
     	    	}else{
     	     		System.out.println("c-->a  SAT ");
-    	     //		System.out.println(ret.model);
+    	     		System.out.println(ret.model);
     	     		
     	     	}
     }
