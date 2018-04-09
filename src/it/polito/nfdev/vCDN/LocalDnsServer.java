@@ -38,7 +38,7 @@ public class LocalDnsServer extends NetworkFunction {
 		this.TIMEOUT = timeout;
 		this.ip_GlobalBalancer = ip_GlobalBalancer;
 		dnsTable = new Table(2, 0);
-		this.dnsTable.setTypes(Table.TableTypes.URL);
+		this.dnsTable.setTypes(Table.TableTypes.URL, Table.TableTypes.Ip);
 		this.dnsTable.setDataDriven();
 		
 	}
@@ -53,24 +53,19 @@ public class LocalDnsServer extends NetworkFunction {
 		}
 		if (iface.isInternal()) 
 		{
-			if (packet.equalsField(PacketField.PROTO, Packet.HTTP_REQUEST))
+			if (packet.equalsField(PacketField.PROTO, Packet.DNS_REQUEST))
 			{
 				TableEntry entry = dnsTable.matchEntry(packet.getField(PacketField.URL), Verifier.ANY_VALUE);
 				if (entry != null) {
-					p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
-					p.setField(PacketField.IP_DST, (String) entry.getValue(1));
+					p.setField(PacketField.IP_DST, packet.getField(PacketField.IP_SRC));
+					p.setField(PacketField.INNER_DEST, (String) entry.getValue(1));
 				
 		
-					return new RoutingResult(Action.FORWARD, p, externalInterface);
+					return new RoutingResult(Action.FORWARD, p, internalInterface);
 				} else {
 				
-					Integer new_port = portPool.getAvailablePort();
-					if (new_port == null)
-						return new RoutingResult(Action.DROP, null, null);
-
-					p.setField(PacketField.OLD_DST, packet.getField(PacketField.IP_DST));
 					p.setField(PacketField.IP_DST, ip_GlobalBalancer);
-					p.setField(PacketField.PROTO, Packet.DNS_REQUEST);
+				//	p.setField(PacketField.PROTO, Packet.DNS_REQUEST);
 					return new RoutingResult(Action.FORWARD, p, externalInterface);
 				}
 		   }
@@ -82,15 +77,8 @@ public class LocalDnsServer extends NetworkFunction {
 			{
 				TableEntry entry = new TableEntry(2);
 				entry.setValue(0, packet.getField(PacketField.URL));
-				entry.setValue(1, packet.getField(PacketField.OLD_SRC));  // IP_CACHE
+				entry.setValue(1, packet.getField(PacketField.INNER_DEST));  // IP_CACHE
 				dnsTable.storeEntry(entry);
-				
-				p.setField(PacketField.IP_DST, packet.getField(PacketField.OLD_SRC));
-				p.setField(PacketField.PROTO, Packet.HTTP_REQUEST);
-				
-				return new RoutingResult(Action.FORWARD, p, externalInterface);
-			}else if(packet.equalsField(PacketField.PROTO, Packet.HTTP_RESPONSE))
-			{
 				
 				return new RoutingResult(Action.FORWARD, packet, internalInterface);
 			}

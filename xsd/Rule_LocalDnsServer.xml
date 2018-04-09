@@ -23,16 +23,12 @@
                         </Send>
                     </Expression>
                     <Expression>
-                        <Not>
-                            <Expression>
-<IsInternal>
-    <FieldOf>
-        <Unit>p_0</Unit>
-        <Field>IP_DST</Field>
-    </FieldOf>
-</IsInternal>
-                            </Expression>
-                        </Not>
+                        <IsInternal>
+                            <FieldOf>
+<Unit>p_0</Unit>
+<Field>IP_DST</Field>
+                            </FieldOf>
+                        </IsInternal>
                     </Expression>
                 </And>
             </AntecedentExpression>
@@ -66,7 +62,7 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>HTTP_REQUEST</Param>
+        <Param>DNS_REQUEST</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -116,13 +112,13 @@
                     <LeftExpression>
                         <FieldOf>
                             <Unit>p_0</Unit>
-                            <Field>IP_DST</Field>
+                            <Field>INNER_DEST</Field>
                         </FieldOf>
                     </LeftExpression>
                     <RightExpression>
                         <FieldOf>
                             <Unit>p_2</Unit>
-                            <Field>OLD_SRC</Field>
+                            <Field>INNER_DEST</Field>
                         </FieldOf>
                     </RightExpression>
                 </Equal>
@@ -136,14 +132,14 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
             <Field>IP_DST</Field>
         </FieldOf>
+    </LeftExpression>
+    <RightExpression>
+        <FieldOf>
+            <Unit>p_1</Unit>
+            <Field>IP_SRC</Field>
+        </FieldOf>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -159,38 +155,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>IP_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -328,22 +292,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>INNER_SRC</Field>
         </FieldOf>
     </LeftExpression>
@@ -351,22 +299,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>INNER_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>INNER_DEST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>INNER_DEST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -448,7 +380,7 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>HTTP_REQUEST</Param>
+        <Param>DNS_REQUEST</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -506,22 +438,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>IP_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>IP_DST</Field>
         </FieldOf>
     </LeftExpression>
@@ -535,19 +451,6 @@
     <LeftExpression>
         <FieldOf>
             <Unit>p_0</Unit>
-            <Field>PROTO</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>DNS_REQUEST</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
             <Field>IP_SRC</Field>
         </FieldOf>
     </LeftExpression>
@@ -555,299 +458,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>IP_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ORIGIN</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ORIGIN</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ORIG_BODY</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ORIG_BODY</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>BODY</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>BODY</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>SEQUENCE</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>SEQUENCE</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>EMAIL_FROM</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>EMAIL_FROM</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>URL</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>URL</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OPTIONS</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>INNER_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>INNER_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>INNER_DEST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>INNER_DEST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>ENCRYPTED</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>ENCRYPTED</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                        </And>
-                    </Expression>
-                </Exist>
-            </ConsequentExpression>
-        </Implies>
-    </LogicalExpressionResult>
-    <LogicalExpressionResult>
-        <Implies>
-            <AntecedentExpression>
-                <And>
-                    <Expression>
-                        <Send>
-                            <Source>n_LocalDnsServer</Source>
-                            <Destination>n_0</Destination>
-                            <Packet_out>p_0</Packet_out>
-                        </Send>
-                    </Expression>
-                    <Expression>
-                        <Not>
-                            <Expression>
-<IsInternal>
-    <FieldOf>
-        <Unit>p_0</Unit>
-        <Field>IP_DST</Field>
-    </FieldOf>
-</IsInternal>
-                            </Expression>
-                        </Not>
-                    </Expression>
-                </And>
-            </AntecedentExpression>
-            <ConsequentExpression>
-                <Exist>
-                    <Unit>n_1</Unit>
-                    <Unit>p_1</Unit>
-                    <Expression>
-                        <And>
-                            <Expression>
-<Recv>
-    <Source>n_1</Source>
-    <Destination>n_LocalDnsServer</Destination>
-    <Packet_in>p_1</Packet_in>
-</Recv>
-                            </Expression>
-                            <Expression>
-<Not>
-    <Expression>
-        <IsInternal>
-            <FieldOf>
-                <Unit>p_1</Unit>
-                <Field>IP_SRC</Field>
-            </FieldOf>
-        </IsInternal>
-    </Expression>
-</Not>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PROTO</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>DNS_RESPONSE</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -861,54 +471,9 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>HTTP_REQUEST</Param>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>IP_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
         <FieldOf>
             <Unit>p_1</Unit>
-            <Field>IP_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
+            <Field>PROTO</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -1021,38 +586,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -1158,23 +691,6 @@
 </Not>
                             </Expression>
                             <Expression>
-<Not>
-    <Expression>
-        <Equal>
-            <LeftExpression>
-                <FieldOf>
-                    <Unit>p_1</Unit>
-                    <Field>PROTO</Field>
-                </FieldOf>
-            </LeftExpression>
-            <RightExpression>
-                <Param>DNS_RESPONSE</Param>
-            </RightExpression>
-        </Equal>
-    </Expression>
-</Not>
-                            </Expression>
-                            <Expression>
 <Equal>
     <LeftExpression>
         <FieldOf>
@@ -1183,7 +699,7 @@
         </FieldOf>
     </LeftExpression>
     <RightExpression>
-        <Param>HTTP_RESPONSE</Param>
+        <Param>DNS_RESPONSE</Param>
     </RightExpression>
 </Equal>
                             </Expression>
@@ -1215,38 +731,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>IP_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>
@@ -1375,38 +859,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>OPTIONS</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>OLD_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>OLD_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

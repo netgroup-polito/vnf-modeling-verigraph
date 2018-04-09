@@ -76,9 +76,9 @@ public class ClassGenerator {
 		this.imports = new ArrayList<String[]>();
 
 		fileNameXml = "./xsd/Rule_" + className + ".xml";
-	//	fileNameJava = "./xsd/java/Rule_" + className + ".java";
+		fileNameJava = "./xsd/java/Rule_" + className + ".java";
 		
-		fileNameJava = "C:/Users/Rui/git/verigraph-timeless/src/ruiNFs/Rule_" + className + ".java";
+	//	fileNameJava = "C:/Users/Rui/git/verigraph-timeless/src/ruiNFs/Rule_" + className + ".java";
 		
 		imports.add(new String[] { "java", "util", "List" });
 		imports.add(new String[] { "java", "util", "ArrayList" });
@@ -124,7 +124,8 @@ public class ClassGenerator {
 			
 			PackageDeclaration pd = ast.newPackageDeclaration();
 		//	pd.setName(ast.newName(new String[] { "mcnet", "netobjs", "generated" }));
-			pd.setName(ast.newName(new String[] { "ruiNFs" }));
+			
+			pd.setName(ast.newName(new String[] { "it", "polito", "verigraph", "mcnet", "netobjs2" }));
 			cu.setPackage(pd);
 
 			for (String[] temp : imports) {

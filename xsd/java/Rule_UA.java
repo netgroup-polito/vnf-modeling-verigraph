@@ -15,15 +15,15 @@ import it.polito.verigraph.mcnet.components.Network;
 import it.polito.verigraph.mcnet.components.NetworkObject;
 import it.polito.verigraph.mcnet.components.Tuple;
 
-public class Rule_AAAClient extends NetworkObject {
+public class Rule_UA extends NetworkObject {
 	List<BoolExpr> constraints;
 	Context ctx;
-	DatatypeExpr n_AAAClient;
+	DatatypeExpr n_UA;
 	Network net;
 	NetContext nctx;
 	FuncDecl isInternal;
 
-	public Rule_AAAClient(Context ctx, Object[]... args) {
+	public Rule_UA(Context ctx, Object[]... args) {
 		super(ctx, args);
 	}
 
@@ -33,16 +33,16 @@ public class Rule_AAAClient extends NetworkObject {
 		isEndHost = false;
 		constraints = new ArrayList<BoolExpr>();
 		z3Node = ((NetworkObject) args[0][0]).getZ3Node();
-		n_AAAClient = z3Node;
+		n_UA = z3Node;
 		net = (Network) args[0][1];
 		nctx = (NetContext) args[0][2];
 		net.saneSend(this);
-		isInternal = ctx.mkFuncDecl(n_AAAClient + "_isInternal", nctx.address, ctx.mkBoolSort());
+		isInternal = ctx.mkFuncDecl(n_UA + "_isInternal", nctx.address, ctx.mkBoolSort());
 	}
 
 	@Override
 	public DatatypeExpr getZ3Node() {
-		return n_AAAClient;
+		return n_UA;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class Rule_AAAClient extends NetworkObject {
 
 	public void setInternalAddress(ArrayList<DatatypeExpr> internalAddress) {
 		List<BoolExpr> constr = new ArrayList<BoolExpr>();
-		Expr in_0 = ctx.mkConst(n_AAAClient + "_internal_node", nctx.address);
+		Expr in_0 = ctx.mkConst(n_UA + "_internal_node", nctx.address);
 		for (DatatypeExpr n : internalAddress)
 			constr.add(ctx.mkEq(in_0, n));
 		BoolExpr[] constrs = new BoolExpr[constr.size()];
@@ -61,14 +61,16 @@ public class Rule_AAAClient extends NetworkObject {
 				ctx.mkEq(isInternal.apply(in_0), ctx.mkOr(constr.toArray(constrs))), 1, null, null, null, null));
 	}
 
-	public void installAAAClient(Expr ip_aaa, Expr new_port, Expr namePw) {
-		Expr n_0 = ctx.mkConst("n_AAAClient_" + n_AAAClient + "_n_0", nctx.node);
-		Expr p_0 = ctx.mkConst("n_AAAClient_" + n_AAAClient + "_p_0", nctx.packet);
+	public void installUA(Expr domain, Expr ip_caller, Expr ip_sipServer, Expr num) {
+		Expr n_0 = ctx.mkConst("n_UA_" + n_UA + "_n_0", nctx.node);
+		Expr p_0 = ctx.mkConst("n_UA_" + n_UA + "_p_0", nctx.packet);
 		constraints.add(ctx.mkForall(new Expr[] { p_0, n_0 }, ctx.mkImplies(
-				(BoolExpr) nctx.send.apply(n_AAAClient, n_0, p_0),
-				ctx.mkAnd(ctx.mkEq(nctx.pf.get("dest").apply(p_0), ip_aaa),
-						ctx.mkEq(nctx.dest_port.apply(p_0), new_port), 
-						ctx.mkEq(nctx.pf.get("body").apply(p_0), namePw))),
+				/*ctx.mkAnd(*/(BoolExpr) nctx.send.apply(n_UA, n_0, p_0), /*ctx.mkEq(nctx.pf.get("url").apply(p_0), domain)),*/
+				ctx.mkAnd(ctx.mkEq(nctx.pf.get("src").apply(p_0), ip_caller),
+						ctx.mkEq(nctx.pf.get("dest").apply(p_0), ip_sipServer),
+						 ctx.mkEq(nctx.pf.get("url").apply(p_0), domain),
+						ctx.mkEq(nctx.pf.get("body").apply(p_0), num),
+						ctx.mkEq(nctx.pf.get("proto").apply(p_0), ctx.mkInt(nctx.SIP_REGISTE)))),
 				1, null, null, null, null));
 	}
 }
