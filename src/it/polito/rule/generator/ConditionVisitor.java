@@ -210,7 +210,6 @@ public class ConditionVisitor extends ASTVisitor {
 				return false;
 			}	
 		});
-		//TODO RuleForMethod() Conditionvisitor iface.isInternal() or equalsField()
 		exp = ruleContext.generateRuleForMethod(varName.toString(), node);  // --> iface.isInternal() or equalsField()
 		return false;
 	}

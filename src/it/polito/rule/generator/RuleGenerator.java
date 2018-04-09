@@ -46,7 +46,6 @@ public class RuleGenerator {
 	private String fileNameTxt;
 	private boolean verbose = false;
 	private boolean isDataDriven = false;
-//	private boolean isIndirectNF = false;
 	private int tableSize = 0;
 	private List<String> tableTypes;
 	
@@ -56,7 +55,7 @@ public class RuleGenerator {
 		this.expressions = new ArrayList<>();
 		this.verbose = verbose;
 		
-		fileNameXml = "./xsd/Rule_"+name+".xml" ;
+		fileNameXml = "./xsd/Rule_"+name+".xml" ;		//Set Output Files (path+name)
 		fileNameTxt = "./xsd/txt/Rule_"+name+".txt";
 	}
 	
@@ -68,7 +67,6 @@ public class RuleGenerator {
 		this.ruleContext = new RuleContext(factory, returnSnapshot);
 		this.tableSize = returnSnapshot.getMethodContext().getContext().tableSize;
 		this.isDataDriven = returnSnapshot.getMethodContext().getContext().isDataDriven();
-	//	this.isIndirectNF = returnSnapshot.getMethodContext().getContext().isIndirectNF();
 		this.tableTypes = returnSnapshot.getMethodContext().getContext().tableTypes;
 		
 		if(tableTypes.size() != tableSize)
@@ -222,8 +220,4 @@ public class RuleGenerator {
 		}
 		
 	}
-	
-	
-	
-
 }

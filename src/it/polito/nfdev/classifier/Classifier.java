@@ -15,38 +15,34 @@ import it.polito.nfdev.lib.RoutingResult;
 
 /**
  * @author s211483
- *
+ *  
+ * 			#TRAFFIC CLASSIFIER#
+ * +The Constructor of the class received as param one List of interfaces.
+ * +The Classifier forwarding depend to the classifier Table:
+ *  	The table has 3  col: <Priority>		<Application>	<Interface> 
+ * 						type:  -Generic 		- Proto			-Interface
+ * 						  ex:	  -1			-POP3_REQUEST	-if_2
+ * +Behavior: if the packet has a Proto that match on the table than it can 
+ * 			  be forwarding through the interface indicate on the table.
  */
 public class Classifier extends NetworkFunction {
 	
 	private Table classifierTable;
-	//private List<Interface> ifout;
-	//List of Interface is inside a basic class Network_Interface
-	
-	/**
-	 * The Constructor of the class received as parm a List of interfaces.
-	 * There are directly related to different Middleboxs.
-	 * // Generate a Table with 3 col: <Priority><Application><Interface> 
-	 * 							type:  -Generic - ApplicationProto -Generic
-	 * 							ex:		-1		-POP		-if_SPAM
-	 * @param ifout
-	 */
+
 	public Classifier(List<Interface> ifout){
 		super(new ArrayList<Interface>(ifout));
 		
 		this.classifierTable = new Table(3,0);
-		this.classifierTable.setTypes(Table.TableTypes.Generic,Table.TableTypes.ApplicationProtocol,Table.TableTypes.Generic);	
+		this.classifierTable.setTypes(Table.TableTypes.Generic,Table.TableTypes.Proto,Table.TableTypes.Interface);	
 	}
 	
 	@Override
 	public RoutingResult onReceivedPacket(Packet packet, Interface iface) {
-		TableEntry entry = classifierTable.matchEntry(packet.getField(PacketField.APPLICATION_PROTOCOL));
+		TableEntry entry = classifierTable.matchEntry(packet.getField(PacketField.PROTO));
 		if(entry!=null){
 			Interface ifSend = (Interface) entry.getValue(2);
 			if(ifSend!=null && ifSend!=iface)
 				return new RoutingResult(Action.FORWARD,packet,ifSend);
-			//TODO: ifSend!=iface?! 
-			
 		}
 		//Option_01:DROP packet if is Unclassified:
 		return new RoutingResult(Action.DROP,null,null);
@@ -71,7 +67,7 @@ public class Classifier extends NetworkFunction {
 		
 		return classifierTable.removeEntry(entry);
 	}
-	public void clearIdsTable(){
+	public void clearClassifierTable(){
 		classifierTable.clear();
 	}
 	

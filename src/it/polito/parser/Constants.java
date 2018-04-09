@@ -98,4 +98,10 @@ public class Constants {
 	public static final String ENUM_GENERIC = "Generic";
 	public static final String ENUM_URL = "URL";
 	
+	//Interface
+	public static final String IF_OUT = "IF_OUT";
+	public static final String IO_GENERAL = "Default";
+	public static final String IO_INT = "Internal";
+	public static final String IO_EXT = "Internal";
+	
 }

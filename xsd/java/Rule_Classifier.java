@@ -1,4 +1,4 @@
-package mcnet.netobjs.generated;
+package ruiNFs;
 import java.util.List;
 import java.util.ArrayList;
 import com.microsoft.z3.BoolExpr;
@@ -9,10 +9,10 @@ import com.microsoft.z3.FuncDecl;
 import com.microsoft.z3.IntExpr;
 import com.microsoft.z3.Solver;
 import com.microsoft.z3.Sort;
-import mcnet.components.NetContext;
-import mcnet.components.Network;
-import mcnet.components.NetworkObject;
-import mcnet.components.Tuple;
+import it.polito.verigraph.mcnet.components.NetContext;
+import it.polito.verigraph.mcnet.components.Network;
+import it.polito.verigraph.mcnet.components.NetworkObject;
+import it.polito.verigraph.mcnet.components.Tuple;
 public class Rule_Classifier extends NetworkObject {
   List<BoolExpr> constraints;
   Context ctx;
@@ -35,7 +35,7 @@ public class Rule_Classifier extends NetworkObject {
     nctx=(NetContext)args[0][2];
     net.saneSend(this);
     isInternal=ctx.mkFuncDecl(n_Classifier + "_isInternal",nctx.address,ctx.mkBoolSort());
-    matchEntry=ctx.mkFuncDecl(n_Classifier + "_matchEntry",new Sort[]{ctx.mkIntSort()},ctx.mkBoolSort());
+    matchEntry=ctx.mkFuncDecl(n_Classifier + "_matchEntry",new Sort[]{ctx.mkIntSort(),ctx.mkIntSort()},ctx.mkBoolSort());
     entries=new ArrayList<ArrayList<Expr>>();
   }
   @Override public DatatypeExpr getZ3Node(){
@@ -46,11 +46,12 @@ public class Rule_Classifier extends NetworkObject {
     solver.add(constraints.toArray(constr));
     if (entries.size() == 0)     return;
     Expr e_0=ctx.mkIntConst(n_Classifier + "_entry_e_0");
+    Expr e_1=ctx.mkIntConst(n_Classifier + "_entry_e_1");
     BoolExpr[] entry_map=new BoolExpr[entries.size()];
     for (int i=0; i < entries.size(); i++) {
-      entry_map[i]=ctx.mkAnd(ctx.mkEq(e_0,entries.get(i).get(0)));
+      entry_map[i]=ctx.mkAnd(ctx.mkEq(e_0,entries.get(i).get(0)),ctx.mkEq(e_1,entries.get(i).get(1)));
     }
-    solver.add(ctx.mkForall(new Expr[]{e_0},ctx.mkEq(matchEntry.apply(e_0),ctx.mkOr(entry_map)),1,null,null,null,null));
+    solver.add(ctx.mkForall(new Expr[]{e_0,e_1},ctx.mkEq(matchEntry.apply(e_0,e_1),ctx.mkOr(entry_map)),1,null,null,null,null));
   }
   public void setInternalAddress(  ArrayList<DatatypeExpr> internalAddress){
     List<BoolExpr> constr=new ArrayList<BoolExpr>();
@@ -59,19 +60,20 @@ public class Rule_Classifier extends NetworkObject {
     BoolExpr[] constrs=new BoolExpr[constr.size()];
     constraints.add(ctx.mkForall(new Expr[]{in_0},ctx.mkEq(isInternal.apply(in_0),ctx.mkOr(constr.toArray(constrs))),1,null,null,null,null));
   }
-  public void addEntry(  Expr expr_0){
-    if (expr_0 == null)     return;
+  public void addEntry(  Expr expr_0,  Expr expr_1){
+    if (expr_0 == null && expr_1 == null)     return;
     ArrayList<Expr> entry=new ArrayList<Expr>();
-    entry.add(expr_0);
+    if (expr_0 == null)     entry.add(ctx.mkBool(true));
+ else     entry.add(expr_0);
+    if (expr_1 == null)     entry.add(ctx.mkBool(true));
+ else     entry.add(expr_1);
     entries.add(entry);
   }
-  public void installClassifier(){
+  public void installClassifier(  Expr Default){
     Expr n_0=ctx.mkConst("n_Classifier_" + n_Classifier + "_n_0",nctx.node);
     Expr n_1=ctx.mkConst("n_Classifier_" + n_Classifier + "_n_1",nctx.node);
     Expr p_0=ctx.mkConst("n_Classifier_" + n_Classifier + "_p_0",nctx.packet);
     Expr p_1=ctx.mkConst("n_Classifier_" + n_Classifier + "_p_1",nctx.packet);
-    IntExpr t_0=ctx.mkIntConst("n_Classifier_" + n_Classifier + "_t_0");
-    IntExpr t_1=ctx.mkIntConst("n_Classifier_" + n_Classifier + "_t_1");
-    constraints.add(ctx.mkForall(new Expr[]{t_0,p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_Classifier,n_0,p_0,t_0),ctx.mkExists(new Expr[]{t_1,p_1,n_1},ctx.mkAnd((BoolExpr)nctx.recv.apply(n_1,n_Classifier,p_1,t_1),ctx.mkLt(t_1,t_0),(BoolExpr)matchEntry.apply(nctx.pf.get("proto").apply(p_1)),ctx.mkEq(nctx.pf.get("src").apply(p_0),nctx.pf.get("src").apply(p_1)),ctx.mkEq(nctx.pf.get("dest").apply(p_0),nctx.pf.get("dest").apply(p_1)),ctx.mkEq(nctx.pf.get("src_port").apply(p_0),nctx.pf.get("src_port").apply(p_1)),ctx.mkEq(nctx.pf.get("dst_port").apply(p_0),nctx.pf.get("dst_port").apply(p_1)),ctx.mkEq(nctx.pf.get("transport_protocol").apply(p_0),nctx.pf.get("transport_protocol").apply(p_1)),ctx.mkEq(nctx.pf.get("proto").apply(p_0),nctx.pf.get("proto").apply(p_1)),ctx.mkEq(nctx.pf.get("application_data").apply(p_0),nctx.pf.get("application_data").apply(p_1))),1,null,null,null,null)),1,null,null,null,null));
+    constraints.add(ctx.mkForall(new Expr[]{p_0,n_0},ctx.mkImplies((BoolExpr)nctx.send.apply(n_Classifier,n_0,p_0),ctx.mkExists(new Expr[]{p_1,n_1},ctx.mkAnd((BoolExpr)nctx.recv.apply(n_1,n_Classifier,p_1),(BoolExpr)matchEntry.apply(nctx.pf.get("proto").apply(p_1)),ctx.mkEq(nctx.pf.get("null_field").apply(n_Classifier),Default),ctx.mkEq(nctx.pf.get("src").apply(p_0),nctx.pf.get("src").apply(p_1)),ctx.mkEq(nctx.pf.get("dest").apply(p_0),nctx.pf.get("dest").apply(p_1)),ctx.mkEq(nctx.pf.get("proto").apply(p_0),nctx.pf.get("proto").apply(p_1)),ctx.mkEq(nctx.pf.get("origin").apply(p_0),nctx.pf.get("origin").apply(p_1)),ctx.mkEq(nctx.pf.get("orig_body").apply(p_0),nctx.pf.get("orig_body").apply(p_1)),ctx.mkEq(nctx.pf.get("body").apply(p_0),nctx.pf.get("body").apply(p_1)),ctx.mkEq(nctx.pf.get("seq").apply(p_0),nctx.pf.get("seq").apply(p_1)),ctx.mkEq(nctx.pf.get("emailFrom").apply(p_0),nctx.pf.get("emailFrom").apply(p_1)),ctx.mkEq(nctx.pf.get("url").apply(p_0),nctx.pf.get("url").apply(p_1)),ctx.mkEq(nctx.pf.get("options").apply(p_0),nctx.pf.get("options").apply(p_1)),ctx.mkEq(nctx.pf.get("inner_src").apply(p_0),nctx.pf.get("inner_src").apply(p_1)),ctx.mkEq(nctx.pf.get("inner_dest").apply(p_0),nctx.pf.get("inner_dest").apply(p_1)),ctx.mkEq(nctx.pf.get("encrypted").apply(p_0),nctx.pf.get("encrypted").apply(p_1))),1,null,null,null,null)),1,null,null,null,null));
   }
 }

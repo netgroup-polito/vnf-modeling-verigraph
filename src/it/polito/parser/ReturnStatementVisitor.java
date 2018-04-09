@@ -5,6 +5,8 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.QualifiedName;
 
 import it.polito.nfdev.lib.RoutingResult.Action;
@@ -45,6 +47,16 @@ public class ReturnStatementVisitor extends ASTVisitor {
 			System.err.println("Wrong number of arguments provided to the "+Constants.ROUTING_RESULT_CLASS+" class");
 			return false;
 		}
+		
+		
+		//Activate Binding for RoutingResult
+		IBinding binding = arg.get(2).resolveTypeBinding();
+		if(binding!=null) {
+			System.out.println("Binding for Interface Activated");
+		}
+		
+		
+		
 		String interfaceName = arg.get(2).toString();
 		String packetName = arg.get(1).toString();
 		Expression action = arg.get(0);

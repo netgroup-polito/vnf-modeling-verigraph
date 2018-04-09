@@ -916,10 +916,7 @@ class RuleUnmarshaller {
 				return Constants.Z3_INNER_DEST;
 				
 			case Constants.ENCRYPTED:
-				return Constants.Z3_ENCRYPTED;
-				
-			
-							
+				return Constants.Z3_ENCRYPTED;				
 		}
 		
 		return "null_field";

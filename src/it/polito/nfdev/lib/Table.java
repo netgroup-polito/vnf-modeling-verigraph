@@ -15,7 +15,8 @@ public class Table {
 		Proto,
 		BodyData,   // = Body
 		URL,
-		Generic
+		Generic,
+		Interface
 	}
 	
 	protected List<TableEntry> entries;

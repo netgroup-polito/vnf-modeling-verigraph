@@ -40,7 +40,7 @@ public class Variable extends ASTVisitor{
 		return valueFromClient;
 	}
 
-	public Expression getExp() {
+	public Expression getExp() { 
 		return exp;
 	}
 

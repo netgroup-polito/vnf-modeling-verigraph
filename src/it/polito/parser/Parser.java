@@ -43,7 +43,6 @@ public class Parser {
 		char[] source = null;
 		try{
 			/* Load the source file */
-//			reader = new BufferedReader(new InputStreamReader(Parser.class.getResourceAsStream(fileName)));
 			reader = new BufferedReader(new InputStreamReader( new FileInputStream(fileName)));
 			String line = null;
 			String classCode = "";
@@ -60,8 +59,9 @@ public class Parser {
 			ex.printStackTrace();
 			System.exit(-2);
 		}
-		/* Build an AST parser using the JDT library (Eclipse parsing library) */
-		ASTParser parser = ASTParser.newParser(AST.JLS3);  // handles JDK 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
+		
+		
+		ASTParser parser = ASTParser.newParser(AST.JLS3); 
 		// In order to parse 1.7 code, some compiler options need to be set to 1.7
 		@SuppressWarnings("unchecked")
 		Map<String, String> options = JavaCore.getOptions();
@@ -70,51 +70,40 @@ public class Parser {
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
-		//parser.setUnitName("Nat.src");
-		
+		parser.setUnitName("Classifer.src");
 		parser.setSource(source);
+
+
+		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null); //AST_Root
 		
-		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
 		if (compilationUnit.getAST().hasBindingsRecovery()) {
+		//if (compilationUnit.getAST().hasResolvedBindings()) {
 			System.out.println("Binding activated.");
 		}else
 			System.out.println("Binding not activated!");
 		
 		Context classContext = new Context(compilationUnit);
+		
 		/* Perform STAGE1 parsing phase */
 		ClassVisitor v1 = new ClassVisitor(classContext);
 		compilationUnit.accept(v1);
 			
 		RuleGenerator ruler = new RuleGenerator(classContext.getClassName(),true);
-	// specify that analyze "onReceivedPacket()" method
+		
+		// specify that analyze "onReceivedPacket()" method
 		MethodContext methodContext = classContext.getMethodContext(Constants.MAIN_NF_METHOD);		
 		if(methodContext!=null){
 			
-			for(ReturnSnapshot returnSnapshot : methodContext.getReturnSnapshots()){
-				
+			for(ReturnSnapshot returnSnapshot : methodContext.getReturnSnapshots()){			
 				ruler.setSnapshot(returnSnapshot);
 				ruler.generateRule();
-				
 			}
-		//	ruler.saveRule();
-		}
-	// specify that analyze "onReceivedPacket()" method
-		methodContext = classContext.getMethodContext(Constants.DEFINE_SENDING_PACKET_METHOD);		
-		if(methodContext!=null){
-			
-			for(ReturnSnapshot returnSnapshot : methodContext.getReturnSnapshots()){
-				
-				ruler.setSnapshot(returnSnapshot);
-				ruler.generateRule();
-				
-			}
-		//	ruler.saveRule();
-		}
 		ruler.saveRule();
+		}
 		
 		ClassGenerator generator = new ClassGenerator(classContext.getClassName());
 		generator.startGeneration();
-		System.out.println("!All Done!");
+		System.out.println("Translator-Phase done: java classes generated!");
 		
 	}
 	
@@ -135,7 +124,6 @@ public class Parser {
 		/* Instantiate a parser */
 		Parser parser = new Parser(args[0]);
 		try {
-			/* Parse the VNF code */
 			parser.parse();
 		} catch (ParserException e) {
 			System.err.println("Parsing failed!");
