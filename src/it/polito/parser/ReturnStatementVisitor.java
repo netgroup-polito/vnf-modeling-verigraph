@@ -53,6 +53,7 @@ public class ReturnStatementVisitor extends ASTVisitor {
 		IBinding binding = arg.get(2).resolveTypeBinding();
 		if(binding!=null) {
 			System.out.println("Binding for Interface Activated");
+			//take the type information
 		}
 		
 		

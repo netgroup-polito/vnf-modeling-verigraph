@@ -60,24 +60,22 @@ public class Parser {
 			System.exit(-2);
 		}
 		
-		
-		ASTParser parser = ASTParser.newParser(AST.JLS3); 
-		// In order to parse 1.7 code, some compiler options need to be set to 1.7
-		@SuppressWarnings("unchecked")
+		ASTParser parser = ASTParser.newParser(AST.JLS9);
+		 
 		Map<String, String> options = JavaCore.getOptions();
-		JavaCore.setComplianceOptions(JavaCore.VERSION_1_7, options);
+		JavaCore.setComplianceOptions(JavaCore.VERSION_9, options);
+		
 		parser.setCompilerOptions(options);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 		parser.setUnitName("Classifer.src");
 		parser.setSource(source);
-
+		parser.setEnvironment(new String[] { "" },new String[] { "" }, new String[] { "UTF-8" }, true);
 
 		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null); //AST_Root
 		
-		if (compilationUnit.getAST().hasBindingsRecovery()) {
-		//if (compilationUnit.getAST().hasResolvedBindings()) {
+		if (compilationUnit.getAST().hasResolvedBindings()) {
 			System.out.println("Binding activated.");
 		}else
 			System.out.println("Binding not activated!");
