@@ -63,14 +63,13 @@ public class RuleContext {
 		this.isDataDriven = returnSnapshot.getMethodContext().getContext().isDataDriven();
 		// this.isIndirectNF =
 		// returnSnapshot.getMethodContext().getContext().isIndirectNF();
-		this.ifSend=false;
+		this.ifSend = false;
 		setDefaultRule(returnSnapshot.getMethodContext().getMethodName());
 
 	}
 
-	
 	// ------ Generate_Rules:
-	
+
 	public void setDefaultRule(String methodName) {
 		switch (methodName) {
 		case Constants.MAIN_NF_METHOD:
@@ -96,7 +95,7 @@ public class RuleContext {
 			implies.setAntecedentExpression(factory.createExpressionObject());
 			implies.setConsequentExpression(factory.createExpressionObject());
 
-			if (returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE) == 0) { 
+			if (returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE) == 0) {
 				LOAnd and = factory.createLOAnd();
 				LFIsInternal isInternal = isInternalRule(packet.getName(), Constants.IP_DESTINATION);
 				ExpressionObject temp = factory.createExpressionObject();
@@ -186,7 +185,7 @@ public class RuleContext {
 			temp1.setSend(send1);
 			and1.getExpression().add(temp1);
 
-			if (returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE) == 0) { 
+			if (returnSnapshot.getInterfaceName().compareTo(Constants.INTERNAL_INTERFACE) == 0) {
 
 				LFIsInternal isInternal = isInternalRule(packet1.getName(), Constants.IP_DESTINATION);
 
@@ -380,14 +379,13 @@ public class RuleContext {
 
 				name = builder.toString(); // -->name='packet'
 			}
-			if (methodName.compareTo(Constants.GET_FIELD_METHOD) == 0 /*
-																		 * &&
-																		 * name.compareTo(Constants.PACKET_PARAMETER)==0
-																		 */) { /*
-																				 * remove it, because for p0.body =
-																				 * p0.orig_body in EndHost, the packet
-																				 * name can be anyone
-																				 */
+			if (methodName
+					.compareTo(Constants.GET_FIELD_METHOD) == 0 /*
+																 * && name.compareTo(Constants.PACKET_PARAMETER)==0
+																 */) { /*
+																		 * remove it, because for p0.body = p0.orig_body
+																		 * in EndHost, the packet name can be anyone
+																		 */
 
 				QualifiedName field = (QualifiedName) node.arguments().get(0);
 				String fieldName = field.getName().getFullyQualifiedName();
@@ -1087,15 +1085,14 @@ public class RuleContext {
 
 			return null;
 		// case Constants.STRING_TYPE:
-		
+
 		// MODIFY_01: #------
-			
 		case Constants.INTERFACE_TYPE:
 			if (!ifSend) {
 				if (operator.equals(Operator.EQUALS))
 					negated = true;
 
- 				ExpressionObject exp = factory.createExpressionObject();
+				ExpressionObject exp = factory.createExpressionObject();
 
 				if (negated) {
 					LONot not = factory.createLONot();
@@ -1105,36 +1102,36 @@ public class RuleContext {
 				}
 
 				if (containsLogicalUnit(netFunction)) {
-					// n_classifier.IF_OUT == ifsend.Type
 					LOEquals equals = factory.createLOEquals();
 					equals.setLeftExpression(factory.createExpressionObject());
 					equals.setRightExpression(factory.createExpressionObject());
-					equals.getLeftExpression().setFieldOf(fieldOf(netFunction, Constants.IF_OUT));
-					equals.getRightExpression().setParam(Constants.IO_GENERAL);
-					exp.setEqual(equals);
-					
-					setLastExpression(exp);
-					this.ifSend=true; //FIXME: the flag isn't tradesafe!
+					if (checkVariable(Constants.INTERFACE_ID).compareTo(Constants.NONE) != 0) {
+						equals.getLeftExpression().setFieldOf(fieldOf(netFunction, Constants.IF_OUT));
+						equals.getRightExpression().setParam(Constants.INTERFACE_ID);
+						exp.setEqual(equals);
+
+						setLastExpression(exp);
+						this.ifSend = true; // FIXME: the flag isn't tradesafe!
+					}
 				}
 			}
-			
-		// ------ #	
-					
+
+			// ------ #
+
 		default:
 			return null;
 		}
 
 	}
 
-	
 	// ------ Make Expression
-	
+
 	boolean setLastExpression(ExpressionObject expression) {
 		// TODO evaluate carefully how to improve
 		if (entryPoint_p1 != null && entryPoint_p1 instanceof LOAnd) {
 			if (expression.getAnd() != null)
 				((LOAnd) entryPoint_p1).getExpression().addAll(expression.getAnd().getExpression());
-			else {	
+			else {
 				((LOAnd) entryPoint_p1).getExpression().add(expression);
 			}
 			return true;
@@ -1165,7 +1162,7 @@ public class RuleContext {
 
 		return false;
 	}
-	
+
 	public void constructImpliesAntecedent(ExpressionObject exp) {
 		if (result.getImplies().getAntecedentExpression().getAnd() != null) {
 
@@ -1188,10 +1185,9 @@ public class RuleContext {
 			System.out.println("------ok finish------>RC line1547 constructImpliesAntecedent left and");
 		}
 	}
-	
-	
-	// ------ 
-	
+
+	// ------
+
 	public LFFieldOf fieldOf(String elementName, String fieldName) {
 
 		if (containsLogicalUnit(elementName)) {
@@ -1220,7 +1216,7 @@ public class RuleContext {
 		return null;
 
 	}
-	
+
 	private boolean containsLogicalUnit(String name) {
 
 		for (LogicalUnit lu : units) {
@@ -1229,14 +1225,13 @@ public class RuleContext {
 		}
 		return false;
 	}
-	
+
 	public String generateNewValue() {
 		return "value_" + ++valueCounter;
 	}
 
-	
 	// ------ Checks:
-	
+
 	public boolean checkPacketField(String field) {
 
 		switch (field) {
@@ -1296,14 +1291,15 @@ public class RuleContext {
 			return Constants.TABLE_TYPE;
 		case Constants.TABLE_ENTRY_TYPE:
 			return Constants.TABLE_ENTRY_TYPE;
+		case Constants.INTEGER_TYPE:
+			return Constants.INTERFACE_ID;
 		default:
 			return Constants.NONE;
 		}
 	}
-	
-	
+
 	// ------ Getters:
-	
+
 	public ExpressionObject getResult() {
 		return result;
 	}
@@ -1315,7 +1311,7 @@ public class RuleContext {
 	public LogicalOperator getEntryPoint() {
 		return entryPoint_p1;
 	}
-	
+
 	public String getNetFunction() {
 		return this.netFunction;
 	}
@@ -1323,7 +1319,7 @@ public class RuleContext {
 	public ObjectFactory getObjectFactory() {
 		return factory;
 	}
-	
+
 	public List<Variable> getVariable(String variable) {
 
 		List<Variable> var = localVariable.get(variable);
@@ -1349,5 +1345,4 @@ public class RuleContext {
 		}
 	}
 
-	
 }

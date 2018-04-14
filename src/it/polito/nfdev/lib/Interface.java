@@ -10,9 +10,8 @@ public class Interface {
 	public static final String INTERNAL_ATTR = "INTERNAL";
 	public static final String EXTERNAL_ATTR = "EXTERNAL";
 
-
 	public enum Type {
-		INTERNAL, EXTERNAL, STD_IN, STD_OUT, NF_IDS, NF_FW
+		INTERNAL, EXTERNAL
 	};
 
 	public String IP_ADRESS;
@@ -21,11 +20,6 @@ public class Interface {
 
 	private List<String> attributes;
 
-	public Interface() {
-		this.id = 1;
-		this.interfaceType = Type.STD_OUT;
-		this.attributes = new ArrayList<>();
-	}
 	public Interface(Integer id, Type type) {
 		this.id = id;
 		this.interfaceType = type;
@@ -35,6 +29,7 @@ public class Interface {
 	public Type getInterfaceType() {
 		return interfaceType;
 	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -50,30 +45,6 @@ public class Interface {
 	public boolean isInternal() {
 		if (interfaceType == Type.INTERNAL)
 			return true;
-
-		return false;
-	}
-
-	// MODIFY_02: Add method
-	public boolean equalsField(PacketField field, Type value) {
-
-		Type temp = this.interfaceType;
-		if (temp != null) {
-			if (value.compareTo(temp) == 0)
-				return true;
-		}
-
-		return false;
-	}
-
-	// MODIFY_03: Add method
-	public boolean notEqualsField(PacketField field, Type value) {
-
-		Type temp = this.interfaceType;
-		if (temp != null) {
-			if (value.compareTo(temp) != 0)
-				return true;
-		}
 
 		return false;
 	}

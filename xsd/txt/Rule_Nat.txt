@@ -3,19 +3,19 @@ Rule_0:
 (( send(n_Nat,n_0,p_0) && !(isInternal(p_0.IP_DST))) ==> 
 	 E(n_1, p_1 | 
 		( recv(n_1,n_Nat,p_1) && isInternal(p_1.IP_SRC) &&  E(n_2, p_2 | 
-			( recv(n_2,n_Nat,p_2) && isInternal(p_2.IP_SRC) && (p_1.IP_SRC == p_2.IP_SRC) && (p_1.PORT_SRC == p_2.PORT_SRC))) && (p_0.IP_SRC == natIp) && (p_0.PORT_SRC == new_port) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PORT_DST == p_1.PORT_DST) && (p_0.PROTO == p_1.PROTO) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.INNER_DEST == p_1.INNER_DEST) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
+			( recv(n_2,n_Nat,p_2) && isInternal(p_2.IP_SRC) && (p_1.IP_SRC == p_2.IP_SRC) && (p_1.PORT_SRC == p_2.PORT_SRC))) && (p_0.IP_SRC == natIp) && (p_0.PORT_SRC == new_port) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PROTO == p_1.PROTO) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.INNER_DEST == p_1.INNER_DEST) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
 
 Rule_1:
 
 (( send(n_Nat,n_0,p_0) && !(isInternal(p_0.IP_DST))) ==> 
 	 E(n_1, p_1 | 
 		( recv(n_1,n_Nat,p_1) && isInternal(p_1.IP_SRC) && !( E(n_2, p_2 | 
-			( recv(n_2,n_Nat,p_2) && isInternal(p_2.IP_SRC) && (p_1.IP_SRC == p_2.IP_SRC) && (p_1.PORT_SRC == p_2.PORT_SRC)))) && (p_0.IP_SRC == natIp) && (p_0.PORT_SRC == new_port) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PORT_DST == p_1.PORT_DST) && (p_0.PROTO == p_1.PROTO) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.INNER_DEST == p_1.INNER_DEST) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
+			( recv(n_2,n_Nat,p_2) && isInternal(p_2.IP_SRC) && (p_1.IP_SRC == p_2.IP_SRC) && (p_1.PORT_SRC == p_2.PORT_SRC)))) && (p_0.IP_SRC == natIp) && (p_0.PORT_SRC == new_port) && (p_0.IP_DST == p_1.IP_DST) && (p_0.PROTO == p_1.PROTO) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.INNER_DEST == p_1.INNER_DEST) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
 
 Rule_2:
 
 (( send(n_Nat,n_0,p_0) && isInternal(p_0.IP_DST)) ==> 
 	 E(n_1, p_1 | 
 		( recv(n_1,n_Nat,p_1) && !(isInternal(p_1.IP_SRC)) &&  E(n_2, p_2 | 
-			( recv(n_2,n_Nat,p_2) && isInternal(p_2.IP_SRC) && (p_1.IP_SRC == p_2.IP_DST) && (p_1.PORT_SRC == p_2.PORT_DST) && (p_1.IP_DST == natIp) && (p_1.PORT_DST == new_port) && (p_0.IP_DST == p_2.IP_SRC) && (p_0.PORT_DST == p_2.PORT_SRC))) && (p_0.IP_SRC == p_1.IP_SRC) && (p_0.PORT_SRC == p_1.PORT_SRC) && (p_0.PROTO == p_1.PROTO) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.INNER_DEST == p_1.INNER_DEST) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
+			( recv(n_2,n_Nat,p_2) && isInternal(p_2.IP_SRC) && (p_1.IP_SRC == p_2.IP_DST) && (p_1.PORT_SRC == p_2.PORT_DST) && (p_1.IP_DST == natIp) && (p_1.PORT_DST == new_port) && (p_0.IP_DST == p_2.IP_SRC) && (p_0.PORT_DST == p_2.PORT_SRC))) && (p_0.IP_SRC == p_1.IP_SRC) && (p_0.PROTO == p_1.PROTO) && (p_0.ORIGIN == p_1.ORIGIN) && (p_0.ORIG_BODY == p_1.ORIG_BODY) && (p_0.BODY == p_1.BODY) && (p_0.SEQUENCE == p_1.SEQUENCE) && (p_0.EMAIL_FROM == p_1.EMAIL_FROM) && (p_0.URL == p_1.URL) && (p_0.OPTIONS == p_1.OPTIONS) && (p_0.INNER_SRC == p_1.INNER_SRC) && (p_0.INNER_DEST == p_1.INNER_DEST) && (p_0.ENCRYPTED == p_1.ENCRYPTED))))
 

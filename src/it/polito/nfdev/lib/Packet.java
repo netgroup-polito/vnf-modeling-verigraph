@@ -5,103 +5,83 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Packet {
-	
-	public enum PacketField { 
-		
-		IP_SRC, 
-		IP_DST, 
-		PORT_SRC,   // == sport
-		PORT_DST,	// == dpor
-		PROTO,  
-		
-		ORIGIN,
-		ORIG_BODY,
-		BODY,		
-		INNER_SRC,
-		INNER_DEST,
-		SEQUENCE,
-		EMAIL_FROM,
-		URL,
-		OPTIONS,
-		ENCRYPTED,
-		
-		
+
+	public enum PacketField {
+
+		IP_SRC, IP_DST, PORT_SRC, // == sport
+		PORT_DST, // == dpor
+		PROTO,
+
+		ORIGIN, ORIG_BODY, BODY, INNER_SRC, INNER_DEST, SEQUENCE, EMAIL_FROM, URL, OPTIONS, ENCRYPTED,
+
 	};
-	
+
 	public static final String HTTP_REQUEST = "HTTP_REQ";
 	public static final String HTTP_RESPONSE = "HTTP_RESP";
 	public static final String POP3_REQUEST = "POP3_REQ";
-	public static final String POP3_RESPONSE = "POP3_RESP";  // if app_protocol=pop3_resp && l7data contains specified keyword, must DROP the packet
+	public static final String POP3_RESPONSE = "POP3_RESP"; // if app_protocol=pop3_resp && l7data contains specified
+															// keyword, must DROP the packet
 	public static final String DNS_REQUEST = "DNS_REQ";
 	public static final String DNS_RESPONSE = "DNS_RESP";
-	
-	public static final String  DNS_PORT_53 = "Dns_53";
-	public static final String  HTTP_PORT_80 = "Http_80";
-	
+
+	public static final String DNS_PORT_53 = "Dns_53";
+	public static final String HTTP_PORT_80 = "Http_80";
+
 	private Map<PacketField, String> fields;
-	
+
 	public Packet() {
 		this.fields = new HashMap<>();
 	}
-	
+
 	public Packet(Packet p) {
-		
+
 	}
-	
-	public void setField(PacketField pField, String value)
-	{
+
+	public void setField(PacketField pField, String value) {
 		this.fields.put(pField, value);
 	}
-	
-	public String getField(PacketField pField)
-	{
+
+	public String getField(PacketField pField) {
 		return this.fields.get(pField);
 	}
-	
-	public boolean equalsField(PacketField field, String value){
-		
+
+	public boolean equalsField(PacketField field, String value) {
+
 		String temp = this.fields.get(field);
-		if(temp!=null){
-			if(value.compareTo(temp)==0)
+		if (temp != null) {
+			if (value.compareTo(temp) == 0)
 				return true;
 		}
-		
+
 		return false;
 	}
-	public boolean notEqualsField(PacketField field, String value){
-		
+
+	public boolean notEqualsField(PacketField field, String value) {
+
 		String temp = this.fields.get(field);
-		if(temp!=null){
-			if(value.compareTo(temp)!=0)
+		if (temp != null) {
+			if (value.compareTo(temp) != 0)
 				return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
-		String out =" [IP_SRC] " +
-			fields.get(PacketField.IP_SRC.name()) +
-			" [IP_DST] " +
-			fields.get(PacketField.IP_DST.name()) +
-			" [PORT_SRC] " +
-			fields.get(PacketField.PORT_SRC.name()) +
-			" [PORT_DST] " +
-			fields.get(PacketField.PORT_DST.name()) +	
-			" [PROTO] " +
-			fields.get(PacketField.PROTO.name())  +
-			" [BODY] " +
-			fields.get(PacketField.BODY.name());
+		String out = " [IP_SRC] " + fields.get(PacketField.IP_SRC.name()) + " [IP_DST] "
+				+ fields.get(PacketField.IP_DST.name()) + " [PORT_SRC] " + fields.get(PacketField.PORT_SRC.name())
+				+ " [PORT_DST] " + fields.get(PacketField.PORT_DST.name()) + " [PROTO] "
+				+ fields.get(PacketField.PROTO.name()) + " [BODY] " + fields.get(PacketField.BODY.name());
 		return out;
 	}
-	
+
 	@Override
 	public Packet clone() throws CloneNotSupportedException {
 		Packet p = new Packet();
-		for(Entry<PacketField, String> entry : fields.entrySet())
+		for (Entry<PacketField, String> entry : fields.entrySet())
 			p.setField(entry.getKey(), entry.getValue());
 		return p;
 	}
-	
+
 }
