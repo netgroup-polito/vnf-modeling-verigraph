@@ -33,7 +33,7 @@ public class Classifier extends NetworkFunction {
 		super(new ArrayList<Interface>(ifout));
 
 		this.classifierTable = new Table(3, 0);
-		this.classifierTable.setTypes(Table.TableTypes.Generic, Table.TableTypes.Proto, Table.TableTypes.Interface);
+		this.classifierTable.setTypes(Table.TableTypes.Generic, Table.TableTypes.Proto, Table.TableTypes.Generic);
 	}
 
 	@Override

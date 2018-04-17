@@ -77,9 +77,7 @@ public class ClassGenerator {
 
 		fileNameXml = "./xsd/Rule_" + className + ".xml";
 		fileNameJava = "./xsd/java/Rule_" + className + ".java";
-		
-	//	fileNameJava = "C:/Users/Rui/git/verigraph-timeless/src/ruiNFs/Rule_" + className + ".java";
-		
+
 		imports.add(new String[] { "java", "util", "List" });
 		imports.add(new String[] { "java", "util", "ArrayList" });
 		imports.add(new String[] { "com", "microsoft", "z3", "BoolExpr" });
@@ -90,12 +88,13 @@ public class ClassGenerator {
 		imports.add(new String[] { "com", "microsoft", "z3", "IntExpr" });
 		imports.add(new String[] { "com", "microsoft", "z3", "Solver" });
 		imports.add(new String[] { "com", "microsoft", "z3", "Sort" });
-		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "NetContext" });
-		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "Network" });
-		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "NetworkObject" });
-		imports.add(new String[] { "it",  "polito",    "verigraph", "mcnet", "components", "Tuple" });
+		imports.add(new String[] { "it", "polito", "verigraph", "mcnet", "components", "NetContext" });
+		imports.add(new String[] { "it", "polito", "verigraph", "mcnet", "components", "Network" });
+		imports.add(new String[] { "it", "polito", "verigraph", "mcnet", "components", "NetworkObject" });
+		imports.add(new String[] { "it", "polito", "verigraph", "mcnet", "components", "Tuple" });
 
-		this.ast = AST.newAST(AST.JLS3);
+		// this.ast = AST.newAST(AST.JLS3);
+		this.ast = AST.newAST(AST.JLS9);
 		this.cu = ast.newCompilationUnit();
 
 	}
@@ -109,22 +108,20 @@ public class ClassGenerator {
 			tableSize = u.getReuslt().getTableSize();
 			isDataDriven = u.getReuslt().isDataDriven();
 			tableTypes = u.getReuslt().getTableFields();
-			
-			if(tableSize != tableTypes.size())
+
+			if (tableSize != tableTypes.size())
 				throw new RuntimeException("Error: tableSize and tableTypes.size() must be of the same size");
-			
+
 			List<String> tempList = new ArrayList<>();
-			for(String type : tableTypes){
-				if(type.compareTo(Constants.ENUM_GENERIC)==0)
+			for (String type : tableTypes) {
+				if (type.compareTo(Constants.ENUM_GENERIC) == 0)
 					tempList.add(type);
 			}
 			tableTypes.removeAll(tempList);
 			tableSize = tableTypes.size();
-			
-			
+
 			PackageDeclaration pd = ast.newPackageDeclaration();
-		//	pd.setName(ast.newName(new String[] { "mcnet", "netobjs", "generated" }));
-			pd.setName(ast.newName(new String[] { "ruiNFs" }));
+			pd.setName(ast.newName(new String[] { "modify_it" }));
 			cu.setPackage(pd);
 
 			for (String[] temp : imports) {
@@ -220,17 +217,16 @@ public class ClassGenerator {
 		field.setType(simpleType);
 
 		td.bodyDeclarations().add(field);
-		
-//		//Integer src_ip
-//		
-//		fragment = ast.newVariableDeclarationFragment();
-//		fragment.setName(ast.newSimpleName("src_ip"));
-//		field = ast.newFieldDeclaration(fragment);
-//		simpleType = ast.newSimpleType(ast.newName("Integer"));
-//		field.setType(simpleType);
-//
-//		td.bodyDeclarations().add(field);
 
+		// //Integer src_ip
+		//
+		// fragment = ast.newVariableDeclarationFragment();
+		// fragment.setName(ast.newSimpleName("src_ip"));
+		// field = ast.newFieldDeclaration(fragment);
+		// simpleType = ast.newSimpleType(ast.newName("Integer"));
+		// field.setType(simpleType);
+		//
+		// td.bodyDeclarations().add(field);
 
 		// FuncDecl isInternal
 
@@ -298,6 +294,7 @@ public class ClassGenerator {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initDeclaration(TypeDeclaration td) {
 
 		List<Statement> statements = new ArrayList<>();
@@ -433,44 +430,44 @@ public class ClassGenerator {
 		assignment.setRightHandSide(cast);
 
 		statements.add(ast.newExpressionStatement(assignment));
-		
-//		//if(args[0].length >= 4)
-//		// src_ip = (Integer)args[0][4];
-//		
-//		IfStatement is = ast.newIfStatement();
-//		InfixExpression ife = ast.newInfixExpression();
-//		is.setExpression(ife);
-//		
-//		ife.setOperator(InfixExpression.Operator.GREATER_EQUALS);
-//		ife.setRightOperand(ast.newNumberLiteral("4"));
-//
-//		FieldAccess fa = ast.newFieldAccess();
-//		fa.setName(ast.newSimpleName("length"));
-//		
-//		array1 = ast.newArrayAccess();
-//		array1.setIndex(ast.newNumberLiteral("0"));
-//		array1.setArray(ast.newName("args"));
-//		
-//		fa.setExpression(array1);
-//		ife.setLeftOperand(fa);
-//		
-//		assignment = ast.newAssignment();
-//		is.setThenStatement(ast.newExpressionStatement(assignment));
-//		assignment.setLeftHandSide(ast.newName("src_ip"));
-//		
-//		cast = ast.newCastExpression();
-//		cast.setType(ast.newSimpleType(ast.newSimpleName("Integer")));
-//		array1 = ast.newArrayAccess();
-//		array1.setIndex(ast.newNumberLiteral("3"));
-//		array2 = ast.newArrayAccess();
-//		array2.setIndex(ast.newNumberLiteral("0"));
-//		array2.setArray(ast.newSimpleName("args"));
-//		array1.setArray(array2);
-//
-//		cast.setExpression(array1);
-//		assignment.setRightHandSide(cast);
-//
-//		statements.add(is);
+
+		// //if(args[0].length >= 4)
+		// // src_ip = (Integer)args[0][4];
+		//
+		// IfStatement is = ast.newIfStatement();
+		// InfixExpression ife = ast.newInfixExpression();
+		// is.setExpression(ife);
+		//
+		// ife.setOperator(InfixExpression.Operator.GREATER_EQUALS);
+		// ife.setRightOperand(ast.newNumberLiteral("4"));
+		//
+		// FieldAccess fa = ast.newFieldAccess();
+		// fa.setName(ast.newSimpleName("length"));
+		//
+		// array1 = ast.newArrayAccess();
+		// array1.setIndex(ast.newNumberLiteral("0"));
+		// array1.setArray(ast.newName("args"));
+		//
+		// fa.setExpression(array1);
+		// ife.setLeftOperand(fa);
+		//
+		// assignment = ast.newAssignment();
+		// is.setThenStatement(ast.newExpressionStatement(assignment));
+		// assignment.setLeftHandSide(ast.newName("src_ip"));
+		//
+		// cast = ast.newCastExpression();
+		// cast.setType(ast.newSimpleType(ast.newSimpleName("Integer")));
+		// array1 = ast.newArrayAccess();
+		// array1.setIndex(ast.newNumberLiteral("3"));
+		// array2 = ast.newArrayAccess();
+		// array2.setIndex(ast.newNumberLiteral("0"));
+		// array2.setArray(ast.newSimpleName("args"));
+		// array1.setArray(array2);
+		//
+		// cast.setExpression(array1);
+		// assignment.setRightHandSide(cast);
+		//
+		// statements.add(is);
 
 		// net.saneSend(this);
 
@@ -499,11 +496,11 @@ public class ClassGenerator {
 		StringLiteral sl = ast.newStringLiteral();
 		sl.setLiteralValue("_isInternal");
 		ie.setRightOperand(sl);
-		
+
 		FieldAccess fa = ast.newFieldAccess();
 		fa.setName(ast.newSimpleName("address"));
 		fa.setExpression(ast.newName("nctx"));
-		
+
 		MethodInvocation innerMi = ast.newMethodInvocation();
 		innerMi.setName(ast.newSimpleName("mkBoolSort"));
 		innerMi.setExpression(ast.newName("ctx"));
@@ -516,7 +513,7 @@ public class ClassGenerator {
 
 		statements.add(ast.newExpressionStatement(assignment));
 
-		if (!isDataDriven && tableSize > 0 ) {
+		if (!isDataDriven && tableSize > 0) {
 			// matchEntry = ctx.mkFuncDecl("matchEntry", nctx.address,
 			// ctx.mkBoolSort());
 
@@ -546,19 +543,18 @@ public class ClassGenerator {
 			ArrayInitializer ai = ast.newArrayInitializer();
 
 			for (int i = 0; i < tableSize; i++) {
-				
-				if(tableTypes.get(i).compareTo(Constants.ENUM_IP)==0){
+
+				if (tableTypes.get(i).compareTo(Constants.ENUM_IP) == 0) {
 					FieldAccess tempFa = ast.newFieldAccess();
 					tempFa.setName(ast.newSimpleName("address"));
 					tempFa.setExpression(ast.newName("nctx"));
 					ai.expressions().add(tempFa);
-				}
-				else{
+				} else {
 					MethodInvocation tempMi = ast.newMethodInvocation();
 					tempMi.setName(ast.newSimpleName("mkIntSort"));
 					tempMi.setExpression(ast.newName("ctx"));
 					ai.expressions().add(tempMi);
-				}	
+				}
 			}
 			ac.setInitializer(ai);
 
@@ -617,60 +613,59 @@ public class ClassGenerator {
 
 		MarkerAnnotation note = ast.newMarkerAnnotation();
 		note.setTypeName(ast.newName("Override"));
-		
+
 		MethodDeclaration method = ast.newMethodDeclaration();
 		method.setName(ast.newSimpleName("addConstraints"));
 		method.setConstructor(false);
 		method.modifiers().add(note);
 		method.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PROTECTED_KEYWORD));
-		
+
 		SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
 		param.setName(ast.newSimpleName("solver"));
 		param.setType(ast.newSimpleType(ast.newName("Solver")));
-		
+
 		method.parameters().add(param);
 		method.setBody(ast.newBlock());
-		
-		//BoolExpr[] constr = new BoolExpr[constraints.size()];
-		
+
+		// BoolExpr[] constr = new BoolExpr[constraints.size()];
+
 		Assignment assignment = ast.newAssignment();
 		VariableDeclarationFragment varFrag = ast.newVariableDeclarationFragment();
 		varFrag.setName(ast.newSimpleName("constr"));
 		VariableDeclarationExpression varExp = ast.newVariableDeclarationExpression(varFrag);
 		varExp.setType(ast.newArrayType(ast.newSimpleType(ast.newName("BoolExpr"))));
-		
+
 		assignment.setLeftHandSide(varExp);
-		
+
 		ArrayCreation instance = ast.newArrayCreation();
 		ArrayType array = ast.newArrayType(ast.newSimpleType(ast.newName("BoolExpr")));
 		instance.setType(array);
-		
+
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("size"));
 		mi.setExpression(ast.newName("constraints"));
-		
+
 		instance.dimensions().add(mi);
-		
+
 		assignment.setRightHandSide(instance);
-		
+
 		method.getBody().statements().add(ast.newExpressionStatement(assignment));
-		
-		
+
 		mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("add"));
 		mi.setExpression(ast.newName("solver"));
-		
+
 		MethodInvocation mi2 = ast.newMethodInvocation();
 		mi2.setName(ast.newSimpleName("toArray"));
 		mi2.setExpression(ast.newName("constraints"));
 		mi2.arguments().add(ast.newName("constr"));
-		
+
 		mi.arguments().add(mi2);
-		
+
 		method.getBody().statements().add(ast.newExpressionStatement(mi));
-		
-		if(!isDataDriven && tableSize>0){
-		
+
+		if (!isDataDriven && tableSize > 0) {
+
 			IfStatement is = ast.newIfStatement();
 			InfixExpression ine = ast.newInfixExpression();
 			ine.setOperator(InfixExpression.Operator.EQUALS);
@@ -681,30 +676,29 @@ public class ClassGenerator {
 			mi.setName(ast.newSimpleName("size"));
 			mi.setExpression(ast.newName("entries"));
 			ine.setLeftOperand(mi);
-			
+
 			is.setExpression(ine);
 			is.setThenStatement(ast.newReturnStatement());
-			
+
 			method.getBody().statements().add(is);
-			
-			
-			for(int i = 0; i<tableSize;i++){
+
+			for (int i = 0; i < tableSize; i++) {
 				assignment = ast.newAssignment();
-				
+
 				varFrag = ast.newVariableDeclarationFragment();
-				varFrag.setName(ast.newSimpleName("e_"+i));
+				varFrag.setName(ast.newSimpleName("e_" + i));
 				varExp = ast.newVariableDeclarationExpression(varFrag);
 				varExp.setType(ast.newSimpleType(ast.newName("Expr")));
-				
+
 				assignment.setLeftHandSide(varExp);
-				
-				mi = ast.newMethodInvocation();	
-				if(tableTypes.get(i).compareTo(Constants.ENUM_IP)==0)
+
+				mi = ast.newMethodInvocation();
+				if (tableTypes.get(i).compareTo(Constants.ENUM_IP) == 0)
 					mi.setName(ast.newSimpleName("mkConst"));
 				else
 					mi.setName(ast.newSimpleName("mkIntConst"));
 				mi.setExpression(ast.newName("ctx"));
-				
+
 				assignment.setRightHandSide(mi);
 				InfixExpression tempIfe = ast.newInfixExpression();
 				tempIfe.setOperator(InfixExpression.Operator.PLUS);
@@ -713,40 +707,39 @@ public class ClassGenerator {
 				sl.setLiteralValue("_entry_e_" + i);
 				tempIfe.setRightOperand(sl);
 				mi.arguments().add(tempIfe);
-				
-				if(tableTypes.get(i).compareTo(Constants.ENUM_IP)==0){
+
+				if (tableTypes.get(i).compareTo(Constants.ENUM_IP) == 0) {
 					FieldAccess fa = ast.newFieldAccess();
 					fa.setName(ast.newSimpleName("address"));
 					fa.setExpression(ast.newName("nctx"));
 					mi.arguments().add(fa);
 				}
-				
+
 				method.getBody().statements().add(ast.newExpressionStatement(assignment));
 			}
-			
+
 			assignment = ast.newAssignment();
 			varFrag = ast.newVariableDeclarationFragment();
 			varFrag.setName(ast.newSimpleName("entry_map"));
 			varExp = ast.newVariableDeclarationExpression(varFrag);
 			varExp.setType(ast.newArrayType(ast.newSimpleType(ast.newName("BoolExpr"))));
-			
+
 			assignment.setLeftHandSide(varExp);
-			
+
 			instance = ast.newArrayCreation();
 			array = ast.newArrayType(ast.newSimpleType(ast.newName("BoolExpr")));
 			instance.setType(array);
-			
+
 			mi = ast.newMethodInvocation();
 			mi.setName(ast.newSimpleName("size"));
 			mi.setExpression(ast.newName("entries"));
-			
+
 			instance.dimensions().add(mi);
-			
+
 			assignment.setRightHandSide(instance);
-			
+
 			method.getBody().statements().add(ast.newExpressionStatement(assignment));
-			
-			
+
 			ForStatement fs = ast.newForStatement();
 			varFrag = ast.newVariableDeclarationFragment();
 			varFrag.setName(ast.newSimpleName("i"));
@@ -759,7 +752,7 @@ public class ClassGenerator {
 			PostfixExpression pe = ast.newPostfixExpression();
 			pe.setOperator(PostfixExpression.Operator.INCREMENT);
 			pe.setOperand(ast.newName("i"));
-			
+
 			InfixExpression ife = ast.newInfixExpression();
 			ife.setOperator(InfixExpression.Operator.LESS);
 			ife.setLeftOperand(ast.newName("i"));
@@ -767,33 +760,32 @@ public class ClassGenerator {
 			mi.setName(ast.newSimpleName("size"));
 			mi.setExpression(ast.newName("entries"));
 			ife.setRightOperand(mi);
-			
+
 			fs.initializers().add(vde);
 			fs.updaters().add(pe);
 			fs.setExpression(ife);
-			
+
 			fs.setBody(ast.newBlock());
-			
+
 			method.getBody().statements().add(fs);
-			
-			
+
 			assignment = ast.newAssignment();
 			ArrayAccess aa = ast.newArrayAccess();
 			aa.setIndex(ast.newName("i"));
 			aa.setArray(ast.newName("entry_map"));
 			assignment.setLeftHandSide(aa);
-			Block temp = (Block)fs.getBody();
+			Block temp = (Block) fs.getBody();
 			temp.statements().add(ast.newExpressionStatement(assignment));
-			
+
 			MethodInvocation mkAnd = ast.newMethodInvocation();
 			mkAnd.setName(ast.newSimpleName("mkAnd"));
 			mkAnd.setExpression(ast.newName("ctx"));
-			for(int i = 0; i < tableSize; i++){
+			for (int i = 0; i < tableSize; i++) {
 				MethodInvocation mkEq = ast.newMethodInvocation();
 				mkEq.setName(ast.newSimpleName("mkEq"));
 				mkEq.setExpression(ast.newName("ctx"));
-				mkEq.arguments().add(ast.newName("e_"+i));
-				
+				mkEq.arguments().add(ast.newName("e_" + i));
+
 				MethodInvocation fieldAccess = ast.newMethodInvocation();
 				fieldAccess.setName(ast.newSimpleName("get"));
 				fieldAccess.arguments().add(ast.newNumberLiteral(Integer.toString(i)));
@@ -802,63 +794,62 @@ public class ClassGenerator {
 				entryAccess.setExpression(ast.newName("entries"));
 				entryAccess.arguments().add(ast.newName("i"));
 				fieldAccess.setExpression(entryAccess);
-				
+
 				mkEq.arguments().add(fieldAccess);
 				mkAnd.arguments().add(mkEq);
 			}
-			
+
 			assignment.setRightHandSide(mkAnd);
-			
+
 			MethodInvocation add = ast.newMethodInvocation();
 			add.setName(ast.newSimpleName("add"));
 			add.setExpression(ast.newName("solver"));
-			
+
 			MethodInvocation mkForAll = ast.newMethodInvocation();
 			mkForAll.setName(ast.newSimpleName("mkForall"));
 			mkForAll.setExpression(ast.newName("ctx"));
-			
+
 			ArrayCreation expr = ast.newArrayCreation();
 			expr.setType(ast.newArrayType(ast.newSimpleType(ast.newName("Expr"))));
 			ArrayInitializer ai = ast.newArrayInitializer();
-			for(int i = 0; i < tableSize; i++){	
-				ai.expressions().add(ast.newName("e_"+i));	
+			for (int i = 0; i < tableSize; i++) {
+				ai.expressions().add(ast.newName("e_" + i));
 			}
 			expr.setInitializer(ai);
-			
+
 			mkForAll.arguments().add(expr);
-			
+
 			MethodInvocation mkEq = ast.newMethodInvocation();
 			mkEq.setName(ast.newSimpleName("mkEq"));
 			mkEq.setExpression(ast.newName("ctx"));
-			
+
 			MethodInvocation apply = ast.newMethodInvocation();
 			apply.setName(ast.newSimpleName("apply"));
-			apply.setExpression(ast.newName("matchEntry"));	
-			for(int i = 0; i < tableSize; i++){	
-				apply.arguments().add(ast.newName("e_"+i));
+			apply.setExpression(ast.newName("matchEntry"));
+			for (int i = 0; i < tableSize; i++) {
+				apply.arguments().add(ast.newName("e_" + i));
 			}
 			mkEq.arguments().add(apply);
-			
+
 			MethodInvocation mkOr = ast.newMethodInvocation();
 			mkOr.setName(ast.newSimpleName("mkOr"));
 			mkOr.setExpression(ast.newName("ctx"));
 			mkOr.arguments().add(ast.newName("entry_map"));
-			
+
 			mkEq.arguments().add(mkOr);
-			
+
 			mkForAll.arguments().add(mkEq);
 			mkForAll.arguments().add(ast.newNumberLiteral("1"));
 			mkForAll.arguments().add(ast.newNullLiteral());
 			mkForAll.arguments().add(ast.newNullLiteral());
 			mkForAll.arguments().add(ast.newNullLiteral());
 			mkForAll.arguments().add(ast.newNullLiteral());
-		
+
 			add.arguments().add(mkForAll);
-			
-			
+
 			method.getBody().statements().add(ast.newExpressionStatement(add));
 		}
-		
+
 		td.bodyDeclarations().add(method);
 	}
 
@@ -1032,54 +1023,53 @@ public class ClassGenerator {
 
 	private void addEntryInit(TypeDeclaration td) {
 
-		if(tableSize < 1)
+		if (tableSize < 1)
 			return;
-		
+
 		MethodDeclaration method = ast.newMethodDeclaration();
 		method.setName(ast.newSimpleName("addEntry"));
 		method.setConstructor(false);
 		method.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
 
 		List<SingleVariableDeclaration> parameters = new ArrayList<>();
-		
-		for(int i = 0; i<tableSize; i++){
+
+		for (int i = 0; i < tableSize; i++) {
 			SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
-			param.setName(ast.newSimpleName("expr_"+i));
-			
+			param.setName(ast.newSimpleName("expr_" + i));
+
 			param.setType(ast.newSimpleType(ast.newName("Expr")));
 			method.parameters().add(param);
 			parameters.add(param);
 		}
 
-		
 		method.setBody(ast.newBlock());
-		
+
 		IfStatement is = ast.newIfStatement();
 		method.getBody().statements().add(is);
 		InfixExpression ife = ast.newInfixExpression();
-		if(tableSize > 1){	
+		if (tableSize > 1) {
 			is.setExpression(ife);
 			ife.setOperator(InfixExpression.Operator.CONDITIONAL_AND);
 		}
-			
-		for(int i = 0; i<tableSize; i++){
+
+		for (int i = 0; i < tableSize; i++) {
 			InfixExpression tempIfe = ast.newInfixExpression();
 			tempIfe.setOperator(InfixExpression.Operator.EQUALS);
 			tempIfe.setLeftOperand(ast.newName(parameters.get(i).getName().getFullyQualifiedName()));
 			tempIfe.setRightOperand(ast.newNullLiteral());
-			
-			if(tableSize > 1){
-				if(i == 0)
+
+			if (tableSize > 1) {
+				if (i == 0)
 					ife.setLeftOperand(tempIfe);
-				else if(i == 1)
+				else if (i == 1)
 					ife.setRightOperand(tempIfe);
-				else if(i > 1)
-					ife.extendedOperands().add(tempIfe);		
-			}else
+				else if (i > 1)
+					ife.extendedOperands().add(tempIfe);
+			} else
 				is.setExpression(tempIfe);
 		}
 		is.setThenStatement(ast.newReturnStatement());
-		
+
 		VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
 		fragment.setName(ast.newSimpleName("entry"));
 		ParameterizedType parameterType = ast.newParameterizedType(ast.newSimpleType(ast.newName("ArrayList")));
@@ -1093,63 +1083,61 @@ public class ClassGenerator {
 		pt.typeArguments().add(ast.newSimpleType(ast.newName("Expr")));
 		instance.setType(pt);
 		fragment.setInitializer(instance);
-		
+
 		method.getBody().statements().add(ast.newExpressionStatement(vde));
-		
-		if(tableSize > 1){
-			for(int i = 0; i < tableSize; i++){
+
+		if (tableSize > 1) {
+			for (int i = 0; i < tableSize; i++) {
 				is = ast.newIfStatement();
 				ife = ast.newInfixExpression();
 				is.setExpression(ife);
-				
+
 				ife.setOperator(InfixExpression.Operator.EQUALS);
 				ife.setLeftOperand(ast.newName(parameters.get(i).getName().getFullyQualifiedName()));
 				ife.setRightOperand(ast.newNullLiteral());
-				
+
 				MethodInvocation mi = ast.newMethodInvocation();
 				is.setThenStatement(ast.newExpressionStatement(mi));
 				mi.setName(ast.newSimpleName("add"));
 				mi.setExpression(ast.newName("entry"));
-				
+
 				MethodInvocation innerMi = ast.newMethodInvocation();
 				mi.arguments().add(innerMi);
 				innerMi.setName(ast.newSimpleName("mkBool"));
 				innerMi.setExpression(ast.newName("ctx"));
 				innerMi.arguments().add(ast.newBooleanLiteral(true));
-				
+
 				mi = ast.newMethodInvocation();
 				is.setElseStatement(ast.newExpressionStatement(mi));
 				mi.setName(ast.newSimpleName("add"));
 				mi.setExpression(ast.newName("entry"));
 				mi.arguments().add(ast.newName(parameters.get(i).getName().getFullyQualifiedName()));
-				
+
 				method.getBody().statements().add(is);
 			}
-		}else {
+		} else {
 			MethodInvocation mi = ast.newMethodInvocation();
 			mi.setName(ast.newSimpleName("add"));
 			mi.setExpression(ast.newName("entry"));
 			mi.arguments().add(ast.newName(parameters.get(0).getName().getFullyQualifiedName()));
-			
+
 			method.getBody().statements().add(ast.newExpressionStatement(mi));
 		}
-		
-	
 
-//		is = ast.newIfStatement();
-//		is.setThenStatement(ast.newBlock());
-//		ife = ast.newInfixExpression();
-//		is.setExpression(ife);
-//		ife.setOperator(InfixExpression.Operator.EQUALS);
-//
-//		FieldAccess fa = ast.newFieldAccess();
-//		fa.setName(ast.newSimpleName("length"));
-//		fa.setExpression(ast.newName("entry"));
-//
-//		ife.setLeftOperand(fa);
-//		ife.setRightOperand(ast.newNumberLiteral("9"));
-//
-//		method.getBody().statements().add(is);
+		// is = ast.newIfStatement();
+		// is.setThenStatement(ast.newBlock());
+		// ife = ast.newInfixExpression();
+		// is.setExpression(ife);
+		// ife.setOperator(InfixExpression.Operator.EQUALS);
+		//
+		// FieldAccess fa = ast.newFieldAccess();
+		// fa.setName(ast.newSimpleName("length"));
+		// fa.setExpression(ast.newName("entry"));
+		//
+		// ife.setLeftOperand(fa);
+		// ife.setRightOperand(ast.newNumberLiteral("9"));
+		//
+		// method.getBody().statements().add(is);
 
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("add"));

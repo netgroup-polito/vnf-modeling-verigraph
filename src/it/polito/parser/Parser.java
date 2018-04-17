@@ -101,7 +101,7 @@ public class Parser {
 		
 		ClassGenerator generator = new ClassGenerator(classContext.getClassName());
 		generator.startGeneration();
-		System.out.println("Translator-Phase done: java classes generated!");
+		System.out.println("\n\tTranslator-Phase done");
 		
 	}
 	
