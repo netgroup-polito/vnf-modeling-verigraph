@@ -10,11 +10,28 @@
     <LogicalExpressionResult>
         <Implies>
             <AntecedentExpression>
-                <Send>
-                    <Source>n_MailServer</Source>
-                    <Destination>n_0</Destination>
-                    <Packet_out>p_0</Packet_out>
-                </Send>
+                <And>
+                    <Expression>
+                        <Send>
+                            <Source>n_MailServer</Source>
+                            <Destination>n_0</Destination>
+                            <Packet_out>p_0</Packet_out>
+                        </Send>
+                    </Expression>
+                    <Expression>
+                        <Equal>
+                            <LeftExpression>
+<FieldOf>
+    <Unit>p_0</Unit>
+    <Field>PROTO</Field>
+</FieldOf>
+                            </LeftExpression>
+                            <RightExpression>
+<Param>POP3_RESPONSE</Param>
+                            </RightExpression>
+                        </Equal>
+                    </Expression>
+                </And>
             </AntecedentExpression>
             <ConsequentExpression>
                 <Exist>
@@ -103,19 +120,6 @@
             <Unit>p_1</Unit>
             <Field>PORT_SRC</Field>
         </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PROTO</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <Param>POP3_RESPONSE</Param>
     </RightExpression>
 </Equal>
                             </Expression>

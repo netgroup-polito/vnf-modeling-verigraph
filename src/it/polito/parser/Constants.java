@@ -107,4 +107,19 @@ public class Constants {
 	public static final String IO_INT = "Internal";
 	public static final String IO_EXT = "Internal";
 
+	// SEFL instructions
+	public static final String BLOCK = "InstructionBlock";
+	public static final String CREATE = "CreateTag";
+	public static final String ALLOCATE = "Allocate";
+	public static final String ASSIGN = "Assign";
+	public static final String FORWARD = "Forward";
+	public static final String NOP = "NoOp";
+	public static final String RULE = "Constrain";
+	public static final String FAIL = "Fail";
+	public static final String IF = "If";
+	public static final String HSTART = "L3HeaderStart";
+	public static final String TAG = "Tag";
+	public static final String SIMBOLIC = "SymbolicValue";
+	
+
 }

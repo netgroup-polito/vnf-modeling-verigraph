@@ -146,9 +146,9 @@ class RuleUnmarshaller {
 		method.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
 
 		SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
-		// param.setName(ast.newSimpleName("internalNodes"));
-		// param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("NetworkObject"))));
-		// method.parameters().add(param);
+		//param.setName(ast.newSimpleName("internalNodes"));
+		//param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("NetworkObject"))));
+		//method.parameters().add(param);
 
 		method.setBody(ast.newBlock());
 

@@ -31,10 +31,14 @@ public class Antispam extends NetworkFunction {
 		
 		TableEntry e = antiSpamTable.matchEntry(packet.getField(PacketField.EMAIL_FROM));
 		
-		if(packet.equalsField(PacketField.PROTO,Packet.POP3_REQUEST) || (packet.equalsField(PacketField.PROTO,Packet.POP3_RESPONSE) && e == null)){		
-			return new RoutingResult(Action.FORWARD, packet, iface);
-		}else			
+		if(e==null) {
+			if(packet.equalsField(PacketField.PROTO,Packet.POP3_REQUEST) || (packet.equalsField(PacketField.PROTO,Packet.POP3_RESPONSE))){		
+				return new RoutingResult(Action.FORWARD, packet, iface);
+			}else			
+				return new RoutingResult(Action.DROP, null, null);
+		}else
 			return new RoutingResult(Action.DROP, null, null);
+		
 		
 	}
 	

@@ -31,6 +31,18 @@
 </Recv>
                             </Expression>
                             <Expression>
+<Not>
+    <Expression>
+        <MatchEntry>
+            <Value>
+                <Unit>p_1</Unit>
+                <Field>EMAIL_FROM</Field>
+            </Value>
+        </MatchEntry>
+    </Expression>
+</Not>
+                            </Expression>
+                            <Expression>
 <Or>
     <Expression>
         <Equal>
@@ -46,33 +58,17 @@
         </Equal>
     </Expression>
     <Expression>
-        <And>
-            <Expression>
-                <Equal>
-                    <LeftExpression>
-                        <FieldOf>
-                            <Unit>p_1</Unit>
-                            <Field>PROTO</Field>
-                        </FieldOf>
-                    </LeftExpression>
-                    <RightExpression>
-                        <Param>POP3_RESPONSE</Param>
-                    </RightExpression>
-                </Equal>
-            </Expression>
-            <Expression>
-                <Not>
-                    <Expression>
-                        <MatchEntry>
-                            <Value>
-<Unit>p_1</Unit>
-<Field>EMAIL_FROM</Field>
-                            </Value>
-                        </MatchEntry>
-                    </Expression>
-                </Not>
-            </Expression>
-        </And>
+        <Equal>
+            <LeftExpression>
+                <FieldOf>
+                    <Unit>p_1</Unit>
+                    <Field>PROTO</Field>
+                </FieldOf>
+            </LeftExpression>
+            <RightExpression>
+                <Param>POP3_RESPONSE</Param>
+            </RightExpression>
+        </Equal>
     </Expression>
 </Or>
                             </Expression>
@@ -104,38 +100,6 @@
         <FieldOf>
             <Unit>p_1</Unit>
             <Field>IP_DST</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_SRC</Field>
-        </FieldOf>
-    </RightExpression>
-</Equal>
-                            </Expression>
-                            <Expression>
-<Equal>
-    <LeftExpression>
-        <FieldOf>
-            <Unit>p_0</Unit>
-            <Field>PORT_DST</Field>
-        </FieldOf>
-    </LeftExpression>
-    <RightExpression>
-        <FieldOf>
-            <Unit>p_1</Unit>
-            <Field>PORT_DST</Field>
         </FieldOf>
     </RightExpression>
 </Equal>

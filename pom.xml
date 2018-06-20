@@ -23,6 +23,6 @@
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.core</artifactId>
 			<version>3.13.101</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
 </project>

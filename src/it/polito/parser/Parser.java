@@ -18,6 +18,7 @@ import it.polito.parser.context.MethodContext;
 import it.polito.parser.context.ReturnSnapshot;
 import it.polito.rule.generator.RuleGenerator;
 import it.polito.rule.unmarshaller.ClassGenerator;
+import it.polito.translator.symnet.ClassGeneratorS; //TM
 
 public class Parser {
 	
@@ -99,7 +100,9 @@ public class Parser {
 		ruler.saveRule();
 		}
 		
-		ClassGenerator generator = new ClassGenerator(classContext.getClassName());
+		// ClassGenerator generator = new ClassGenerator(classContext.getClassName()); //TM
+		ClassGeneratorS generator = new ClassGeneratorS(classContext.getClassName()); //TM
+		
 		generator.startGeneration();
 		System.out.println("\n\tTranslator-Phase done");
 		
