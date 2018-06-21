@@ -18,9 +18,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InfixExpression.Operator;
@@ -58,16 +56,16 @@ class RuleUnmarshallerS {
 	private ExpressionResult reuslt;
 
 	private List<String> params;
-	private List<String> constants; // Same as Tag
 	private List<String> packetfield;
+	private Boolean blacklist = false;
 	private Boolean match = false;
+	private Boolean flagnot = false;
 	private String interfacesend = "Default";
 
 	public RuleUnmarshallerS(String fileName, String className, AST ast) throws MarshalException {
 
 		this.ast = ast;
 		this.params = new ArrayList<>();
-		this.constants = new ArrayList<>();
 
 		JAXBContext context;
 		try {
@@ -150,11 +148,12 @@ class RuleUnmarshallerS {
 
 	@SuppressWarnings("unchecked")
 	public MethodDeclaration generateMatch(List<String> tableTypes) {
+		int it = 0; // Iterate col of tableTypes
 		if (match == false)
 			return null;
+
 		MethodDeclaration md = ast.newMethodDeclaration();
 		md.setName(ast.newSimpleName("addrule"));
-
 		md.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
 		ArrayType at1 = ast.newArrayType(ast.newSimpleType(ast.newName(Constants.BLOCK)));
 		md.setReturnType2(at1);
@@ -165,86 +164,150 @@ class RuleUnmarshallerS {
 		md.parameters().add(param);
 
 		md.setBody(ast.newBlock());
-		int it = 0;
 
-		VariableDeclarationFragment vdf = ast.newVariableDeclarationFragment();
-		vdf.setName(ast.newSimpleName("rule"));
-		VariableDeclarationStatement vds = ast.newVariableDeclarationStatement(vdf);
-		vds.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
-		md.getBody().statements().add(vds);
+		VariableDeclarationFragment vdfrule = ast.newVariableDeclarationFragment();
+		vdfrule.setName(ast.newSimpleName("rule"));
+		VariableDeclarationStatement vdsrule = ast.newVariableDeclarationStatement(vdfrule);
+		vdsrule.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
+		md.getBody().statements().add(vdsrule);
 
-		VariableDeclarationFragment vdfrs = ast.newVariableDeclarationFragment();
-		vdfrs.setName(ast.newSimpleName("rules"));
+		VariableDeclarationFragment vdfrules = ast.newVariableDeclarationFragment();
+		vdfrules.setName(ast.newSimpleName("rules"));
 		MethodInvocation miinizializer = ast.newMethodInvocation();
 		miinizializer.setName(ast.newSimpleName("Array"));
-		vdfrs.setInitializer(miinizializer);
-		VariableDeclarationStatement vdsrs = ast.newVariableDeclarationStatement(vdfrs);
-		vdsrs.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
-		md.getBody().statements().add(vdsrs);
+		vdfrules.setInitializer(miinizializer);
+		VariableDeclarationStatement vdsrules = ast.newVariableDeclarationStatement(vdfrules);
+		vdsrules.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
+		md.getBody().statements().add(vdsrules);
 
 		ForStatement fs = ast.newForStatement();
 
-		MethodInvocation mii = ast.newMethodInvocation();
-		mii.setName(ast.newSimpleName("length"));
-		mii.setExpression(ast.newSimpleName("p"));
-		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), mii, Operator.LESS));
+		MethodInvocation miforlimit = ast.newMethodInvocation();
+		miforlimit.setName(ast.newSimpleName("length"));
+		miforlimit.setExpression(ast.newSimpleName("p"));
+		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), miforlimit, Operator.LESS));
 
 		PostfixExpression pe = ast.newPostfixExpression();
 		pe.setOperand(ast.newSimpleName("i"));
 		pe.setOperator(PostfixExpression.Operator.INCREMENT);
 		fs.updaters().add(pe);
 
-		VariableDeclarationFragment svd = ast.newVariableDeclarationFragment();
-		svd.setName(ast.newSimpleName("i"));
-		svd.setInitializer(ast.newNumberLiteral("0"));
-		VariableDeclarationExpression vde = ast.newVariableDeclarationExpression(svd);
-		fs.initializers().add(vde);
+		VariableDeclarationFragment vdfforint = ast.newVariableDeclarationFragment();
+		vdfforint.setName(ast.newSimpleName("i"));
+		vdfforint.setInitializer(ast.newNumberLiteral("0"));
+		VariableDeclarationExpression vdeforinit = ast.newVariableDeclarationExpression(vdfforint);
+		fs.initializers().add(vdeforinit);
 
-		MethodInvocation mia = ast.newMethodInvocation();
-		mia.setName(ast.newSimpleName("Array"));
+		if (blacklist) {
+			MethodInvocation mia = ast.newMethodInvocation();
+			mia.setName(ast.newSimpleName("Array"));
+			{
 
-		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName(Constants.BLOCK));
+				MethodInvocation mib = ast.newMethodInvocation();
+				mib.setName(ast.newSimpleName(Constants.BLOCK));
 
-		MethodInvocation imi = ast.newMethodInvocation();
-		imi.setName(ast.newSimpleName(Constants.IF));
-		{
-			MethodInvocation cmi = ast.newMethodInvocation();
-			cmi.setName(ast.newSimpleName(Constants.RULE));
+				MethodInvocation mif = ast.newMethodInvocation();
+				mif.setName(ast.newSimpleName(Constants.IF));
+				{
+					MethodInvocation mic = ast.newMethodInvocation();
+					mic.setName(ast.newSimpleName(Constants.RULE));
 
-			Expression tmi = newtag(params.get(it));
-			cmi.arguments().add(tmi);
-			Expression cvmi = newconstatvalue(params.get(it), 0);
-			cmi.arguments().add(cvmi);
+					Expression tmi = newtag(params.get(it));
+					mic.arguments().add(tmi);
+					Expression cvmi = newconstatvalue(params.get(it), 0);
+					mic.arguments().add(cvmi);
 
-			imi.arguments().add(cmi);
+					mif.arguments().add(mic);
+
+				}
+				it++;
+				mif.arguments().add(newib(it));
+				mif.arguments().add(ast.newName("NoOp"));
+				mib.arguments().add(mif);
+				mia.arguments().add(mib);
+			}
+
+			Expression earule = makeAssignment(ast.newSimpleName("rule"), mia, Assignment.Operator.ASSIGN);
+			Block fb = ast.newBlock();
+			fb.statements().add(ast.newExpressionStatement(earule));
+			fb.statements().add(ast.newExpressionStatement(newconcatlist()));
+
+			fs.setBody(fb);
+			md.getBody().statements().add(fs);
+
+		} else {
+			MethodInvocation mia = ast.newMethodInvocation();
+			mia.setName(ast.newSimpleName("Array"));
+			{
+
+				MethodInvocation mib = ast.newMethodInvocation();
+				mib.setName(ast.newSimpleName(Constants.BLOCK));
+
+				MethodInvocation mif = ast.newMethodInvocation();
+				mif.setName(ast.newSimpleName(Constants.IF));
+				{
+					MethodInvocation mic = ast.newMethodInvocation();
+					mic.setName(ast.newSimpleName(Constants.RULE));
+
+					Expression tmi = newtag("flag");
+					mic.arguments().add(tmi);
+					MethodInvocation micv = ast.newMethodInvocation();
+					micv.setName(ast.newSimpleName("ConstantValue"));
+					micv.arguments().add(ast.newNumberLiteral("0"));
+
+					mic.arguments().add(micv);
+
+					mif.arguments().add(mic);
+				}
+				mif.arguments().add(newib(it));
+				mif.arguments().add(ast.newName("NoOp"));
+				mib.arguments().add(mif);
+				mia.arguments().add(mib);
+			}
+
+			Expression earule = makeAssignment(ast.newSimpleName("rule"), mia, Assignment.Operator.ASSIGN);
+			Block fb = ast.newBlock();
+			fb.statements().add(ast.newExpressionStatement(earule));
+			fb.statements().add(ast.newExpressionStatement(newconcatlist()));
+			fs.setBody(fb);
+			md.getBody().statements().add(fs);
+
+			MethodInvocation mia2 = ast.newMethodInvocation();
+			mia2.setName(ast.newSimpleName("Array"));
+			{
+
+				MethodInvocation mib2 = ast.newMethodInvocation();
+				mib2.setName(ast.newSimpleName(Constants.BLOCK));
+
+				MethodInvocation mif2 = ast.newMethodInvocation();
+				mif2.setName(ast.newSimpleName(Constants.IF));
+				{
+					MethodInvocation mic = ast.newMethodInvocation();
+					mic.setName(ast.newSimpleName(Constants.RULE));
+
+					Expression tmi = newtag("flag");
+					mic.arguments().add(tmi);
+					MethodInvocation micv = ast.newMethodInvocation();
+					micv.setName(ast.newSimpleName("ConstantValue"));
+					micv.arguments().add(ast.newNumberLiteral("0"));
+					mic.arguments().add(micv);
+					mif2.arguments().add(mic);
+				}
+				mif2.arguments().add(newfail("NoMatch"));
+				mif2.arguments().add(ast.newName("NoOp"));
+				mib2.arguments().add(mif2);
+				mia2.arguments().add(mib2);
+			}
+
+			Expression ea2 = makeAssignment(ast.newSimpleName("rule"), mia2, Assignment.Operator.ASSIGN);
+			md.getBody().statements().add(ast.newExpressionStatement(ea2));
+			md.getBody().statements().add(ast.newExpressionStatement(newconcatlist()));
 
 		}
-		it++;
-		imi.arguments().add(newib(it));
-		imi.arguments().add(ast.newName("NoOp"));
-		mi.arguments().add(imi);
-		mia.arguments().add(mi);
-
-		Expression a = makeAssignment(ast.newSimpleName("rule"), mia, Assignment.Operator.ASSIGN);
-		Block fb = ast.newBlock();
-		fb.statements().add(ast.newExpressionStatement(a));
-
-		MethodInvocation met = ast.newMethodInvocation();
-		met.setName(ast.newSimpleName("concat"));
-		met.setExpression(ast.newSimpleName("Array"));
-		met.arguments().add(ast.newSimpleName("rules"));
-		met.arguments().add(ast.newSimpleName("rule"));
-		Expression ea = makeAssignment(ast.newSimpleName("rules"), met, Assignment.Operator.ASSIGN);
-
-		fb.statements().add(ast.newExpressionStatement(ea));
-		fs.setBody(fb);
-		md.getBody().statements().add(fs);
 
 		ReturnStatement rs = ast.newReturnStatement();
 		rs.setExpression((ast.newSimpleName("rules")));
 		md.getBody().statements().add(rs);
-
 		return md;
 
 	}
@@ -292,11 +355,20 @@ class RuleUnmarshallerS {
 			misv.setName(ast.newSimpleName(Constants.SIMBOLIC));
 			mi2.arguments().add(misv);
 			startblock.arguments().add(mi2);
-
 		}
+		// Add Flag
+
+		MethodInvocation mi = ast.newMethodInvocation();
+		mi.setName(ast.newSimpleName(Constants.ASSIGN));
+		mi.arguments().add(makeStringLiteral("flag"));
+		MethodInvocation micv = ast.newMethodInvocation();
+		micv.setName(ast.newSimpleName("ConstantValue"));
+		micv.arguments().add(ast.newNumberLiteral("0"));
+		mi.arguments().add(micv);
+		startblock.arguments().add(mi);
+
 	}
 
-	@SuppressWarnings("unchecked")
 	private Expression getType(ExpressionObject obj) {
 		if (obj.getAnd() != null) {
 
@@ -326,37 +398,7 @@ class RuleUnmarshallerS {
 
 			return generateMatchEntry(obj.getMatchEntry());
 		} else if (obj.getParam() != null) {
-
-			if (constants.contains(obj.getParam())) {
-				MethodInvocation mi = ast.newMethodInvocation();
-				if (obj.getParam().compareTo("null") == 0) // for inner_src == null
-				{
-
-					mi.setName(ast.newSimpleName("get"));
-
-					FieldAccess fa = ast.newFieldAccess();
-					fa.setName(ast.newSimpleName("am"));
-					fa.setExpression(ast.newName("nctx"));
-
-					mi.setExpression(fa);
-					StringLiteral sl = ast.newStringLiteral();
-					sl.setLiteralValue("null");
-					mi.arguments().add(sl);
-				} else {
-
-					mi.setName(ast.newSimpleName("mkInt"));
-					mi.setExpression(ast.newName("ctx"));
-
-					FieldAccess fa = ast.newFieldAccess();
-					fa.setName(ast.newSimpleName(obj.getParam()));
-					fa.setExpression(ast.newName("nctx"));
-					mi.arguments().add(fa);
-				}
-				return mi;
-			}
-
 			return ast.newSimpleName(obj.getParam());
-			// }
 		} else
 			return null;
 	}
@@ -373,17 +415,19 @@ class RuleUnmarshallerS {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Expression generateIsInternal(LFIsInternal isInternal) {	
+	private Expression generateIsInternal(LFIsInternal isInternal) {
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("isInternal"));
-		mi.arguments().add(ast.newSimpleName(isInternal.getFieldOf().getField()));	
+		mi.arguments().add(ast.newSimpleName(isInternal.getFieldOf().getField()));
 		return mi;
 
 	}
 
 	@SuppressWarnings("unchecked")
 	private Expression generateMatchEntry(LFMatchEntry matchEntry) {
-
+		if (flagnot) {
+			blacklist = true;
+		}
 
 		MethodInvocation miib = ast.newMethodInvocation();
 		miib.setName(ast.newSimpleName(Constants.BLOCK));
@@ -442,7 +486,9 @@ class RuleUnmarshallerS {
 	}
 
 	private Expression generateNot(LONot not) {
+		flagnot = true;
 		getType(not.getExpression());
+		flagnot = false;
 		return null;
 	}
 
@@ -451,8 +497,7 @@ class RuleUnmarshallerS {
 		// Constrain(Tag("IPSrc"), :==:(ConstantValue(ipToNumber(p(i)(0))))),
 		String rfield;
 		String lfield;
-				
-		
+
 		MethodInvocation mi = ast.newMethodInvocation();
 
 		if (equal.getRightExpression().getParam() != null) {
@@ -464,9 +509,9 @@ class RuleUnmarshallerS {
 		if (rfield == null) {
 			rfield = equal.getRightExpression().getParam();
 		}
-		
-		if(equal.getLeftExpression().getFieldOf().getUnit().equals("p_0")) {
-			
+
+		if (equal.getLeftExpression().getFieldOf().getUnit().equals("p_0")) {
+
 			if (lfield != null && rfield != null && !lfield.equals(rfield)) {
 				if (packetfield.contains(lfield)) {
 					mi.setName(ast.newSimpleName(Constants.ASSIGN));
@@ -480,21 +525,22 @@ class RuleUnmarshallerS {
 					interfacesend = rfield;
 					return null;
 				}
-			}else
+			} else
 				return null;
-		}else if (lfield != null && rfield != null && !lfield.equals(rfield)) {
+		} else if (lfield != null && rfield != null && !lfield.equals(rfield)) {
 			if (packetfield.contains(lfield)) {
 
 				mi.setName(ast.newSimpleName(Constants.RULE));
-				
+
 				Expression mit = newtag(lfield);
 				Expression micv = newconstatvalue(rfield);
 
 				mi.arguments().add(makeInfixExpression(mit, micv, Operator.EQUALS));
-			} else if(lfield.equals("IF_OUT")){
-				interfacesend  = rfield;
+			} else if (lfield.equals("IF_OUT")) {
+				interfacesend = rfield;
 				return null;
-		}}else
+			}
+		} else
 			return null;
 		return mi;
 	}
@@ -558,15 +604,15 @@ class RuleUnmarshallerS {
 	}
 
 	// ---------------------------------------------------------
-	// Method to generate a new method for SEFL instructions:
+	// Generate new method for SEFL instructions:
 	// ---------------------------------------------------------
 
 	@SuppressWarnings("unchecked")
-	private Expression newfail() {
+	private Expression newfail(String msg) {
 		// @Return -> Fail(Dropped)
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName(Constants.FAIL));
-		mi.arguments().add(makeStringLiteral("Dropped"));
+		mi.arguments().add(makeStringLiteral(msg));
 		return mi;
 	}
 
@@ -640,7 +686,22 @@ class RuleUnmarshallerS {
 	@SuppressWarnings("unchecked")
 	private Expression newib(int index) {
 		if (index == params.size()) {
-			return newfail();
+			if (blacklist) {
+				return newfail("Match");
+			} else {
+				MethodInvocation mi = ast.newMethodInvocation();
+				mi.setName(ast.newSimpleName(Constants.ASSIGN));
+
+				Expression tmi = newtag("flag");
+				mi.arguments().add(tmi);
+				MethodInvocation micv = ast.newMethodInvocation();
+				micv.setName(ast.newSimpleName("ConstantValue"));
+				micv.arguments().add(ast.newNumberLiteral("1"));
+				mi.arguments().add(micv);
+
+				return mi;
+			}
+
 		}
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName(Constants.BLOCK));
@@ -690,6 +751,17 @@ class RuleUnmarshallerS {
 
 		return mi;
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private Expression newconcatlist() {
+		MethodInvocation meconcat = ast.newMethodInvocation();
+		meconcat.setName(ast.newSimpleName("concat"));
+		meconcat.setExpression(ast.newSimpleName("Array"));
+		meconcat.arguments().add(ast.newSimpleName("rules"));
+		meconcat.arguments().add(ast.newSimpleName("rule"));
+		Expression ea = makeAssignment(ast.newSimpleName("rules"), meconcat, Assignment.Operator.ASSIGN);
+		return ea;
 	}
 
 	// ---------------------------------------------------------
