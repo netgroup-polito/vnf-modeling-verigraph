@@ -141,6 +141,7 @@ class RuleUnmarshallerS {
 		mi.setName(ast.newSimpleName("code"));
 		mi.arguments().add(ast.newName("State.clean"));
 		mi.arguments().add(ast.newBooleanLiteral(true));
+
 		method.getBody().statements().add(ast.newExpressionStatement(mi));
 
 		return method;

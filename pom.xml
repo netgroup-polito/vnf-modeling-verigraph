@@ -6,8 +6,11 @@
 	<artifactId>NFDev</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+
+		<sourceDirectory>C:\Users\AleOSandra90\git\vnf-modeling-verigraph-ao\netest</sourceDirectory>
+
 		<plugins>
+		
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
@@ -16,13 +19,22 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>com.mysema.scalagen</groupId>
+				<artifactId>scalagen-maven-plugin</artifactId>
+				<version>0.2.2</version>
+			</plugin>
+
 		</plugins>
+
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.core</artifactId>
 			<version>3.13.101</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
 </project>
