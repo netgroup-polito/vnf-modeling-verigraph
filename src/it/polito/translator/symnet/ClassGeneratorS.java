@@ -16,6 +16,14 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import it.polito.parser.Constants;
 
+/**
+ * To provides unmarshalling operations for accessing to the XML document of
+ * network rules and generate network rules in format scala.
+ * 
+ * @author s211483
+ * @version 1.0 01/07/2018
+ * 
+ */
 public class ClassGeneratorS {
 
 	private String originalName;
@@ -32,19 +40,33 @@ public class ClassGeneratorS {
 	private int tableSize = 0;
 	private List<String> tableTypes = new ArrayList<>();
 
+	/**
+	 * Constructor: initialization of the unmarshaller phase: <br> + Assign the name
+	 * of the input and output files <br> + Generate the compilation unit <br> +
+	 * Defines the necessary imports
+	 * 
+	 * @param className it is the XML document to give as input to the unmarshaller
+	 */
 	public ClassGeneratorS(String className) {
 		this.originalName = className;
 		this.className = "SymRule_" + className;
 		this.imports = new ArrayList<String[]>();
 
+		/**
+		 * Input file
+		 */
 		fileNameXml = "./xsd/Rule_" + className + ".xml";
+
+		/**
+		 * Output file
+		 */
 		fileNameSymNet = "./netest/Rule_" + className + ".java";
 
 		imports.add(new String[] { "org", "change", "v2", "analysis", "expression", "concrete", "_" });
 		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "State" });
 		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "TagExp", "_" });
 		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "Tag" });
-		imports.add(new String[] { "org", "change", "v2", "analysis", "processingmodels", "instructions", "_" });		
+		imports.add(new String[] { "org", "change", "v2", "analysis", "processingmodels", "instructions", "_" });
 		imports.add(new String[] { "org", "change", "v2", "util", "conversion", "RepresentationConversion", "_" });
 
 		this.ast = AST.newAST(AST.JLS9);
@@ -52,6 +74,12 @@ public class ClassGeneratorS {
 
 	}
 
+	/**
+	 * Start the translation by instantiate a new object of RuleUnmarshallerS . <br>
+	 * It read the input xml file, write the package declaration and the type declaration, call the generateRule method and write the result in the java output file. <br>
+	 * 
+	 * @exception RuntimeException if the input file has an inconsistency in the table definition between the type and the declaration of the dimension
+	 */
 	@SuppressWarnings("unchecked")
 	public void startGeneration() {
 
@@ -79,18 +107,18 @@ public class ClassGeneratorS {
 
 			for (String[] temp : imports) {
 				ImportDeclaration id = ast.newImportDeclaration();
-				id.setName(ast.newName(temp)); //TM
+				id.setName(ast.newName(temp)); // TM
 				cu.imports().add(id);
 			}
 
 			TypeDeclaration td = ast.newTypeDeclaration();
 			td.setName(ast.newSimpleName(className));
 			td.setInterface(false);
-	
+
 			cu.types().add(td);
 
 			td.bodyDeclarations().add(u.generateRule());
-			if(!tableTypes.isEmpty())
+			if (!tableTypes.isEmpty())
 				td.bodyDeclarations().add(u.generateMatch(tableTypes));
 
 			FileWriter writer = new FileWriter(new File(fileNameSymNet));

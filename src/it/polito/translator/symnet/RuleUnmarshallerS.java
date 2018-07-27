@@ -48,7 +48,28 @@ import it.polito.nfdev.jaxb.LONot;
 import it.polito.nfdev.jaxb.LOOr;
 import it.polito.parser.Constants;
 
-class RuleUnmarshallerS {
+/**
+ * Recursively scans all AST nodes of the input XML document. <br>
+ * Depending on the type associated with the node, <br>
+ * a different method is called and generates the corresponding rules in SEFL
+ * language.
+ * <p>
+ * All methods with the name "generate<strong>Type</strong>-" process the nested
+ * node information to generate a set of SEFL statements for the specific
+ * <strong>type</strong>. <br>
+ * All the methods with the name "new<strong>Name</strong>" produce a specific
+ * <strong>Name</strong> SEFL instruction.<br>
+ * All the methods with the name "make<strong>...</strong>" produce a
+ * structure/element needed in a SEFL instruction. <br>
+ * <p>
+ * The starting point of the translation is on the <strong> generateRule ()
+ * </strong> method and all the other methods are called recursively by it
+ * 
+ * @author s211483
+ * @version 1.0 01/07/2018
+ *
+ */
+public class RuleUnmarshallerS {
 
 	private AST ast;
 	private MethodInvocation startblock;
@@ -62,6 +83,15 @@ class RuleUnmarshallerS {
 	private Boolean flagnot = false;
 	private String interfacesend = "Default";
 
+	/**
+	 * Constructor: Instantiate the client's entry point to the JAXB framework. <br>
+	 * The location of the XML schema and XML document must be provided.
+	 * 
+	 * @param fileName  the input XML document to translate
+	 * @param className the original name of the input file
+	 * @param ast       the new AST to explore file
+	 * @throws MarshalException if the AST root is invalid
+	 */
 	public RuleUnmarshallerS(String fileName, String className, AST ast) throws MarshalException {
 
 		this.ast = ast;
@@ -93,6 +123,13 @@ class RuleUnmarshallerS {
 		}
 	}
 
+	/**
+	 * The entry point of AST exploration. <br>
+	 * A new method declaration is generated and contains all the network policies
+	 * in an SEFL format. The for statement
+	 * 
+	 * @return a new Method Declaration that
+	 */
 	@SuppressWarnings("unchecked")
 	public MethodDeclaration generateRule() {
 
@@ -147,6 +184,17 @@ class RuleUnmarshallerS {
 		return method;
 	}
 
+	/**
+	 * Generate a Method Invocation that contains a set of SEFL instructions
+	 * corresponding to the LFMatchEntry. <br>
+	 * If the flag <strong> match </strong> is <strong> false </strong> the method
+	 * return null because in the input file there is not a LFMatchType. Otherwise,
+	 * it also check the flag <strong> blacklist </strong> and generate the relative
+	 * SEFL instructions.
+	 * 
+	 * @param tableTypes The network function table entry types
+	 * @return a new Method Declaration if the flag match is set otherwise null.
+	 */
 	@SuppressWarnings("unchecked")
 	public MethodDeclaration generateMatch(List<String> tableTypes) {
 		int it = 0; // Iterate col of tableTypes
@@ -159,6 +207,10 @@ class RuleUnmarshallerS {
 		ArrayType at1 = ast.newArrayType(ast.newSimpleType(ast.newName(Constants.BLOCK)));
 		md.setReturnType2(at1);
 
+		/**
+		 * The variable <strong>p</strong> is the array that contains the entries given
+		 * to the network function being configured
+		 */
 		SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
 		param.setName(ast.newSimpleName("p"));
 		param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("String")), 2));
@@ -166,12 +218,20 @@ class RuleUnmarshallerS {
 
 		md.setBody(ast.newBlock());
 
+		/**
+		 * The variable <strong>rule</strong> is the InstructionBlock SEFL statement
+		 * generate to each entries given to the network function being configured.
+		 */
 		VariableDeclarationFragment vdfrule = ast.newVariableDeclarationFragment();
 		vdfrule.setName(ast.newSimpleName("rule"));
 		VariableDeclarationStatement vdsrule = ast.newVariableDeclarationStatement(vdfrule);
 		vdsrule.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
 		md.getBody().statements().add(vdsrule);
 
+		/**
+		 * The variable <strong>rules</strong> is the array that contains all the
+		 * <strong>rule</strong> statements.
+		 */
 		VariableDeclarationFragment vdfrules = ast.newVariableDeclarationFragment();
 		vdfrules.setName(ast.newSimpleName("rules"));
 		MethodInvocation miinizializer = ast.newMethodInvocation();
@@ -294,7 +354,7 @@ class RuleUnmarshallerS {
 					mic.arguments().add(micv);
 					mif2.arguments().add(mic);
 				}
-				mif2.arguments().add(newfail("NoMatch"));
+				mif2.arguments().add(newfail("NoMatch"));	
 				mif2.arguments().add(ast.newName("NoOp"));
 				mib2.arguments().add(mif2);
 				mia2.arguments().add(mib2);
@@ -313,6 +373,11 @@ class RuleUnmarshallerS {
 
 	}
 
+	/**
+	 * Generate the SEFL instructions that Create, Allocate and Assign all the
+	 * packet fields. <br>
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	private void createPacketFieldTag() {
 		// Init
@@ -367,9 +432,16 @@ class RuleUnmarshallerS {
 		micv.arguments().add(ast.newNumberLiteral("0"));
 		mi.arguments().add(micv);
 		startblock.arguments().add(mi);
-
 	}
 
+	/**
+	 * It receives an XML document node as input parameter and is responsible for
+	 * calling the method associated with the node type to translate it into SEFL
+	 * instructions. <br>
+	 * 
+	 * @param obj node
+	 * @return the SEFL instruction generate
+	 */
 	private Expression getType(ExpressionObject obj) {
 		if (obj.getAnd() != null) {
 
@@ -404,26 +476,53 @@ class RuleUnmarshallerS {
 			return null;
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type LFFieldOf. <br>
+	 * It generates a String with the value associate to the field. <br>
+	 * 
+	 * @param fieldOf The AST node of type LFFieldOf
+	 * @return the new Method Invocation that represent the LFFieldOf type in SEFL
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateFieldOf(LFFieldOf fieldOf) {
-
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("field"));
 		String value = fieldOf.getField();
 		mi.arguments().add(ast.newSimpleName(value));
 		return mi;
-
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type LFIsInternal. <br>
+	 * For example, <br>
+	 * isInternal(IP_SRC)
+	 * 
+	 * @param isInternal The AST node of type LFIsInternal
+	 * @return the new Method Invocation that represent the LFIsInternal type in
+	 *         SEFL
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateIsInternal(LFIsInternal isInternal) {
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("isInternal"));
 		mi.arguments().add(ast.newSimpleName(isInternal.getFieldOf().getField()));
 		return mi;
-
 	}
 
+	/**
+	 * Generate a SEFL instruction for call a method that generates the SEFL
+	 * instructions that correspond to the LFMatchEntry type. <br>
+	 * It also sets the <strong>blacklist</strong> variable/falg to differentiate
+	 * the behavior. <br>
+	 * It also sets the <strong>match</strong> variable/flag to inform the
+	 * translator that a LFMatchEntry node has been found and that the associated
+	 * method must be written to the output file. <br>
+	 * For example, <br>
+	 * InstructionBlock(addrule(params))
+	 * 
+	 * @param matchEntry The AST node of type LFMatchEntry
+	 * @return null
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateMatchEntry(LFMatchEntry matchEntry) {
 		if (flagnot) {
@@ -448,6 +547,15 @@ class RuleUnmarshallerS {
 		return null;
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type LOAnd. <br>
+	 * For example, <br>
+	 * BitwiseAnd((Tag("PROTO")==(ConstantValue(1))),
+	 * (Tag("PROTO")==(ConstantValue(3)))),
+	 * 
+	 * @param and The AST node of type LOAnd
+	 * @return the new Method Invocation that represent the LOAnd type in SEFL
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateAnd(LOAnd and) {
 
@@ -469,6 +577,15 @@ class RuleUnmarshallerS {
 		return null;
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type LOOr. <br>
+	 * For example, <br>
+	 * BitwiseOr((Tag("PROTO")==(ConstantValue(1))),
+	 * (Tag("PROTO")==(ConstantValue(3)))),
+	 * 
+	 * @param or The AST node of type LOOr
+	 * @return the new Method Invocation that represent the LOOr type in SEFL
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateOr(LOOr or) {
 
@@ -486,6 +603,16 @@ class RuleUnmarshallerS {
 		return mi;
 	}
 
+	/**
+	 * If the node type is a LONot, the method sets the <strong>flagnot</strong>
+	 * variable, so the nested element can operate differently if the statement is
+	 * negative. <br>
+	 * Before the return to the call the <strong>flagnot</strong> variable is reset
+	 * to the positive value.
+	 * 
+	 * @param not The AST node of type LONot
+	 * @return null
+	 */
 	private Expression generateNot(LONot not) {
 		flagnot = true;
 		getType(not.getExpression());
@@ -493,9 +620,17 @@ class RuleUnmarshallerS {
 		return null;
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type LOEquals. <br>
+	 * For example, <br>
+	 * Constrain(Tag("IPSrc"), :==:(ConstantValue(ipToNumber(p(i)(0))))),
+	 * 
+	 * @param equal The AST node
+	 * @return the new Method Invocation that represent the Equals type in SEFL or
+	 *         null if the equal node is about the field interface_send.
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateEqual(LOEquals equal) {
-		// Constrain(Tag("IPSrc"), :==:(ConstantValue(ipToNumber(p(i)(0))))),
 		String rfield;
 		String lfield;
 
@@ -546,6 +681,16 @@ class RuleUnmarshallerS {
 		return mi;
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type LOImplies. <br>
+	 * The SEFL instruction is a Forward statement. It use the global variable
+	 * <strong> interfacesend </strong> to set the output port. <br>
+	 * For example, <br>
+	 * Forward("<strong>interfacesend</strong>")
+	 * 
+	 * @param implies The AST node
+	 * @return the new Method Invocation that represent the Implies type in SEFL
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateImplies(LOImplies implies) {
 
@@ -559,6 +704,13 @@ class RuleUnmarshallerS {
 		return mi;
 	}
 
+	/**
+	 * Generate a SEFL instruction for the node type Exist.
+	 * 
+	 * @param exist The AST node
+	 * @return the new Method Invocation that represent the Exit type in SEFL or
+	 *         null if the exist element do not has nested element.
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateExist(LOExist exist) {
 
@@ -578,6 +730,15 @@ class RuleUnmarshallerS {
 	// Method to generate AST element:
 	// ---------------------------------------------------------
 
+	/**
+	 * Generate an InfixExpression expression AST node type
+	 * 
+	 * @param lo The "leftOperand" structural property of this node type
+	 * @param ro The "rightOperand" structural property of this node type
+	 * @param o  The "operator" structural property of this node type
+	 * @return the InfixExpression
+	 * @see Class InfixExpression of org.eclipse.jdt.core.dom
+	 */
 	private Expression makeInfixExpression(Expression lo, Expression ro, Operator o) {
 		// InfixExpression.Operator: *,/,%,+,-,<<,>>,<,>,<=,>=,==,!=,^,&,|,&&,||
 		InfixExpression ie = ast.newInfixExpression();
@@ -590,6 +751,15 @@ class RuleUnmarshallerS {
 
 	}
 
+	/**
+	 * Generate an Assignment expression AST node type
+	 * 
+	 * @param lo The "leftHandSide" structural property of this node type
+	 * @param ro The "rightHandSide" structural property of this node type
+	 * @param o  The "operator" structural property of this node type
+	 * @return the Assignment expression
+	 * @see Class Assignment of org.eclipse.jdt.core.dom
+	 */
 	private Expression makeAssignment(Expression lo, Expression ro, Assignment.Operator o) {
 		Assignment a = ast.newAssignment();
 		a.setLeftHandSide(lo);
@@ -598,6 +768,15 @@ class RuleUnmarshallerS {
 		return a;
 	}
 
+	/**
+	 * Generate a String Literal node of AST
+	 * 
+	 * @param str the string to put in the new AST node as String Literal, the
+	 *            string value without enclosing double quotes and embedded escapes
+	 * @return the String Literal node with value set to str
+	 * @throws IllegalArgumentException - if the argument is incorrect
+	 * @see Class StringLiteral of org.eclipse.jdt.core.dom
+	 */
 	private StringLiteral makeStringLiteral(String str) {
 		StringLiteral sl = ast.newStringLiteral();
 		sl.setLiteralValue(str);
@@ -608,15 +787,29 @@ class RuleUnmarshallerS {
 	// Generate new method for SEFL instructions:
 	// ---------------------------------------------------------
 
+	/**
+	 * Generate a new method that represents a Fail SEFL instruction Example:
+	 * Fail("message")
+	 * 
+	 * @param msg is a message. It is the argument of the Fail SEFL instruction and
+	 *            it describes why a failure occurs.
+	 * @return a Method Invocation that represent the Fail SEFL instruction
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression newfail(String msg) {
-		// @Return -> Fail(Dropped)
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName(Constants.FAIL));
 		mi.arguments().add(makeStringLiteral(msg));
 		return mi;
 	}
 
+	/**
+	 * Generate a new method that represents a Tag SEFL instruction
+	 * Example:Tag("L3HeaderStart")
+	 * 
+	 * @param name is the name of the tag
+	 * @return a Method Invocation that represent the Tag SEFL instruction
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression newtag(String name) {
 		// @Return -> Tag("name")
@@ -626,9 +819,16 @@ class RuleUnmarshallerS {
 		return mi;
 	}
 
+	/**
+	 * Generate a new Method Invocation that represents a ConstantValue SEFL
+	 * statement. Example: ConstantValue(val)
+	 * 
+	 * @param val the value to be inserted as an argument of the ConstatnValue
+	 *            method.
+	 * @return Method Invocation element for the ConstanValue of val.
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression newconstatvalue(String val) {
-		// ConstantValue(ipToNumber(p(i)(1)))
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("ConstantValue"));
 		if (val == "Ip" || val == "Ip") {
@@ -642,6 +842,15 @@ class RuleUnmarshallerS {
 		return mi;
 	}
 
+	/**
+	 * Generate the <strong>offset</strong> for the SEFL instruction to put a new
+	 * tag into a specific memory location. <br>
+	 * Example: CreateTag("INNER_DEST", Tag("L3HeaderStart") + <strong>480</strong>)
+	 * 
+	 * @param s is the tag name, it can be a packet field.
+	 * @return if s is a known value it returns the offset for the corresponding
+	 *         tag, otherwise it returns null.
+	 */
 	private NumberLiteral newHoffset(String s) {
 		switch (s) {
 		case ("IP_SRC"):
@@ -678,11 +887,24 @@ class RuleUnmarshallerS {
 		return null;
 	}
 
-	/*
-	 * Method newInstructionBlock It is a recursive method to generate an ib(if)
-	 * rule for all match entry
+	/**
+	 * The method newInstructionBlock is a recursive method to generate an
+	 * Instruction Block SEFL rule for each table entry of the network function.
+	 * <br>
+	 * The method generates a different set of instructions for the white list and
+	 * for the black list. <br>
+	 * Example: InstructionBlock( If( Constrain(Tag("IP_SRC"),
+	 * :==:(ConstantValue(ipToNumber(p(i)(0))))), InstructionBlock( If(
+	 * Constrain(Tag("IPDst"), :==:(ConstantValue(ipToNumber(p(i)(1))))),
+	 * Fail("Dropped"), NoOp)), NoOp ))
 	 * 
-	 * @index-> iterate all element of tableTypes.
+	 * @param index position of an element in the table of network function.
+	 * @return If the index is a valid value, the method return an Invocation Method
+	 *         that represents a new instruction block for the element in the table
+	 *         of network function at the index position.<br>
+	 *         Otherwise, If all the items in the table have been visited, the
+	 *         method returns a failed SEFL statement for the blacklist or an Assign
+	 *         SEFL statement for the whitelist. <br>
 	 */
 	@SuppressWarnings("unchecked")
 	private Expression newib(int index) {
@@ -722,12 +944,27 @@ class RuleUnmarshallerS {
 			imi.arguments().add(cmi);
 		}
 		index++;
-		imi.arguments().add(newib(index));
-		imi.arguments().add(ast.newName("NoOp"));
+		imi.arguments().add(newib(index)); // 'Then' branch of IF statement
+		imi.arguments().add(ast.newName("NoOp")); // 'Else' branch of IF statement
 		mi.arguments().add(imi);
 		return mi;
 	}
 
+	/**
+	 * Generate a new Method Invocation that represent a SEFL ConstantValue
+	 * constructor for the input parameters. <br>
+	 * This method is inserted into a Constraint method that checks whether a field
+	 * in the packet is equal to the value in the table of network functions.
+	 * ConstantValue represents a value of the network function table. So we need to
+	 * have the name of the field to be checked and the index of the table element.
+	 * Example: ConstantValue(ipToNumber(p(i)(0))))
+	 * 
+	 * @param str   is the field of the packet to which you want to assign the
+	 *              constant value generated by the method.
+	 * @param index is an int value that represents the index of the element in the
+	 *              table.
+	 * @return The ConstantValue Method Invocation generate.
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression newconstatvalue(String str, int index) {
 
@@ -754,6 +991,15 @@ class RuleUnmarshallerS {
 
 	}
 
+	/**
+	 * Generate a new Method Invocation that represent an assignment. <br>
+	 * The concatenation of the <strong>rule</strong> and <strong>rules</strong>
+	 * arrays is assigned to the variable <strong>rules</strong>. <br>
+	 * It allows you to create an array containing a set of SEFL rules. <br>
+	 * Example: rules = Array.concat(rules, rule);
+	 * 
+	 * @return The Assignment expression generate.
+	 */
 	@SuppressWarnings("unchecked")
 	private Expression newconcatlist() {
 		MethodInvocation meconcat = ast.newMethodInvocation();
@@ -769,6 +1015,11 @@ class RuleUnmarshallerS {
 	// Method Setter/Getter to member class element:
 	// ---------------------------------------------------------
 
+	/**
+	 * Returns the Expression Result of the JAXB process
+	 * 
+	 * @return Returns the internal Expression Result result.
+	 */
 	public ExpressionResult getReuslt() {
 		return reuslt;
 	}
