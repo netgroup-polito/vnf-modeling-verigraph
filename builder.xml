@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<project basedir="." default="compile" name="NFDev">
+	<description>
+			Script for generating network function from VNF modeling to SymNet
+	</description>
+
+	<property file="build.properties" />
+	<property file="${user.home}/build.properties" />
+
+	<property name="build.home" value="${basedir}/build" />
+	<property name="src.home" value="${basedir}/src" />
+	<property name="generated.home" value="${basedir}/generated" />
+
+	<property name="import.lib" value="${basedir}/lib" />
+
+	<path id="compile.classpath">
+		<pathelement location="${src.home}" />
+		<pathelement location="${generated.home}" />
+		<fileset dir="${import.lib}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${generated.home}">
+			<include name="*.java" />
+		</fileset>
+	</path>
+	<path id="project.classpath">
+		<pathelement location="${build.home}/classes" />
+		<fileset dir="${build.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- ========== Targets =============== -->
+
+	<target name="all" depends="clean,run_parser,run_mvn" description="Clean build and dist directories, then compile" />
+
+	<!-- ========== Clean Target =============== -->
+	<target name="clean" description="Delete old build and dist directories">
+		<echo message=" [trace_info] Delete old build and dist directories" />
+		<delete dir="${build.home}" />
+		<echo message=" [trace_info] Done" />
+	</target>
+
+	<!-- ========== Compile Target =============== -->
+	<target name="compile" depends="prepare" description="Compile Java sources">
+		<echo message=" [trace_info] Compile Java sources" />
+		<mkdir dir="${build.home}/classes" />
+		<javac srcdir="${generated.home}" destdir="${build.home}/classes" includeantruntime="false">
+			<classpath refid="compile.classpath" />
+		</javac>
+		<javac srcdir="${src.home}" destdir="${build.home}/classes" includeantruntime="false">
+			<classpath refid="compile.classpath" />
+		</javac>
+		<echo message=" [trace_info] Done" />
+	</target>
+
+	<target name="run_parser" depends="compile" description="Run the Parser">
+		<echo message=" [trace_info] VNFs Translator: from XML format to Java (like scala) format" />
+		<java classname="it.polito.parser.Parser" failonerror="true" fork="yes">
+			<classpath refid="project.classpath" />
+			<arg value="${src.home}\it\polito\nfdev\classifier\Classifier.java" />
+		</java>
+		<echo message=" [trace_info] Done" />
+	</target>
+
+	<!-- ========== Maven Plugin Target =============== -->
+	<target name="run_mvn">
+		<echo message=" [trace_info] Generating scala file to all VNFs in *nettest* folder" />
+		<exec dir="." executable="cmd">
+			<arg line="/c mvn com.mysema.scalagen:scalagen-maven-plugin:0.2.2:main -DtargetFolder=scalagen/scala" />
+		</exec>
+		<echo message=" [trace_info] Done" />
+	</target>
+
+	<!-- ========== Prepare Target =============== -->
+	<target name="prepare">
+		<tstamp />
+		<echo message=" [trace_info] Generating new build folders" />
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.home}/classes" />
+		<mkdir dir="${build.home}/lib" />
+		<copy todir="${build.home}/lib">
+			<fileset dir="${import.lib}" includes="**/*.jar" />
+		</copy>
+		<echo message=" [trace_info] Done" />
+	</target>
+
+</project>
