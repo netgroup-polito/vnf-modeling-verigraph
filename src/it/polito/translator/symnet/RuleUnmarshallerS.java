@@ -19,15 +19,16 @@ import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.NumberLiteral;
-import org.eclipse.jdt.core.dom.PostfixExpression;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.ReturnStatement;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
@@ -73,6 +74,7 @@ public class RuleUnmarshallerS {
 
 	private AST ast;
 	private MethodInvocation startblock;
+	private MethodInvocation assigvalues;
 
 	private ExpressionResult reuslt;
 
@@ -81,7 +83,7 @@ public class RuleUnmarshallerS {
 	private Boolean blacklist = false;
 	private Boolean match = false;
 	private Boolean flagnot = false;
-	private String interfacesend = "Default";
+	private String tableSize = "0";
 
 	/**
 	 * Constructor: Instantiate the client's entry point to the JAXB framework. <br>
@@ -126,9 +128,9 @@ public class RuleUnmarshallerS {
 	/**
 	 * The entry point of AST exploration. <br>
 	 * A new method declaration is generated and contains all the network policies
-	 * in an SEFL format. The for statement
+	 * in an SEFL format.
 	 * 
-	 * @return a new Method Declaration that
+	 * @return a new Method Declaration
 	 */
 	@SuppressWarnings("unchecked")
 	public MethodDeclaration generateRule() {
@@ -139,12 +141,13 @@ public class RuleUnmarshallerS {
 		MethodDeclaration method = ast.newMethodDeclaration();
 		method.setName(ast.newSimpleName("generate_rules"));
 		method.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
-		ArrayType at1 = ast.newArrayType(ast.newSimpleType(ast.newSimpleName("State")), 2);
-		method.setReturnType2(at1);
+
+		SimpleType ret = ast.newSimpleType(ast.newName(Constants.BLOCK));
+		method.setReturnType2(ret);
 
 		SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
 		param.setName(ast.newSimpleName("params"));
-		param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("String")), 2));
+		param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("ConfigParameter"))));
 
 		method.parameters().add(param);
 
@@ -160,26 +163,48 @@ public class RuleUnmarshallerS {
 			vde.setType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK)));
 			assignment.setLeftHandSide(vde);
 
-			assignment.setOperator(org.eclipse.jdt.core.dom.Assignment.Operator.ASSIGN);
+			assignment.setOperator(Assignment.Operator.ASSIGN);
 
+			/**
+			 * The variable <strong>startblock</strong> is a MethodInvocation to mimic the
+			 * InstructionBlock SEFL instructions. This Block has all policies in SEFL
+			 * format that will be processed by the SymNet verification tool.
+			 */
 			startblock = ast.newMethodInvocation();
 			startblock.setName(ast.newSimpleName(Constants.BLOCK));
-			createPacketFieldTag();
+			intGenerateRule();
+
+			assigvalues = ast.newMethodInvocation();
+			assigvalues.setName(ast.newSimpleName(Constants.BLOCK));
 
 			Expression toadd;
 			if ((toadd = getType(temp)) != null)
 				startblock.arguments().add(toadd);
 
+			startblock.arguments().add(assigvalues);
 			assignment.setRightHandSide(startblock);
 			method.getBody().statements().add(ast.newExpressionStatement(assignment));
 		}
 
-		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName("code"));
-		mi.arguments().add(ast.newName("State.clean"));
-		mi.arguments().add(ast.newBooleanLiteral(true));
+		/**
+		 * Generate a SEFL instruction for call a method that generates the SEFL
+		 * instructions that correspond to the LFMatchEntry type. <br>
+		 */
+		if (match == true) {
+			MethodInvocation miib = ast.newMethodInvocation();
+			miib.setName(ast.newSimpleName(Constants.BLOCK));
+			{
+				MethodInvocation mi = ast.newMethodInvocation();
+				mi.setName(ast.newSimpleName("addrule"));
+				mi.arguments().add(ast.newSimpleName("params"));
+				miib.arguments().add(mi);
+			}
+			startblock.arguments().add(miib);
+		}
 
-		method.getBody().statements().add(ast.newExpressionStatement(mi));
+		ReturnStatement rs = ast.newReturnStatement();
+		rs.setExpression((ast.newSimpleName("code")));
+		method.getBody().statements().add(rs);
 
 		return method;
 	}
@@ -201,10 +226,17 @@ public class RuleUnmarshallerS {
 		if (match == false)
 			return null;
 
+		/**
+		 * The variable <strong>tableSize</strong> is the number of columns in the NF
+		 * table.
+		 */
+		this.tableSize = Integer.toString(tableTypes.size());
+
 		MethodDeclaration md = ast.newMethodDeclaration();
 		md.setName(ast.newSimpleName("addrule"));
 		md.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
-		ArrayType at1 = ast.newArrayType(ast.newSimpleType(ast.newName(Constants.BLOCK)));
+
+		ArrayType at1 = ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK)));
 		md.setReturnType2(at1);
 
 		/**
@@ -213,7 +245,7 @@ public class RuleUnmarshallerS {
 		 */
 		SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
 		param.setName(ast.newSimpleName("p"));
-		param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("String")), 2));
+		param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("ConfigParameter"))));
 		md.parameters().add(param);
 
 		md.setBody(ast.newBlock());
@@ -236,22 +268,33 @@ public class RuleUnmarshallerS {
 		vdfrules.setName(ast.newSimpleName("rules"));
 		MethodInvocation miinizializer = ast.newMethodInvocation();
 		miinizializer.setName(ast.newSimpleName("Array"));
+		{
+			MethodInvocation miib = ast.newMethodInvocation();
+			miib.setName(ast.newSimpleName(Constants.BLOCK));
+			miib.arguments().add(ast.newSimpleName("Nil"));
+			miinizializer.arguments().add(miib);
+		}
 		vdfrules.setInitializer(miinizializer);
-		VariableDeclarationStatement vdsrules = ast.newVariableDeclarationStatement(vdfrules);
-		vdsrules.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
-		md.getBody().statements().add(vdsrules);
+		VariableDeclarationStatement vdsrules2 = ast.newVariableDeclarationStatement(vdfrules);
+		vdsrules2.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
+		md.getBody().statements().add(vdsrules2);
 
-		ForStatement fs = ast.newForStatement();
-
+		VariableDeclarationFragment vdflimit = ast.newVariableDeclarationFragment();
+		vdflimit.setName(ast.newSimpleName("limit"));
 		MethodInvocation miforlimit = ast.newMethodInvocation();
 		miforlimit.setName(ast.newSimpleName("length"));
 		miforlimit.setExpression(ast.newSimpleName("p"));
-		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), miforlimit, Operator.LESS));
+		vdflimit.setInitializer(makeInfixExpression(miforlimit, ast.newNumberLiteral(tableSize), Operator.DIVIDE));
 
-		PostfixExpression pe = ast.newPostfixExpression();
-		pe.setOperand(ast.newSimpleName("i"));
-		pe.setOperator(PostfixExpression.Operator.INCREMENT);
-		fs.updaters().add(pe);
+		VariableDeclarationStatement vdsfl = ast.newVariableDeclarationStatement(vdflimit);
+		md.getBody().statements().add(vdsfl);
+
+		ForStatement fs = ast.newForStatement();
+
+		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), ast.newSimpleName("limit"), Operator.LESS));
+		Expression e = makeInfixExpression(ast.newSimpleName("i"), ast.newNumberLiteral(tableSize), Operator.PLUS);
+		Expression e1 = makeAssignment(ast.newSimpleName("i"), e, Assignment.Operator.ASSIGN);
+		fs.updaters().add(e1);
 
 		VariableDeclarationFragment vdfforint = ast.newVariableDeclarationFragment();
 		vdfforint.setName(ast.newSimpleName("i"));
@@ -263,41 +306,44 @@ public class RuleUnmarshallerS {
 			MethodInvocation mia = ast.newMethodInvocation();
 			mia.setName(ast.newSimpleName("Array"));
 			{
-
 				MethodInvocation mib = ast.newMethodInvocation();
 				mib.setName(ast.newSimpleName(Constants.BLOCK));
-
-				MethodInvocation mif = ast.newMethodInvocation();
-				mif.setName(ast.newSimpleName(Constants.IF));
 				{
-					MethodInvocation mic = ast.newMethodInvocation();
-					mic.setName(ast.newSimpleName(Constants.RULE));
 
-					Expression tmi = newtag(params.get(it));
-					mic.arguments().add(tmi);
-					Expression cvmi = newconstatvalue(params.get(it), 0);
-					mic.arguments().add(cvmi);
+					MethodInvocation mif = ast.newMethodInvocation();
+					mif.setName(ast.newSimpleName(Constants.IF));
+					{ // Output: If(mic,newib,NoOp)
+						MethodInvocation mic = ast.newMethodInvocation();
+						mic.setName(ast.newSimpleName(Constants.RULE));
+						{ // Output: Constrain(mic,postParsef(ConstantValue(cvmi)))
+							mic.arguments().add(ast.newSimpleName(fieldMapping(params.get(it))));
+							MethodInvocation mitt = ast.newMethodInvocation();
+							// postParsef=> :==: Function in SEFL invalid in Java! Need post-parser
+							mitt.setName(ast.newSimpleName("postParsef"));
+							Expression cvmi = newconstatvalue(params.get(it), 0);
+							mitt.arguments().add(cvmi);
+							mic.arguments().add(mitt);
+						}
+						mif.arguments().add(mic);
 
-					mif.arguments().add(mic);
-
+						it++;
+						mif.arguments().add(newib(it)); // If-Branch-True
+						mif.arguments().add(ast.newName("NoOp")); // If-Branch-False
+					}
+					mib.arguments().add(mif);
 				}
-				it++;
-				mif.arguments().add(newib(it));
-				mif.arguments().add(ast.newName("NoOp"));
-				mib.arguments().add(mif);
 				mia.arguments().add(mib);
 			}
-
 			Expression earule = makeAssignment(ast.newSimpleName("rule"), mia, Assignment.Operator.ASSIGN);
 			Block fb = ast.newBlock();
 			fb.statements().add(ast.newExpressionStatement(earule));
 			fb.statements().add(ast.newExpressionStatement(newconcatlist()));
+			fs.setBody(fb); // fs=ForStatement
 
-			fs.setBody(fb);
 			md.getBody().statements().add(fs);
-
-		} else {
-			MethodInvocation mia = ast.newMethodInvocation();
+		} else { // White-list
+			MethodInvocation mia = ast.newMethodInvocation(); // InstructionBlock SEFL to scan the table entries and SET
+																// the flag-match
 			mia.setName(ast.newSimpleName("Array"));
 			{
 
@@ -309,15 +355,16 @@ public class RuleUnmarshallerS {
 				{
 					MethodInvocation mic = ast.newMethodInvocation();
 					mic.setName(ast.newSimpleName(Constants.RULE));
-
-					Expression tmi = newtag("flag");
-					mic.arguments().add(tmi);
-					MethodInvocation micv = ast.newMethodInvocation();
-					micv.setName(ast.newSimpleName("ConstantValue"));
-					micv.arguments().add(ast.newNumberLiteral("0"));
-
-					mic.arguments().add(micv);
-
+					{
+						mic.arguments().add(makeStringLiteral("flag"));
+						MethodInvocation mitt = ast.newMethodInvocation();
+						mitt.setName(ast.newSimpleName("postParsef"));
+						MethodInvocation micv = ast.newMethodInvocation();
+						micv.setName(ast.newSimpleName("ConstantValue"));
+						micv.arguments().add(ast.newNumberLiteral("0"));
+						mitt.arguments().add(micv);
+						mic.arguments().add(mitt);
+					}
 					mif.arguments().add(mic);
 				}
 				mif.arguments().add(newib(it));
@@ -325,7 +372,6 @@ public class RuleUnmarshallerS {
 				mib.arguments().add(mif);
 				mia.arguments().add(mib);
 			}
-
 			Expression earule = makeAssignment(ast.newSimpleName("rule"), mia, Assignment.Operator.ASSIGN);
 			Block fb = ast.newBlock();
 			fb.statements().add(ast.newExpressionStatement(earule));
@@ -333,10 +379,9 @@ public class RuleUnmarshallerS {
 			fs.setBody(fb);
 			md.getBody().statements().add(fs);
 
-			MethodInvocation mia2 = ast.newMethodInvocation();
+			MethodInvocation mia2 = ast.newMethodInvocation(); // InstructionBlock SEFL to CHECK the flag-match
 			mia2.setName(ast.newSimpleName("Array"));
 			{
-
 				MethodInvocation mib2 = ast.newMethodInvocation();
 				mib2.setName(ast.newSimpleName(Constants.BLOCK));
 
@@ -345,85 +390,42 @@ public class RuleUnmarshallerS {
 				{
 					MethodInvocation mic = ast.newMethodInvocation();
 					mic.setName(ast.newSimpleName(Constants.RULE));
-
-					Expression tmi = newtag("flag");
-					mic.arguments().add(tmi);
-					MethodInvocation micv = ast.newMethodInvocation();
-					micv.setName(ast.newSimpleName("ConstantValue"));
-					micv.arguments().add(ast.newNumberLiteral("0"));
-					mic.arguments().add(micv);
+					{
+						mic.arguments().add(makeStringLiteral("flag"));
+						MethodInvocation mitt = ast.newMethodInvocation();
+						mitt.setName(ast.newSimpleName("postParsef"));
+						MethodInvocation micv = ast.newMethodInvocation();
+						micv.setName(ast.newSimpleName("ConstantValue"));
+						micv.arguments().add(ast.newNumberLiteral("0"));
+						mitt.arguments().add(micv);
+						mic.arguments().add(mitt);
+					}
 					mif2.arguments().add(mic);
 				}
-				mif2.arguments().add(newfail("NoMatch"));	
+				mif2.arguments().add(newfail("No-Match"));
 				mif2.arguments().add(ast.newName("NoOp"));
 				mib2.arguments().add(mif2);
 				mia2.arguments().add(mib2);
 			}
-
 			Expression ea2 = makeAssignment(ast.newSimpleName("rule"), mia2, Assignment.Operator.ASSIGN);
 			md.getBody().statements().add(ast.newExpressionStatement(ea2));
 			md.getBody().statements().add(ast.newExpressionStatement(newconcatlist()));
-
 		}
-
 		ReturnStatement rs = ast.newReturnStatement();
 		rs.setExpression((ast.newSimpleName("rules")));
 		md.getBody().statements().add(rs);
 		return md;
-
 	}
 
 	/**
-	 * Generate the SEFL instructions that Create, Allocate and Assign all the
-	 * packet fields. <br>
-	 * 
+	 * Generate the SEFL instructions of initialization, e.g. Assign flag value.
 	 */
 	@SuppressWarnings("unchecked")
-	private void createPacketFieldTag() {
-		// Init
-		packetfield = Arrays.asList(Constants.IP_SOURCE, Constants.IP_DESTINATION, Constants.PORT_SOURCE,
-				Constants.PORT_DESTINATION, Constants.PROTO, Constants.ORIGIN, Constants.ORIG_BODY, Constants.BODY,
-				Constants.SEQUENCE, Constants.EMAIL_FROM, Constants.URL, Constants.OPTIONS, Constants.INNER_SRC,
-				Constants.INNER_DEST, Constants.ENCRYPTED);
-
-		MethodInvocation mi0 = ast.newMethodInvocation();
-		mi0.setName(ast.newSimpleName(Constants.CREATE));
-		mi0.arguments().add(makeStringLiteral(Constants.HSTART));
-		mi0.arguments().add(ast.newNumberLiteral("0"));
-		startblock.arguments().add(mi0);
-
-		for (String s : packetfield) {
-			// 1)Create; Ex -> CreateTag("IPSrc", Tag("L3HeaderStart") + 96),
-			MethodInvocation mi = ast.newMethodInvocation();
-			mi.setName(ast.newSimpleName(Constants.CREATE));
-			mi.arguments().add(makeStringLiteral(s));
-
-			Expression mit = newtag(Constants.HSTART);
-			NumberLiteral nl = newHoffset(s);
-			mi.arguments().add(makeInfixExpression(mit, nl, Operator.PLUS));
-			startblock.arguments().add(mi);
-
-			// 2)Allocate; Ex -> Allocate(Tag("IPSrc"), 32),
-			// For simplification all tag are allocated in 32
-			MethodInvocation mia = ast.newMethodInvocation();
-			mia.setName(ast.newSimpleName(Constants.ALLOCATE));
-			Expression mit1 = newtag(s);
-			mia.arguments().add(mit1);
-			mia.arguments().add(ast.newNumberLiteral("32"));
-			startblock.arguments().add(mia);
-
-			// 3)Assign; Ex -> Assign(Tag("IPDst"), SymbolicValue()),
-			MethodInvocation mi2 = ast.newMethodInvocation();
-			mi2.setName(ast.newSimpleName(Constants.ASSIGN));
-			Expression mit2 = newtag(s);
-			mi2.arguments().add(mit2);
-			MethodInvocation misv = ast.newMethodInvocation();
-			misv.setName(ast.newSimpleName(Constants.SIMBOLIC));
-			mi2.arguments().add(misv);
-			startblock.arguments().add(mi2);
-		}
+	private void intGenerateRule() {
+		packetfield = Arrays.asList(Constants.IP_SOURCE, Constants.IP_DESTINATION, Constants.PROTO, Constants.ORIGIN,
+				Constants.ORIG_BODY, Constants.BODY, Constants.SEQUENCE, Constants.EMAIL_FROM, Constants.URL,
+				Constants.OPTIONS, Constants.INNER_SRC, Constants.INNER_DEST, Constants.ENCRYPTED);
 		// Add Flag
-
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName(Constants.ASSIGN));
 		mi.arguments().add(makeStringLiteral("flag"));
@@ -510,10 +512,8 @@ public class RuleUnmarshallerS {
 	}
 
 	/**
-	 * Generate a SEFL instruction for call a method that generates the SEFL
-	 * instructions that correspond to the LFMatchEntry type. <br>
-	 * It also sets the <strong>blacklist</strong> variable/falg to differentiate
-	 * the behavior. <br>
+	 * It sets the <strong>blacklist</strong> variable/falg to differentiate the
+	 * behavior. <br>
 	 * It also sets the <strong>match</strong> variable/flag to inform the
 	 * translator that a LFMatchEntry node has been found and that the associated
 	 * method must be written to the output file. <br>
@@ -523,45 +523,26 @@ public class RuleUnmarshallerS {
 	 * @param matchEntry The AST node of type LFMatchEntry
 	 * @return null
 	 */
-	@SuppressWarnings("unchecked")
 	private Expression generateMatchEntry(LFMatchEntry matchEntry) {
 		if (flagnot) {
 			blacklist = true;
 		}
-
-		MethodInvocation miib = ast.newMethodInvocation();
-		miib.setName(ast.newSimpleName(Constants.BLOCK));
-		{
-			MethodInvocation mi = ast.newMethodInvocation();
-			mi.setName(ast.newSimpleName("addrule"));
-			mi.arguments().add(ast.newSimpleName("params"));
-			miib.arguments().add(mi);
-		}
-		startblock.arguments().add(miib);
 		params = new ArrayList<String>();
 		for (LFFieldOf temp : matchEntry.getValue()) {
 			params.add(temp.getField());
 		}
 		match = true;
-
 		return null;
 	}
 
 	/**
-	 * Generate a SEFL instruction for the node type LOAnd. <br>
-	 * For example, <br>
-	 * BitwiseAnd((Tag("PROTO")==(ConstantValue(1))),
-	 * (Tag("PROTO")==(ConstantValue(3)))),
+	 * Generate a SEFL instruction for all expressions of the LOAnd. <br>
 	 * 
 	 * @param and The AST node of type LOAnd
-	 * @return the new Method Invocation that represent the LOAnd type in SEFL
+	 * @return null
 	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateAnd(LOAnd and) {
-
-		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName("BitwiseAnd"));
-
 		for (ExpressionObject temp : and.getExpression()) {
 			Expression exp = getType(temp);
 			if (exp == null) {
@@ -570,36 +551,58 @@ public class RuleUnmarshallerS {
 			if (temp.getOr() != null) {
 				continue;
 			}
-			mi.arguments().add(exp);
+			startblock.arguments().add(exp);
 		}
-		if (!mi.arguments().isEmpty())
-			startblock.arguments().add(mi);
 		return null;
 	}
 
 	/**
 	 * Generate a SEFL instruction for the node type LOOr. <br>
+	 * It generates recursively a set of If-Constraint to each Or expressions.
+	 * The nested Ifs are make by <strong>nweNestedIf</strong> method. 
 	 * For example, <br>
-	 * BitwiseOr((Tag("PROTO")==(ConstantValue(1))),
-	 * (Tag("PROTO")==(ConstantValue(3)))),
-	 * 
+	 * ( A || B || C )  =
+	 * If(Constrain(A),
+	 * 		NoOp,
+	 *      If(Constrain(B),
+	 *      	NoOp
+	 *      	Constrain(C) 
+	 *      )
+	 * )
 	 * @param or The AST node of type LOOr
 	 * @return the new Method Invocation that represent the LOOr type in SEFL
 	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateOr(LOOr or) {
-
 		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName("BitwiseOr"));
+		mi.setName(ast.newSimpleName(Constants.IF));
 
+		ArrayList<Expression> exps = new ArrayList<Expression>();
 		for (ExpressionObject temp : or.getExpression()) {
 			Expression exp = getType(temp);
 			if (exp == null) {
 				continue;
 			}
-			mi.arguments().add(exp);
+			exps.add(exp);
 		}
+		mi.arguments().add(exps.get(0));
+		mi.arguments().add(ast.newSimpleName("NoOp"));
+		mi.arguments().add(newNestedIf(exps, 1));
+
 		startblock.arguments().add(mi);
+		return mi;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Expression newNestedIf(ArrayList<Expression> exps, int i) {
+		if (i == exps.size() - 1) {
+			return exps.get(exps.size() - 1);
+		}
+		MethodInvocation mi = ast.newMethodInvocation();
+		mi.setName(ast.newSimpleName(Constants.IF));
+		mi.arguments().add(exps.get(i));
+		mi.arguments().add(ast.newSimpleName("NoOp"));
+		mi.arguments().add(newNestedIf(exps, ++i));
 		return mi;
 	}
 
@@ -623,7 +626,7 @@ public class RuleUnmarshallerS {
 	/**
 	 * Generate a SEFL instruction for the node type LOEquals. <br>
 	 * For example, <br>
-	 * Constrain(Tag("IPSrc"), :==:(ConstantValue(ipToNumber(p(i)(0))))),
+	 * Constrain(IPSrc, :==:(ConstantValue(ipToNumber(p(i)(0))))),
 	 * 
 	 * @param equal The AST node
 	 * @return the new Method Invocation that represent the Equals type in SEFL or
@@ -631,8 +634,8 @@ public class RuleUnmarshallerS {
 	 */
 	@SuppressWarnings("unchecked")
 	private Expression generateEqual(LOEquals equal) {
-		String rfield;
-		String lfield;
+		String rfield; // Right expression of equal
+		String lfield; // Left expression of equal
 
 		MethodInvocation mi = ast.newMethodInvocation();
 
@@ -646,66 +649,113 @@ public class RuleUnmarshallerS {
 			rfield = equal.getRightExpression().getParam();
 		}
 
-		if (equal.getLeftExpression().getFieldOf().getUnit().equals("p_0")) {
-
+		if (equal.getLeftExpression().getFieldOf().getUnit().equals("p_0")) { // p_0 => the field is on the
+																				// output_packet.
 			if (lfield != null && rfield != null && !lfield.equals(rfield)) {
 				if (packetfield.contains(lfield)) {
 					mi.setName(ast.newSimpleName(Constants.ASSIGN));
 
-					Expression mit = newtag(lfield);
-					Expression micv = newconstatvalue(rfield);
-
-					mi.arguments().add(mit);
+					mi.arguments().add(ast.newSimpleName(fieldMapping(lfield)));
+					MethodInvocation micv = ast.newMethodInvocation();
+					micv.setName(ast.newSimpleName("ConstantValue"));
+					QualifiedName qn = ast.newQualifiedName(ast.newSimpleName(fieldMapping(rfield)),
+							ast.newSimpleName("value"));
+					micv.arguments().add(qn);
 					mi.arguments().add(micv);
-				} else if (lfield.equals("IF_OUT")) {
-					interfacesend = rfield;
-					return null;
+					assigvalues.arguments().add(mi);
 				}
-			} else
-				return null;
-		} else if (lfield != null && rfield != null && !lfield.equals(rfield)) {
+			}
+		} else if (lfield != null && rfield != null && !lfield.equals(rfield)) { // p_1 => field of the input_packet
 			if (packetfield.contains(lfield)) {
-
 				mi.setName(ast.newSimpleName(Constants.RULE));
 
-				Expression mit = newtag(lfield);
-				Expression micv = newconstatvalue(rfield);
-
-				mi.arguments().add(makeInfixExpression(mit, micv, Operator.EQUALS));
-			} else if (lfield.equals("IF_OUT")) {
-				interfacesend = rfield;
-				return null;
+				mi.arguments().add(ast.newSimpleName(fieldMapping(lfield)));
+				MethodInvocation mitt = ast.newMethodInvocation();
+				mitt.setName(ast.newSimpleName("postParsef"));
+				MethodInvocation micv = ast.newMethodInvocation();
+				micv.setName(ast.newSimpleName("ConstantValue"));
+				QualifiedName qn = ast.newQualifiedName(ast.newSimpleName(fieldMapping(rfield)),
+						ast.newSimpleName("value"));
+				micv.arguments().add(qn);
+				mitt.arguments().add(micv);
+				mi.arguments().add(mitt);
+				return mi;
 			}
-		} else
-			return null;
-		return mi;
+		}
+		return null;
+	}
+
+	/**
+	 * Mapping from VNF Modeling fields to SymNet SEFL fields <br>
+	 * 
+	 * @param field of VNF Modeling
+	 * @return field of SymNet
+	 */
+	private String fieldMapping(String field) {
+		switch (field) {
+		case ("POP3_REQUEST"):
+			return "POP3REQUEST";
+		case ("POP3_RESPONSE"):
+			return "POP3RESPONSE";
+		case ("HTTP_REQUEST"):
+			return "HTTPREQUEST";
+		case ("HTTP_RESPONSE"):
+			return "HTTPRESPONSE";
+		case ("natIp"):
+			return "natIp";
+		case ("IP_SRC"):
+			return "IPSrc";
+		case ("IP_DST"):
+			return "IPDst";
+		case ("PROTO"):
+			return "Proto";
+		case ("PORT_SRC"):
+			return "PortSrc";
+		case ("PORT_DST"):
+			return "PortDst";
+		case ("ORIGIN"):
+			return "Origin";
+		case ("ORIG_BODY"):
+			return "OriginBody";
+		case ("BODY"):
+			return "Body";// = application data
+		case ("SEQUENCE"):
+			return "Sequence";
+		case ("EMAIL_FROM"):
+			return "EmailFrom";
+		case ("URL"):
+			return "URL";
+		case ("OPTIONS"):
+			return "Options";
+		case ("INNER_SRC"):
+			return "InnerSrc";
+		case ("INNER_DEST"):
+			return "InnerDst";
+		case ("ENCRYPTED"):
+			return "Encrypted";
+		case ("RESPONSE"):
+			return "RESPONSE";
+		}
+
+		return null;
 	}
 
 	/**
 	 * Generate a SEFL instruction for the node type LOImplies. <br>
-	 * The SEFL instruction is a Forward statement. It use the global variable
-	 * <strong> interfacesend </strong> to set the output port. <br>
-	 * For example, <br>
-	 * Forward("<strong>interfacesend</strong>")
+	 * It checks recursively the nested nodes of the type. 
 	 * 
 	 * @param implies The AST node
-	 * @return the new Method Invocation that represent the Implies type in SEFL
+	 * @return null
 	 */
-	@SuppressWarnings("unchecked")
 	private Expression generateImplies(LOImplies implies) {
 
 		getType(implies.getAntecedentExpression());
 		getType(implies.getConsequentExpression());
-
-		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName(Constants.FORWARD));
-		mi.arguments().add(makeStringLiteral(interfacesend));
-
-		return mi;
+		return null;
 	}
 
 	/**
-	 * Generate a SEFL instruction for the node type Exist.
+	 * Generate a SEFL instruction for the nested node of type Exist.
 	 * 
 	 * @param exist The AST node
 	 * @return the new Method Invocation that represent the Exit type in SEFL or
@@ -731,7 +781,8 @@ public class RuleUnmarshallerS {
 	// ---------------------------------------------------------
 
 	/**
-	 * Generate an InfixExpression expression AST node type
+	 * Generate an InfixExpression expression AST node type <br>
+	 * InfixExpression.Operator: *,/,%,+,-,<<,>>,<,>,<=,>=,==,!=,^,&,|,&&,||
 	 * 
 	 * @param lo The "leftOperand" structural property of this node type
 	 * @param ro The "rightOperand" structural property of this node type
@@ -740,15 +791,11 @@ public class RuleUnmarshallerS {
 	 * @see Class InfixExpression of org.eclipse.jdt.core.dom
 	 */
 	private Expression makeInfixExpression(Expression lo, Expression ro, Operator o) {
-		// InfixExpression.Operator: *,/,%,+,-,<<,>>,<,>,<=,>=,==,!=,^,&,|,&&,||
 		InfixExpression ie = ast.newInfixExpression();
-
 		ie.setLeftOperand(lo);
 		ie.setRightOperand(ro);
 		ie.setOperator(o);
-
 		return ie;
-
 	}
 
 	/**
@@ -788,7 +835,8 @@ public class RuleUnmarshallerS {
 	// ---------------------------------------------------------
 
 	/**
-	 * Generate a new method that represents a Fail SEFL instruction Example:
+	 * Generate a new method that represents a Fail SEFL instruction. <br>
+	 * For example, <br>
 	 * Fail("message")
 	 * 
 	 * @param msg is a message. It is the argument of the Fail SEFL instruction and
@@ -804,96 +852,13 @@ public class RuleUnmarshallerS {
 	}
 
 	/**
-	 * Generate a new method that represents a Tag SEFL instruction
-	 * Example:Tag("L3HeaderStart")
-	 * 
-	 * @param name is the name of the tag
-	 * @return a Method Invocation that represent the Tag SEFL instruction
-	 */
-	@SuppressWarnings("unchecked")
-	private Expression newtag(String name) {
-		// @Return -> Tag("name")
-		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName(Constants.TAG));
-		mi.arguments().add(makeStringLiteral(name));
-		return mi;
-	}
-
-	/**
-	 * Generate a new Method Invocation that represents a ConstantValue SEFL
-	 * statement. Example: ConstantValue(val)
-	 * 
-	 * @param val the value to be inserted as an argument of the ConstatnValue
-	 *            method.
-	 * @return Method Invocation element for the ConstanValue of val.
-	 */
-	@SuppressWarnings("unchecked")
-	private Expression newconstatvalue(String val) {
-		MethodInvocation mi = ast.newMethodInvocation();
-		mi.setName(ast.newSimpleName("ConstantValue"));
-		if (val == "Ip" || val == "Ip") {
-			MethodInvocation imi = ast.newMethodInvocation();
-			imi.setName(ast.newSimpleName("ipToNumber"));
-			imi.arguments().add(val);
-			mi.arguments().add(imi);
-		} else {
-			mi.arguments().add(ast.newSimpleName(val));
-		}
-		return mi;
-	}
-
-	/**
-	 * Generate the <strong>offset</strong> for the SEFL instruction to put a new
-	 * tag into a specific memory location. <br>
-	 * Example: CreateTag("INNER_DEST", Tag("L3HeaderStart") + <strong>480</strong>)
-	 * 
-	 * @param s is the tag name, it can be a packet field.
-	 * @return if s is a known value it returns the offset for the corresponding
-	 *         tag, otherwise it returns null.
-	 */
-	private NumberLiteral newHoffset(String s) {
-		switch (s) {
-		case ("IP_SRC"):
-			return ast.newNumberLiteral("96");
-		case ("IP_DST"):
-			return ast.newNumberLiteral("128");
-		case ("PROTO"):
-			return ast.newNumberLiteral("64");
-		case ("PORT_SRC"):
-			return ast.newNumberLiteral("160");
-		case ("PORT_DST"):
-			return ast.newNumberLiteral("192");
-		case ("ORIGIN"):
-			return ast.newNumberLiteral("224");
-		case ("ORIG_BODY"):
-			return ast.newNumberLiteral("256");
-		case ("BODY"):
-			return ast.newNumberLiteral("288");// = application data
-		case ("SEQUENCE"):
-			return ast.newNumberLiteral("320");
-		case ("EMAIL_FROM"):
-			return ast.newNumberLiteral("352");
-		case ("URL"):
-			return ast.newNumberLiteral("384");
-		case ("OPTIONS"):
-			return ast.newNumberLiteral("416");
-		case ("INNER_SRC"):
-			return ast.newNumberLiteral("448");
-		case ("INNER_DEST"):
-			return ast.newNumberLiteral("480");
-		case ("ENCRYPTED"):
-			return ast.newNumberLiteral("512");
-		}
-		return null;
-	}
-
-	/**
 	 * The method newInstructionBlock is a recursive method to generate an
 	 * Instruction Block SEFL rule for each table entry of the network function.
 	 * <br>
 	 * The method generates a different set of instructions for the white list and
 	 * for the black list. <br>
-	 * Example: InstructionBlock( If( Constrain(Tag("IP_SRC"),
+	 * For example, <br>
+	 * InstructionBlock( If( Constrain(Tag("IP_SRC"),
 	 * :==:(ConstantValue(ipToNumber(p(i)(0))))), InstructionBlock( If(
 	 * Constrain(Tag("IPDst"), :==:(ConstantValue(ipToNumber(p(i)(1))))),
 	 * Fail("Dropped"), NoOp)), NoOp ))
@@ -910,19 +875,30 @@ public class RuleUnmarshallerS {
 	private Expression newib(int index) {
 		if (index == params.size()) {
 			if (blacklist) {
-				return newfail("Match");
+				return newfail("Match-in-blacklist");
 			} else {
-				MethodInvocation mi = ast.newMethodInvocation();
-				mi.setName(ast.newSimpleName(Constants.ASSIGN));
 
-				Expression tmi = newtag("flag");
-				mi.arguments().add(tmi);
-				MethodInvocation micv = ast.newMethodInvocation();
-				micv.setName(ast.newSimpleName("ConstantValue"));
-				micv.arguments().add(ast.newNumberLiteral("1"));
-				mi.arguments().add(micv);
-
-				return mi;
+				MethodInvocation miib = ast.newMethodInvocation();
+				miib.setName(ast.newSimpleName(Constants.BLOCK));
+				{
+					MethodInvocation mi = ast.newMethodInvocation();
+					mi.setName(ast.newSimpleName(Constants.ASSIGN));
+					mi.arguments().add(makeStringLiteral("flag"));
+					MethodInvocation micv = ast.newMethodInvocation();
+					micv.setName(ast.newSimpleName("ConstantValue"));
+					micv.arguments().add(ast.newNumberLiteral("1"));
+					mi.arguments().add(micv);
+					miib.arguments().add(mi);
+				}
+				{	//UPDATE: set the Interface assign only if the 'param' is an interface!
+					MethodInvocation mi = ast.newMethodInvocation();
+					mi.setName(ast.newSimpleName(Constants.ASSIGN));
+					mi.arguments().add(makeStringLiteral("idIfSend"));
+					Expression ecv = newconstatvalue("if", 1);
+					mi.arguments().add(ecv);
+					miib.arguments().add(mi);
+				}
+				return miib;
 			}
 
 		}
@@ -934,18 +910,17 @@ public class RuleUnmarshallerS {
 		{
 			MethodInvocation cmi = ast.newMethodInvocation();
 			cmi.setName(ast.newSimpleName(Constants.RULE));
-
-			Expression tmi = newtag(params.get(index));
-			cmi.arguments().add(tmi);
-
+			cmi.arguments().add(ast.newSimpleName(fieldMapping(params.get(index))));
+			MethodInvocation mitt = ast.newMethodInvocation();
+			mitt.setName(ast.newSimpleName("postParsef"));
 			Expression cv = newconstatvalue(params.get(index), index);
-
-			cmi.arguments().add(cv);
+			mitt.arguments().add(cv);
+			cmi.arguments().add(mitt);
 			imi.arguments().add(cmi);
 		}
 		index++;
-		imi.arguments().add(newib(index)); // 'Then' branch of IF statement
-		imi.arguments().add(ast.newName("NoOp")); // 'Else' branch of IF statement
+		imi.arguments().add(newib(index)); // true-branch of IF-statement
+		imi.arguments().add(ast.newName("NoOp")); // false-branch of IF-statement
 		mi.arguments().add(imi);
 		return mi;
 	}
@@ -970,25 +945,26 @@ public class RuleUnmarshallerS {
 
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("ConstantValue"));
-
 		MethodInvocation mie = ast.newMethodInvocation();
 		mie.setName(ast.newSimpleName("p"));
-
 		mie.arguments().add(makeInfixExpression(ast.newSimpleName("i"), ast.newNumberLiteral(String.valueOf(index)),
 				InfixExpression.Operator.PLUS));
+		FieldAccess fap = ast.newFieldAccess();
+		fap.setExpression(mie);
+		fap.setName(ast.newSimpleName("value"));
 
 		if (str.equals("IP_SRC") || str.equals("IP_DST")) {
-
 			MethodInvocation imi = ast.newMethodInvocation();
 			imi.setName(ast.newSimpleName("ipToNumber"));
-			imi.arguments().add(mie);
+			imi.arguments().add(fap);
 			mi.arguments().add(imi);
 		} else {
-			mi.arguments().add(mie);
+			FieldAccess faint = ast.newFieldAccess();
+			faint.setName(ast.newSimpleName("toInt"));
+			faint.setExpression(fap);
+			mi.arguments().add(faint);
 		}
-
 		return mi;
-
 	}
 
 	/**

@@ -100,6 +100,7 @@ public class Constants {
 	public static final String ENUM_BODY_DATA = "BodyData";
 	public static final String ENUM_GENERIC = "Generic";
 	public static final String ENUM_URL = "URL";
+	public static final String ENUM_INTERFACE = "Interface";
 
 	// Interface
 	public static final String IF_OUT = "IF_OUT";

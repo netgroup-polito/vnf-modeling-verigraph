@@ -49,7 +49,7 @@ public class ClassGeneratorS {
 	 */
 	public ClassGeneratorS(String className) {
 		this.originalName = className;
-		this.className = "SymRule_" + className;
+		this.className = "Rule_" + className;
 		this.imports = new ArrayList<String[]>();
 
 		/**
@@ -60,7 +60,7 @@ public class ClassGeneratorS {
 		/**
 		 * Output file
 		 */
-		fileNameSymNet = "./netest/Rule_" + className + ".java";
+		fileNameSymNet = "./nfSymNetJava/Rule_" + className + ".java";
 
 		imports.add(new String[] { "org", "change", "v2", "analysis", "expression", "concrete", "_" });
 		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "State" });
@@ -68,6 +68,9 @@ public class ClassGeneratorS {
 		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "Tag" });
 		imports.add(new String[] { "org", "change", "v2", "analysis", "processingmodels", "instructions", "_" });
 		imports.add(new String[] { "org", "change", "v2", "util", "conversion", "RepresentationConversion", "_" });
+		imports.add(new String[] { "org", "change", "v2", "util", "canonicalnames", "_" });
+		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "Value" });
+		imports.add(new String[] { "org", "change", "v2", "abstractnet", "generic", "_" });
 
 		this.ast = AST.newAST(AST.JLS9);
 		this.cu = ast.newCompilationUnit();
@@ -102,7 +105,8 @@ public class ClassGeneratorS {
 			tableSize = tableTypes.size();
 
 			PackageDeclaration pd = ast.newPackageDeclaration();
-			pd.setName(ast.newName(new String[] { "modify_it" }));
+			//pd.setName(ast.newName(new String[] { "modify" }));
+			pd.setName(ast.newName(new String[] { "org", "change", "v2", "abstractnet", "click","sefl" }));
 			cu.setPackage(pd);
 
 			for (String[] temp : imports) {

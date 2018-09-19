@@ -114,7 +114,7 @@ public class ClassGenerator {
 
 			List<String> tempList = new ArrayList<>();
 			for (String type : tableTypes) {
-				if (type.compareTo(Constants.ENUM_GENERIC) == 0)
+				if ((type.compareTo(Constants.ENUM_GENERIC) == 0)||(type.compareTo(Constants.ENUM_INTERFACE)==0))
 					tempList.add(type);
 			}
 			tableTypes.removeAll(tempList);
