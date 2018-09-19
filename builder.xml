@@ -10,9 +10,10 @@
 	<property name="build.home" value="${basedir}/build" />
 	<property name="src.home" value="${basedir}/src" />
 	<property name="generated.home" value="${basedir}/generated" />
-
 	<property name="import.lib" value="${basedir}/lib" />
-
+	<property name="nfInput.parser" value="${src.home}/it/polito/nfdev/classifier/Classifier.java" />
+	<property name="nfInput.postProcess" value="${basedir}/nfSymNetscala/input/Rule_Classifier.scala" />
+	<property name="nfOutput.postProcess" value="${basedir}/nfSymNetscala/output/Rule_Classifier.scala" />
 	<path id="compile.classpath">
 		<pathelement location="${src.home}" />
 		<pathelement location="${generated.home}" />
@@ -31,8 +32,16 @@
 	</path>
 
 	<!-- ========== Targets =============== -->
-
-	<target name="all" depends="clean,run_parser,run_mvn" description="Clean build and dist directories, then compile" />
+	
+	<!-- ========== All Targets =============== 
+	Exec all steps for VNFs Translations vs SymNet
+	1) clean the environment
+	2) compile
+	3) Run-Translator (general_NF.java -> XML_NF -> likeSymNet_NF.java)
+	4) Run-Mvn Plug-in (output .scala)
+	5) Run Post-Process (input for SymNet!)
+	-->
+	<target name="all" depends="clean,run_parser,run_mvn,run_postParser" description="Clean build and dist directories, then compile" />
 
 	<!-- ========== Clean Target =============== -->
 	<target name="clean" description="Delete old build and dist directories">
@@ -45,7 +54,7 @@
 	<target name="compile" depends="prepare" description="Compile Java sources">
 		<echo message=" [trace_info] Compile Java sources" />
 		<mkdir dir="${build.home}/classes" />
-		<javac srcdir="${generated.home}" destdir="${build.home}/classes" includeantruntime="false">
+		<javac srcdir="${generated.home}" destdir="${build.home}/classes" includeantruntime="false" encoding="cp1252">
 			<classpath refid="compile.classpath" />
 		</javac>
 		<javac srcdir="${src.home}" destdir="${build.home}/classes" includeantruntime="false">
@@ -58,17 +67,29 @@
 		<echo message=" [trace_info] VNFs Translator: from XML format to Java (like scala) format" />
 		<java classname="it.polito.parser.Parser" failonerror="true" fork="yes">
 			<classpath refid="project.classpath" />
-			<arg value="${src.home}\it\polito\nfdev\classifier\Classifier.java" />
+			<arg value="${nfInput.parser}" />
+			<arg value="s" />
 		</java>
 		<echo message=" [trace_info] Done" />
 	</target>
 
 	<!-- ========== Maven Plugin Target =============== -->
 	<target name="run_mvn">
-		<echo message=" [trace_info] Generating scala file to all VNFs in *nettest* folder" />
+		<echo message=" [trace_info] Generating scala file from all VNFs in *nfSymNetJava* folder to nfSymNetscala/input folder" />
 		<exec dir="." executable="cmd">
-			<arg line="/c mvn com.mysema.scalagen:scalagen-maven-plugin:0.2.2:main -DtargetFolder=scalagen/scala" />
+			<arg line="/c mvn com.mysema.scalagen:scalagen-maven-plugin:0.2.2:main -DtargetFolder=nfSymNetscala/input" />
 		</exec>
+		<echo message=" [trace_info] Done" />
+	</target>
+
+	<!-- ========== Prepare postProcess =============== -->
+	<target name="run_postParser" depends="run_parser,run_mvn" description="Run the PostParser">
+		<echo message=" [trace_info] VNFs Translator: from Scala to Scala post process" />
+		<java classname="it.polito.translator.symnet.PostProcess" failonerror="true" fork="yes">
+			<classpath refid="project.classpath" />
+			<arg value="${nfInput.postProcess}" />
+			<arg value="${nfOutput.postProcess}" />
+		</java>
 		<echo message=" [trace_info] Done" />
 	</target>
 
