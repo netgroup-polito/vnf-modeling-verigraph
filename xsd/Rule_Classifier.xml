@@ -4,7 +4,7 @@
     <DataDriven>false</DataDriven>
     <TableFields>Generic</TableFields>
     <TableFields>Proto</TableFields>
-    <TableFields>Generic</TableFields>
+    <TableFields>Interface</TableFields>
     <Node Name="n_0"/>
     <Node Name="n_1"/>
     <Node Name="n_Classifier"/>

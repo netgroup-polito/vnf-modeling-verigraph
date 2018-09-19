@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
 
-		<sourceDirectory>C:\Users\AleOSandra90\git\vnf-modeling-verigraph-ao\netest</sourceDirectory>
+		<sourceDirectory>C:\Users\AleOSandra90\git\vnf-modeling-verigraph-ao\nfsymNetJava</sourceDirectory>
 
 		<plugins>
 		
