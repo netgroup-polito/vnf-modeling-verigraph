@@ -18,11 +18,12 @@ import it.polito.parser.context.MethodContext;
 import it.polito.parser.context.ReturnSnapshot;
 import it.polito.rule.generator.RuleGenerator;
 import it.polito.rule.unmarshaller.ClassGenerator;
-import it.polito.translator.symnet.ClassGeneratorS; //TM
+import it.polito.translator.symnet.ClassGeneratorS;
 
 public class Parser {
 	
 	private String fileName;
+	private String translator;
 	
 	/**
 	 * The constructor receives the full path of file containing the VNF source
@@ -30,8 +31,9 @@ public class Parser {
 	 *
 	 * @param  fileName  an absolute local path of the VNF source code
 	 */
-	public Parser(String fileName) {
+	public Parser(String fileName, String translator) {
 		this.fileName = fileName;
+		this.translator=translator;
 	}
 	
 	/**
@@ -100,10 +102,18 @@ public class Parser {
 		ruler.saveRule();
 		}
 		
-		// ClassGenerator generator = new ClassGenerator(classContext.getClassName()); //TM
-		ClassGeneratorS generator = new ClassGeneratorS(classContext.getClassName()); //TM
+		if(translator.contentEquals("s")) {
+			System.out.println("\n\tTranslator-Phase for SymNet starts");
+			ClassGeneratorS generators = new ClassGeneratorS(classContext.getClassName()); //TM
+			generators.startGeneration();
+		}
+		else if(translator.contentEquals("v")) {
+			System.out.println("\n\tTranslator-Phase for Verigraph starts");
+			ClassGenerator generatorv = new ClassGenerator(classContext.getClassName()); //TM
+			generatorv.startGeneration();
+		}
 		
-		generator.startGeneration();
+		
 		System.out.println("\n\tTranslator-Phase done");
 		
 	}
@@ -115,15 +125,15 @@ public class Parser {
 	 * @throws MarshalException 
 	 */
 	public static void main(String[] args) throws IOException, MarshalException {
-		if(args.length != 1)
+		if(args.length != 2)
 		{
-			System.err.println("Usage: java Parser <NF_path>");
+			System.err.println("Usage: java Parser <NF_path><ID_Translator(s=SymNet,v=Verigraph>");
 			System.exit(-1);
 		}
 		System.out.println("Reading VNF model...");
 		
 		/* Instantiate a parser */
-		Parser parser = new Parser(args[0]);
+		Parser parser = new Parser(args[0],args[1]);
 		try {
 			parser.parse();
 		} catch (ParserException e) {
