@@ -28,7 +28,6 @@ public class AclFirewall extends NetworkFunction {
 			TableEntry entry = aclTable.matchEntry(packet.getField(PacketField.IP_SRC),packet.getField(PacketField.IP_DST));
 			if(entry!=null)
 				return new RoutingResult(Action.DROP,null,null);
-
 			return new RoutingResult(Action.FORWARD,packet,iface);
 			
 	}
