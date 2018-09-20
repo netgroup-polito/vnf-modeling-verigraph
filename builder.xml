@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project basedir="." default="compile" name="NFDev">
+<project basedir="." default="NFs_SymNet_generation" name="NFDev">
 	<description>
 			Script for generating network function from VNF modeling to SymNet
 	</description>
@@ -11,9 +11,9 @@
 	<property name="src.home" value="${basedir}/src" />
 	<property name="generated.home" value="${basedir}/generated" />
 	<property name="import.lib" value="${basedir}/lib" />
-	<property name="nfInput.parser" value="${src.home}/it/polito/nfdev/classifier/Classifier.java" />
-	<property name="nfInput.postProcess" value="${basedir}/nfSymNetscala/input/Rule_Classifier.scala" />
-	<property name="nfOutput.postProcess" value="${basedir}/nfSymNetscala/output/Rule_Classifier.scala" />
+	<property name="nfInput.parser" value="${src.home}/it/polito/nfdev/mailserver/MailServer.java" />
+	<property name="nfInput.postProcess" value="${basedir}/nfSymNetscala/input/Rule_MailServer.scala" />
+	<property name="nfOutput.postProcess" value="${basedir}/nfSymNetscala/output/Rule_MailServer.scala" />
 	<path id="compile.classpath">
 		<pathelement location="${src.home}" />
 		<pathelement location="${generated.home}" />
@@ -41,7 +41,7 @@
 	4) Run-Mvn Plug-in (output .scala)
 	5) Run Post-Process (input for SymNet!)
 	-->
-	<target name="all" depends="clean,run_parser,run_mvn,run_postParser" description="Clean build and dist directories, then compile" />
+	<target name="NFs_SymNet_generation" depends="clean,run_parser,run_mvn,run_postParser" description="Clean build and dist directories, then compile" />
 
 	<!-- ========== Clean Target =============== -->
 	<target name="clean" description="Delete old build and dist directories">

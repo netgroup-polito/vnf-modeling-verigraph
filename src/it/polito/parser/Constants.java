@@ -112,6 +112,7 @@ public class Constants {
 	public static final String BLOCK = "InstructionBlock";
 	public static final String CREATE = "CreateTag";
 	public static final String ALLOCATE = "Allocate";
+	public static final String DEALLOCATE = "Deallocate";
 	public static final String ASSIGN = "Assign";
 	public static final String FORWARD = "Forward";
 	public static final String NOP = "NoOp";
