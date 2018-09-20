@@ -15,8 +15,13 @@ import scala.collection.JavaConversions._
 class Rule_Antispam {
 
   def generate_rules(params:List[ConfigParameter]): InstructionBlock = {
-    val code = InstructionBlock(Assign("flag", ConstantValue(0)), If(Constrain(Proto, :==:(ConstantValue(POP3REQUEST.value))), 
-      NoOp, Constrain(Proto, :==:(ConstantValue(POP3RESPONSE.value)))), InstructionBlock(), InstructionBlock(addrule(params)))
+    val code = InstructionBlock(
+        Assign("flag", ConstantValue(0)), 
+        If(Constrain(Proto, :==:(ConstantValue(POP3REQUEST.value))), 
+            NoOp, 
+            Constrain(Proto, :==:(ConstantValue(POP3RESPONSE.value)))
+        ), 
+        InstructionBlock(addrule(params)))
     code
   }
 
@@ -26,8 +31,11 @@ class Rule_Antispam {
     val limit = p.length / 1
     var i = 0
     while (i < limit) {
-      rule = Array(InstructionBlock(If(Constrain(EmailFrom, :==:(ConstantValue(p(i + 0).value.toInt))), 
-        Fail("Match-in-blacklist"), NoOp)))
+      rule = Array(InstructionBlock(
+          If(Constrain(EmailFrom, :==:(ConstantValue(p(i + 0).value.toInt))), 
+              Fail("Match-in-blacklist"), 
+              NoOp)
+          ))
       rules = Array.concat(rules, rule)
       i = i + 1
     }

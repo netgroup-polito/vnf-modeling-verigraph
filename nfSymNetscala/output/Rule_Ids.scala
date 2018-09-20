@@ -15,8 +15,13 @@ import scala.collection.JavaConversions._
 class Rule_Ids {
 
   def generate_rules(params:List[ConfigParameter]): InstructionBlock = {
-    val code = InstructionBlock(Assign("flag", ConstantValue(0)), If(Constrain(Proto, :==:(ConstantValue(HTTPREQUEST.value))), 
-      NoOp, Constrain(Proto, :==:(ConstantValue(HTTPRESPONSE.value)))), InstructionBlock(), InstructionBlock(addrule(params)))
+    val code = InstructionBlock(
+        Assign("flag", ConstantValue(0)), 
+        If(Constrain(Proto, :==:(ConstantValue(HTTPREQUEST.value))), 
+            NoOp, 
+            Constrain(Proto, :==:(ConstantValue(HTTPRESPONSE.value)))
+        ), 
+        InstructionBlock(addrule(params)))
     code
   }
 
@@ -26,8 +31,11 @@ class Rule_Ids {
     val limit = p.length / 1
     var i = 0
     while (i < limit) {
-      rule = Array(InstructionBlock(If(Constrain(URL, :==:(ConstantValue(p(i + 0).value.toInt))), 
-        Fail("Match-in-blacklist"), NoOp)))
+      rule = Array(InstructionBlock(
+          If(Constrain(URL, :==:(ConstantValue(p(i + 0).value.toInt))), 
+            Fail("Match-in-blacklist"), 
+            NoOp)
+          ))
       rules = Array.concat(rules, rule)
       i = i + 1
     }

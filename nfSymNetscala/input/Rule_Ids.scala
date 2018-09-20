@@ -16,7 +16,7 @@ class Rule_Ids {
 
   def generate_rules(params: Array[ConfigParameter]): InstructionBlock = {
     val code = InstructionBlock(Assign("flag", ConstantValue(0)), If(Constrain(Proto, postParsef(ConstantValue(HTTPREQUEST.value))), 
-      NoOp, Constrain(Proto, postParsef(ConstantValue(HTTPRESPONSE.value)))), InstructionBlock(), InstructionBlock(addrule(params)))
+      NoOp, Constrain(Proto, postParsef(ConstantValue(HTTPRESPONSE.value)))), InstructionBlock(addrule(params)))
     code
   }
 

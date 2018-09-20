@@ -10,7 +10,7 @@ import org.change.v2.analysis.memory.Value;
 import org.change.v2.abstractnet.generic._;
 class Rule_Antispam {
   public InstructionBlock generate_rules(  ConfigParameter[] params){
-    InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),If(Constrain(Proto,postParsef(ConstantValue(POP3REQUEST.value))),NoOp,Constrain(Proto,postParsef(ConstantValue(POP3RESPONSE.value)))),InstructionBlock(),InstructionBlock(addrule(params)));
+    InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),If(Constrain(Proto,postParsef(ConstantValue(POP3REQUEST.value))),NoOp,Constrain(Proto,postParsef(ConstantValue(POP3RESPONSE.value)))),InstructionBlock(addrule(params)));
     return code;
   }
   public InstructionBlock[] addrule(  ConfigParameter[] p){

@@ -10,7 +10,7 @@ import org.change.v2.analysis.memory.Value;
 import org.change.v2.abstractnet.generic._;
 class Rule_Classifier {
   public InstructionBlock generate_rules(  ConfigParameter[] params){
-    InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),InstructionBlock(),InstructionBlock(addrule(params)));
+    InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),InstructionBlock(addrule(params)));
     return code;
   }
   public InstructionBlock[] addrule(  ConfigParameter[] p){

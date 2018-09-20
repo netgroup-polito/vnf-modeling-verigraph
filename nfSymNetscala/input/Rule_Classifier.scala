@@ -15,7 +15,7 @@ import scala.collection.JavaConversions._
 class Rule_Classifier {
 
   def generate_rules(params: Array[ConfigParameter]): InstructionBlock = {
-    val code = InstructionBlock(Assign("flag", ConstantValue(0)), InstructionBlock(), InstructionBlock(addrule(params)))
+    val code = InstructionBlock(Assign("flag", ConstantValue(0)), InstructionBlock(addrule(params)))
     code
   }
 

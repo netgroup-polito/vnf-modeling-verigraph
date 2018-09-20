@@ -10,7 +10,7 @@ import org.change.v2.analysis.memory.Value;
 import org.change.v2.abstractnet.generic._;
 class Rule_Ids {
   public InstructionBlock generate_rules(  ConfigParameter[] params){
-    InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),If(Constrain(Proto,postParsef(ConstantValue(HTTPREQUEST.value))),NoOp,Constrain(Proto,postParsef(ConstantValue(HTTPRESPONSE.value)))),InstructionBlock(),InstructionBlock(addrule(params)));
+    InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),If(Constrain(Proto,postParsef(ConstantValue(HTTPREQUEST.value))),NoOp,Constrain(Proto,postParsef(ConstantValue(HTTPRESPONSE.value)))),InstructionBlock(addrule(params)));
     return code;
   }
   public InstructionBlock[] addrule(  ConfigParameter[] p){

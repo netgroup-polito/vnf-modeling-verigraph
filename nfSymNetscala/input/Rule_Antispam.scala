@@ -16,7 +16,7 @@ class Rule_Antispam {
 
   def generate_rules(params: Array[ConfigParameter]): InstructionBlock = {
     val code = InstructionBlock(Assign("flag", ConstantValue(0)), If(Constrain(Proto, postParsef(ConstantValue(POP3REQUEST.value))), 
-      NoOp, Constrain(Proto, postParsef(ConstantValue(POP3RESPONSE.value)))), InstructionBlock(), InstructionBlock(addrule(params)))
+      NoOp, Constrain(Proto, postParsef(ConstantValue(POP3RESPONSE.value)))), InstructionBlock(addrule(params)))
     code
   }
 

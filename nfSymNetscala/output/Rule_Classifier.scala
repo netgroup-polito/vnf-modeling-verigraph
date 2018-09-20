@@ -15,7 +15,9 @@ import scala.collection.JavaConversions._
 class Rule_Classifier {
 
   def generate_rules(params:List[ConfigParameter]): InstructionBlock = {
-    val code = InstructionBlock(Assign("flag", ConstantValue(0)), InstructionBlock(), InstructionBlock(addrule(params)))
+    val code = InstructionBlock(
+        Assign("flag", ConstantValue(0)), 
+        InstructionBlock(addrule(params)))
     code
   }
 
@@ -25,14 +27,24 @@ class Rule_Classifier {
     val limit = p.length / 2
     var i = 0
     while (i < limit) {
-      rule = Array(InstructionBlock(If(Constrain("flag", :==:(ConstantValue(0))), InstructionBlock(If(Constrain(Proto, 
-        :==:(ConstantValue(p(i + 0).value.toInt))), InstructionBlock(Assign("flag", ConstantValue(1)), 
-        Assign("idIfSend", ConstantValue(p(i + 1).value.toInt))), NoOp)), NoOp)))
+      rule = Array(InstructionBlock(
+          If(Constrain("flag", :==:(ConstantValue(0))), 
+              InstructionBlock(
+                  If(Constrain(Proto, :==:(ConstantValue(p(i + 0).value.toInt))), 
+                      InstructionBlock(
+                          Assign("flag", ConstantValue(1)), 
+                          Assign("idIfSend", ConstantValue(p(i + 1).value.toInt))
+                      ), 
+                      NoOp
+                   ), 
+               NoOp)))
       rules = Array.concat(rules, rule)
       i = i + 2
     }
-    rule = Array(InstructionBlock(If(Constrain("flag", :==:(ConstantValue(0))), Fail("No-Match"), 
-      NoOp)))
+    rule = Array(InstructionBlock(
+        If(Constrain("flag", :==:(ConstantValue(0))), 
+            Fail("No-Match"), 
+            NoOp)))
     rules = Array.concat(rules, rule)
     rules
   }

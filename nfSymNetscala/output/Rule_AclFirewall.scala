@@ -15,7 +15,9 @@ import scala.collection.JavaConversions._
 class Rule_AclFirewall {
 
   def generate_rules(params:List[ConfigParameter]): InstructionBlock = {
-    val code = InstructionBlock(Assign("flag", ConstantValue(0)), InstructionBlock(), InstructionBlock(addrule(params)))
+    val code = InstructionBlock(
+        Assign("flag", ConstantValue(0)), 
+        InstructionBlock(addrule(params)))
     code
   }
 
