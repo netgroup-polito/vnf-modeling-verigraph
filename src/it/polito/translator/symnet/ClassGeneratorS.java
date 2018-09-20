@@ -71,6 +71,7 @@ public class ClassGeneratorS {
 		imports.add(new String[] { "org", "change", "v2", "util", "canonicalnames", "_" });
 		imports.add(new String[] { "org", "change", "v2", "analysis", "memory", "Value" });
 		imports.add(new String[] { "org", "change", "v2", "abstractnet", "generic", "_" });
+		imports.add(new String[] { "org", "change", "v2", "analysis", "expression", "concrete","nonprimitive","_"});
 
 		this.ast = AST.newAST(AST.JLS9);
 		this.cu = ast.newCompilationUnit();
