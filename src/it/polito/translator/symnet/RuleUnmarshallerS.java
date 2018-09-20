@@ -181,7 +181,9 @@ public class RuleUnmarshallerS {
 			if ((toadd = getType(temp)) != null)
 				startblock.arguments().add(toadd);
 
-			startblock.arguments().add(assigvalues);
+			if (!assigvalues.arguments().isEmpty()) {
+				startblock.arguments().add(assigvalues);
+			}
 			assignment.setRightHandSide(startblock);
 			method.getBody().statements().add(ast.newExpressionStatement(assignment));
 		}
@@ -652,6 +654,16 @@ public class RuleUnmarshallerS {
 		if (equal.getLeftExpression().getFieldOf().getUnit().equals("p_0")) { // p_0 => the field is on the
 																				// output_packet.
 			if (lfield != null && rfield != null && !lfield.equals(rfield)) {
+				if ((equal.getRightExpression().getFieldOf() != null)
+						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_1")
+						&& lfield.contains(Constants.IP_SOURCE)) {
+					newSwithIpRules();
+					return null;
+				} else if ((equal.getRightExpression().getFieldOf() != null)
+						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_1")
+						&& lfield.contains(Constants.IP_DESTINATION)) {
+					return null;
+				}
 				if (packetfield.contains(lfield)) {
 					mi.setName(ast.newSimpleName(Constants.ASSIGN));
 
@@ -684,6 +696,40 @@ public class RuleUnmarshallerS {
 		}
 		return null;
 	}
+
+	/**
+	 * Generate SEFL instructions to switch the header field IP_SOURCE and
+	 * IP_DESRINARION <br>
+	 * For Example, <br>
+	 * Allocate("tmp"), Assign("tmp",:@(IPSrc)), Assign(IPSrc,:@(IPDst)),
+	 * Assign(IPDst,:@("tmp")), Deallocate("tmp"),
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	private void newSwithIpRules() {
+		MethodInvocation miatmp = ast.newMethodInvocation();
+		miatmp.setName(ast.newSimpleName(Constants.ASSIGN));
+		miatmp.arguments().add(makeStringLiteral("tmp"));
+		assigvalues.arguments().add(miatmp);
+		
+		MethodInvocation miips = ast.newMethodInvocation();
+		miips.setName(ast.newSimpleName(Constants.ASSIGN));
+		miips.arguments().add(ast.newSimpleName(fieldMapping(Constants.IP_SOURCE)));
+		miips.arguments().add(newFchiocciola(Constants.IP_DESTINATION));
+		assigvalues.arguments().add(miips);
+		
+		MethodInvocation miipd = ast.newMethodInvocation();
+		miipd.setName(ast.newSimpleName(Constants.ASSIGN));
+		miipd.arguments().add(ast.newSimpleName(fieldMapping(Constants.IP_DESTINATION)));
+		miipd.arguments().add(newFchiocciola(makeStringLiteral("tmp")));
+		assigvalues.arguments().add(miipd);
+
+		MethodInvocation midtmp = ast.newMethodInvocation();
+		midtmp.setName(ast.newSimpleName(Constants.DEALLOCATE));
+		midtmp.arguments().add(makeStringLiteral("tmp"));
+		assigvalues.arguments().add(midtmp);
+	}
+
 
 	/**
 	 * Mapping from VNF Modeling fields to SymNet SEFL fields <br>
@@ -985,6 +1031,29 @@ public class RuleUnmarshallerS {
 		meconcat.arguments().add(ast.newSimpleName("rule"));
 		Expression ea = makeAssignment(ast.newSimpleName("rules"), meconcat, Assignment.Operator.ASSIGN);
 		return ea;
+	}
+	
+	/**
+	 * Generate a SEFL instruction to access of tag values. <br>
+	 * For example, <br>
+	 * :@(IPSrc))
+	 * 
+	 * @param val tag name
+	 * @return the new Method Invocation that represent the :@ SEFL method.
+	 */
+	@SuppressWarnings("unchecked")
+	private Expression newFchiocciola(String val) {
+		MethodInvocation mi = ast.newMethodInvocation();
+		mi.setName(ast.newSimpleName("Fchiocciola")); // => :@ SymNet symbol 
+		mi.arguments().add(ast.newSimpleName(val));
+		return mi;
+	}
+	@SuppressWarnings("unchecked")
+	private Object newFchiocciola(StringLiteral val) {
+		MethodInvocation mi = ast.newMethodInvocation();
+		mi.setName(ast.newSimpleName("Fchiocciola")); // => :@ SymNet symbol 
+		mi.arguments().add(val);
+		return mi;
 	}
 
 	// ---------------------------------------------------------
