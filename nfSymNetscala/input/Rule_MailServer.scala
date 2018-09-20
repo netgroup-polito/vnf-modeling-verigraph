@@ -9,6 +9,7 @@ import org.change.v2.util.conversion.RepresentationConversion._
 import org.change.v2.util.canonicalnames._
 import org.change.v2.analysis.memory.Value
 import org.change.v2.abstractnet.generic._
+import org.change.v2.analysis.expression.concrete.nonprimitive._
 //remove if not needed
 import scala.collection.JavaConversions._
 
@@ -16,8 +17,9 @@ class Rule_MailServer {
 
   def generate_rules(params: Array[ConfigParameter]): InstructionBlock = {
     val code = InstructionBlock(Assign("flag", ConstantValue(0)), Constrain(Proto, postParsef(ConstantValue(POP3REQUEST.value))), 
-      InstructionBlock(Assign(Proto, ConstantValue(POP3RESPONSE.value)), Assign("tmp"), Assign(IPSrc, 
-      Fchiocciola(IP_DST)), Assign(IPDst, Fchiocciola("tmp")), Deallocate("tmp"), Assign(EmailFrom, ConstantValue(RESPONSE.value))))
+      InstructionBlock(Assign(Proto, ConstantValue(POP3RESPONSE.value)), Allocate("tmp"), Assign("tmp", 
+      Fchiocciola(IPSrc)), Assign(IPSrc, Fchiocciola(IPDst)), Assign(IPDst, Fchiocciola("tmp")), Deallocate("tmp"), 
+      Assign(EmailFrom, ConstantValue(RESPONSE.value))))
     code
   }
 }
