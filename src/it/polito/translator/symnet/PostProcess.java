@@ -25,7 +25,6 @@ public class PostProcess {
 		FileInputStream fstream = null;
 		DataInputStream in = null;
 		BufferedWriter out = null;
-
 		try {
 			if (args.length != 2) {
 				System.err.println("Usage: Post_Parser <NF.scala_path>");
