@@ -34,26 +34,30 @@ public class PostProcess {
 			fstream = new FileInputStream(args[0]);
 			in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
+			String strLine, strNew;
 			StringBuilder fileContent = new StringBuilder();
 			while ((strLine = br.readLine()) != null) {
+				strNew = strLine;
 				if (strLine.contains("postParsef")) {
-					String strLineNew = strLine.replaceAll("postParsef", ":==:");
-					fileContent.append(strLineNew);
-					fileContent.append(System.getProperty("line.separator"));
-				} else if (strLine.contains(" Array[ConfigParameter]")) {
-					String ns = strLine.replace(" Array[ConfigParameter]", "List[ConfigParameter]");
-					fileContent.append(ns);
-					fileContent.append(System.getProperty("line.separator"));
-				} else {
-					fileContent.append(strLine);
-					fileContent.append(System.getProperty("line.separator"));
+					strNew = strLine.replaceAll("postParsef", ":==:");
 				}
+				if (strNew.contains("Fchiocciola")) {
+					String r = ":" + "@";
+					strNew = strNew.replaceAll("Fchiocciola", r);
+				}
+				if (strNew.contains(" Array[ConfigParameter]")) {
+					strNew = strLine.replace(" Array[ConfigParameter]", "List[ConfigParameter]");
+				}
+				fileContent.append(strNew);
+				fileContent.append(System.getProperty("line.separator"));
 			}
+
 			FileWriter fstreamWrite = new FileWriter(args[1]);
 			out = new BufferedWriter(fstreamWrite);
 			out.write(fileContent.toString());
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
