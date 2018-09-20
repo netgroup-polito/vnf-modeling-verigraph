@@ -708,14 +708,20 @@ public class RuleUnmarshallerS {
 	@SuppressWarnings("unchecked")
 	private void newSwithIpRules() {
 		MethodInvocation miatmp = ast.newMethodInvocation();
-		miatmp.setName(ast.newSimpleName(Constants.ASSIGN));
+		miatmp.setName(ast.newSimpleName(Constants.ALLOCATE));
 		miatmp.arguments().add(makeStringLiteral("tmp"));
 		assigvalues.arguments().add(miatmp);
+		
+		MethodInvocation mit = ast.newMethodInvocation();
+		mit.setName(ast.newSimpleName(Constants.ASSIGN));
+		mit.arguments().add(makeStringLiteral("tmp"));
+		mit.arguments().add(newFchiocciola(fieldMapping(Constants.IP_SOURCE)));
+		assigvalues.arguments().add(mit);
 		
 		MethodInvocation miips = ast.newMethodInvocation();
 		miips.setName(ast.newSimpleName(Constants.ASSIGN));
 		miips.arguments().add(ast.newSimpleName(fieldMapping(Constants.IP_SOURCE)));
-		miips.arguments().add(newFchiocciola(Constants.IP_DESTINATION));
+		miips.arguments().add(newFchiocciola(fieldMapping(Constants.IP_DESTINATION)));
 		assigvalues.arguments().add(miips);
 		
 		MethodInvocation miipd = ast.newMethodInvocation();
