@@ -17,12 +17,8 @@ class Rule_MailServer {
 
   def generate_rules(params:List[ConfigParameter]): InstructionBlock = {
     val code = InstructionBlock(Assign("flag", ConstantValue(0)), Constrain(Proto, :==:(ConstantValue(POP3REQUEST.value))), 
-      InstructionBlock(
-          Assign(Proto, ConstantValue(POP3RESPONSE.value)), 
-          Allocate("tmp"), 
-          Assign("tmp", :@(IPSrc)), 
-          Assign(IPSrc, :@(IPDst)), 
-          Assign(IPDst, :@("tmp")), Deallocate("tmp"), 
+      InstructionBlock(Assign(Proto, ConstantValue(POP3RESPONSE.value)), Allocate("tmp"), Assign("tmp", 
+      :@(IPSrc)), Assign(IPSrc, :@(IPDst)), Assign(IPDst, :@("tmp")), Deallocate("tmp"), 
       Assign(EmailFrom, ConstantValue(RESPONSE.value))))
     code
   }

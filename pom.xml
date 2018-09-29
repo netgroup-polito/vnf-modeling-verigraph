@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
 
-		<sourceDirectory>.\nfsymNetJava</sourceDirectory>
+		<sourceDirectory>.\nfsymNetJava</sourceDirectory>	
 		
 		<plugins>
 		

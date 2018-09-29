@@ -9,6 +9,7 @@ import org.change.v2.util.conversion.RepresentationConversion._
 import org.change.v2.util.canonicalnames._
 import org.change.v2.analysis.memory.Value
 import org.change.v2.abstractnet.generic._
+import org.change.v2.analysis.expression.concrete.nonprimitive._
 //remove if not needed
 import scala.collection.JavaConversions._
 
@@ -23,9 +24,9 @@ class Rule_Ids {
   def addrule(p: Array[ConfigParameter]): Array[InstructionBlock] = {
     var rule: Array[InstructionBlock] = null
     var rules = Array(InstructionBlock(Nil))
-    val limit = p.length / 1
+    val limit = p.length - 1
     var i = 0
-    while (i < limit) {
+    while (i <= limit) {
       rule = Array(InstructionBlock(If(Constrain(URL, postParsef(ConstantValue(p(i + 0).value.toInt))), 
         Fail("Match-in-blacklist"), NoOp)))
       rules = Array.concat(rules, rule)

@@ -286,14 +286,14 @@ public class RuleUnmarshallerS {
 		MethodInvocation miforlimit = ast.newMethodInvocation();
 		miforlimit.setName(ast.newSimpleName("length"));
 		miforlimit.setExpression(ast.newSimpleName("p"));
-		vdflimit.setInitializer(makeInfixExpression(miforlimit, ast.newNumberLiteral(tableSize), Operator.DIVIDE));
+		vdflimit.setInitializer(makeInfixExpression(miforlimit, ast.newNumberLiteral(tableSize), Operator.MINUS));
 
 		VariableDeclarationStatement vdsfl = ast.newVariableDeclarationStatement(vdflimit);
 		md.getBody().statements().add(vdsfl);
 
 		ForStatement fs = ast.newForStatement();
 
-		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), ast.newSimpleName("limit"), Operator.LESS));
+		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), ast.newSimpleName("limit"), Operator.LESS_EQUALS));
 		Expression e = makeInfixExpression(ast.newSimpleName("i"), ast.newNumberLiteral(tableSize), Operator.PLUS);
 		Expression e1 = makeAssignment(ast.newSimpleName("i"), e, Assignment.Operator.ASSIGN);
 		fs.updaters().add(e1);
