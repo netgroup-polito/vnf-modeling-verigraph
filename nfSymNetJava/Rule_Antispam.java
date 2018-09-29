@@ -8,6 +8,7 @@ import org.change.v2.util.conversion.RepresentationConversion._;
 import org.change.v2.util.canonicalnames._;
 import org.change.v2.analysis.memory.Value;
 import org.change.v2.abstractnet.generic._;
+import org.change.v2.analysis.expression.concrete.nonprimitive._;
 class Rule_Antispam {
   public InstructionBlock generate_rules(  ConfigParameter[] params){
     InstructionBlock code=InstructionBlock(Assign("flag",ConstantValue(0)),If(Constrain(Proto,postParsef(ConstantValue(POP3REQUEST.value))),NoOp,Constrain(Proto,postParsef(ConstantValue(POP3RESPONSE.value)))),InstructionBlock(addrule(params)));
@@ -16,8 +17,8 @@ class Rule_Antispam {
   public InstructionBlock[] addrule(  ConfigParameter[] p){
     InstructionBlock[] rule;
     InstructionBlock[] rules=Array(InstructionBlock(Nil));
-    int limit=p.length() / 1;
-    for (int i=0; i < limit; i=i + 1) {
+    int limit=p.length() - 1;
+    for (int i=0; i <= limit; i=i + 1) {
       rule=Array(InstructionBlock(If(Constrain(EmailFrom,postParsef(ConstantValue(p(i + 0).value.toInt))),Fail("Match-in-blacklist"),NoOp)));
       rules=Array.concat(rules,rule);
     }
