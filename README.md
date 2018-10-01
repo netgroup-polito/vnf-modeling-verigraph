@@ -103,6 +103,9 @@ Description of all Target:
 									<arg2> the output Scala file
 	-clean: Delete old build and directories
 	-NFs_SymNet_generation: Running all the process in order to generate the SymNet model. Running all target.
+## RUN (Verigraph usecase)
+In order to run the use-cases tests of the Verigraph we can simply running the main class of the test. All tests available are into the package it.polito.verigraph.usecases. 
+
 ## Note
 Eclipse version: Eclipse Java EE IDE for Web Developers.
 Version: Photon Release (4.8.0)
