@@ -11,9 +11,9 @@
 	<property name="src.home" value="${basedir}/src" />
 	<property name="generated.home" value="${basedir}/generated" />
 	<property name="import.lib" value="${basedir}/lib" />
-	<property name="nfInput.parser" value="${src.home}/it/polito/nfdev/aclfirewall/AclFirewall.java" />
-	<property name="nfInput.postProcess" value="${basedir}/nfSymNetscala/input/Rule_AclFirewall.scala" />
-	<property name="nfOutput.postProcess" value="${basedir}/nfSymNetscala/output/Rule_AclFirewall.scala" />
+	<property name="nfInput.parser" value="${src.home}/it/polito/nfdev/mailserver/MailServer.java" />
+	<property name="nfInput.postProcess" value="${basedir}/nfSymNetscala/input/Rule_MailServer.scala" />
+	<property name="nfOutput.postProcess" value="${basedir}/nfSymNetscala/output/Rule_MailServer.scala" />
 	<path id="compile.classpath">
 		<pathelement location="${src.home}" />
 		<pathelement location="${generated.home}" />
