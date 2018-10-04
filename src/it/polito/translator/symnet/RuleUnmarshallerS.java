@@ -75,15 +75,20 @@ public class RuleUnmarshallerS {
 	private AST ast;
 	private MethodInvocation startblock;
 	private MethodInvocation assigvalues;
+	private MethodInvocation stateblockint;
+	private MethodInvocation stateblock;
 
 	private ExpressionResult reuslt;
 
 	private List<String> params;
 	private List<String> packetfield;
+	private List<String> statetype;
 	private Boolean blacklist = false;
 	private Boolean match = false;
 	private Boolean flagnot = false;
 	private String tableSize = "0";
+	private Boolean state = false;
+	private boolean flagstate = false;
 
 	/**
 	 * Constructor: Instantiate the client's entry point to the JAXB framework. <br>
@@ -153,8 +158,9 @@ public class RuleUnmarshallerS {
 
 		method.setBody(ast.newBlock());
 
-		for (ExpressionObject temp : reuslt.getLogicalExpressionResult()) {
-
+		//for (ExpressionObject temp : reuslt.getLogicalExpressionResult()) {
+			
+		    ExpressionObject temp = reuslt.getLogicalExpressionResult().get(0);
 			Assignment assignment = ast.newAssignment();
 
 			VariableDeclarationFragment vdf = ast.newVariableDeclarationFragment();
@@ -182,11 +188,14 @@ public class RuleUnmarshallerS {
 				startblock.arguments().add(toadd);
 
 			if (!assigvalues.arguments().isEmpty()) {
-				startblock.arguments().add(assigvalues);
+				if(state) {
+					stateblockint.arguments().add(assigvalues);	
+				}else {
+				startblock.arguments().add(assigvalues);}
 			}
 			assignment.setRightHandSide(startblock);
 			method.getBody().statements().add(ast.newExpressionStatement(assignment));
-		}
+		//}
 
 		/**
 		 * Generate a SEFL instruction for call a method that generates the SEFL
@@ -202,6 +211,11 @@ public class RuleUnmarshallerS {
 				miib.arguments().add(mi);
 			}
 			startblock.arguments().add(miib);
+		}
+		if(state) {	
+			stateblock.arguments().add(stateblockint);
+			stateblock.arguments().add(ast.newName("NoOp"));
+			startblock.arguments().add(stateblock);
 		}
 
 		ReturnStatement rs = ast.newReturnStatement();
@@ -418,6 +432,127 @@ public class RuleUnmarshallerS {
 		md.getBody().statements().add(rs);
 		return md;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public MethodDeclaration generateCheckState() {
+		if (!state)
+			return null;	
+		flagstate = true;
+		String numEntryState = Integer.toString(statetype.size());
+		MethodDeclaration md = ast.newMethodDeclaration();
+		md.setName(ast.newSimpleName("checkstate"));
+		md.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
+
+		ArrayType at1 = ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK)));
+		md.setReturnType2(at1);
+
+		/**
+		 * The variable <strong>p</strong> is the array that contains the entries given
+		 * to the network function being configured
+		 */
+		SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
+		param.setName(ast.newSimpleName("p"));
+		param.setType(ast.newArrayType(ast.newSimpleType(ast.newName("ConfigParameter"))));
+		md.parameters().add(param);
+
+		md.setBody(ast.newBlock());
+
+		/**
+		 * The variable <strong>rule</strong> is the InstructionBlock SEFL statement
+		 * generate to each entries given to the network function being configured.
+		 */
+		VariableDeclarationFragment vdfrule = ast.newVariableDeclarationFragment();
+		vdfrule.setName(ast.newSimpleName("rule"));
+		VariableDeclarationStatement vdsrule = ast.newVariableDeclarationStatement(vdfrule);
+		vdsrule.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
+		md.getBody().statements().add(vdsrule);
+
+		/**
+		 * The variable <strong>rules</strong> is the array that contains all the
+		 * <strong>rule</strong> statements.
+		 */
+		VariableDeclarationFragment vdfrules = ast.newVariableDeclarationFragment();
+		vdfrules.setName(ast.newSimpleName("rules"));
+		MethodInvocation miinizializer = ast.newMethodInvocation();
+		miinizializer.setName(ast.newSimpleName("Array"));
+		{
+			MethodInvocation miib = ast.newMethodInvocation();
+			miib.setName(ast.newSimpleName(Constants.BLOCK));
+			miib.arguments().add(ast.newSimpleName("Nil"));
+			miinizializer.arguments().add(miib);
+		}
+		vdfrules.setInitializer(miinizializer);
+		VariableDeclarationStatement vdsrules2 = ast.newVariableDeclarationStatement(vdfrules);
+		vdsrules2.setType(ast.newArrayType(ast.newSimpleType(ast.newSimpleName(Constants.BLOCK))));
+		md.getBody().statements().add(vdsrules2);
+
+		VariableDeclarationFragment vdflimit = ast.newVariableDeclarationFragment();
+		vdflimit.setName(ast.newSimpleName("limit"));
+		MethodInvocation miforlimit = ast.newMethodInvocation();
+		miforlimit.setName(ast.newSimpleName("length"));
+		miforlimit.setExpression(ast.newSimpleName("p"));
+		vdflimit.setInitializer(makeInfixExpression(miforlimit, ast.newNumberLiteral(numEntryState), Operator.MINUS));
+
+		VariableDeclarationStatement vdsfl = ast.newVariableDeclarationStatement(vdflimit);
+		md.getBody().statements().add(vdsfl);
+
+		ForStatement fs = ast.newForStatement();
+
+		fs.setExpression(makeInfixExpression(ast.newSimpleName("i"), ast.newSimpleName("limit"), Operator.LESS_EQUALS));
+		Expression e = makeInfixExpression(ast.newSimpleName("i"), ast.newNumberLiteral(numEntryState), Operator.PLUS);
+		Expression e1 = makeAssignment(ast.newSimpleName("i"), e, Assignment.Operator.ASSIGN);
+		fs.updaters().add(e1);
+
+		VariableDeclarationFragment vdfforint = ast.newVariableDeclarationFragment();
+		vdfforint.setName(ast.newSimpleName("i"));
+		vdfforint.setInitializer(ast.newNumberLiteral("0"));
+		VariableDeclarationExpression vdeforinit = ast.newVariableDeclarationExpression(vdfforint);
+		fs.initializers().add(vdeforinit);
+
+		MethodInvocation mia = ast.newMethodInvocation(); // InstructionBlock SEFL to scan the table entries and SET
+															// the flag-match
+		mia.setName(ast.newSimpleName("Array"));
+		{
+
+			MethodInvocation mib = ast.newMethodInvocation();
+			mib.setName(ast.newSimpleName(Constants.BLOCK));
+
+			MethodInvocation mif = ast.newMethodInvocation();
+			mif.setName(ast.newSimpleName(Constants.IF));
+			{
+				MethodInvocation mic = ast.newMethodInvocation();
+				mic.setName(ast.newSimpleName(Constants.RULE));
+				{
+					mic.arguments().add(makeStringLiteral("flag"));
+					MethodInvocation mitt = ast.newMethodInvocation();
+					mitt.setName(ast.newSimpleName("postParsef"));
+					MethodInvocation micv = ast.newMethodInvocation();
+					micv.setName(ast.newSimpleName("ConstantValue"));
+					micv.arguments().add(ast.newNumberLiteral("0"));
+					mitt.arguments().add(micv);
+					mic.arguments().add(mitt);
+				}
+				mif.arguments().add(mic);
+			}
+			mif.arguments().add(newibstate(0));
+			mif.arguments().add(ast.newName("NoOp"));
+			mib.arguments().add(mif);
+			mia.arguments().add(mib);
+		}
+		Expression earule = makeAssignment(ast.newSimpleName("rule"), mia, Assignment.Operator.ASSIGN);
+		Block fb = ast.newBlock();
+		fb.statements().add(ast.newExpressionStatement(earule));
+		fb.statements().add(ast.newExpressionStatement(newconcatlist()));
+		fs.setBody(fb);
+		md.getBody().statements().add(fs);
+
+		md.getBody().statements().add(ast.newExpressionStatement(newconcatlist()));
+
+		ReturnStatement rs = ast.newReturnStatement();
+		rs.setExpression((ast.newSimpleName("rules")));
+		md.getBody().statements().add(rs);
+		return md;
+	}
 
 	/**
 	 * Generate the SEFL instructions of initialization, e.g. Assign flag value.
@@ -468,10 +603,10 @@ public class RuleUnmarshallerS {
 		} else if (obj.getFieldOf() != null) {
 
 			return generateFieldOf(obj.getFieldOf());
-		} else if (obj.getIsInternal() != null) {
+		} /*else if (obj.getIsInternal() != null) {
 
 			return generateIsInternal(obj.getIsInternal());
-		} else if (obj.getMatchEntry() != null) {
+		}*/ else if (obj.getMatchEntry() != null) {
 
 			return generateMatchEntry(obj.getMatchEntry());
 		} else if (obj.getParam() != null) {
@@ -496,7 +631,7 @@ public class RuleUnmarshallerS {
 		return mi;
 	}
 
-	/**
+/*	*//**
 	 * Generate a SEFL instruction for the node type LFIsInternal. <br>
 	 * For example, <br>
 	 * isInternal(IP_SRC)
@@ -504,14 +639,14 @@ public class RuleUnmarshallerS {
 	 * @param isInternal The AST node of type LFIsInternal
 	 * @return the new Method Invocation that represent the LFIsInternal type in
 	 *         SEFL
-	 */
+	 *//*
 	@SuppressWarnings("unchecked")
 	private Expression generateIsInternal(LFIsInternal isInternal) {
 		MethodInvocation mi = ast.newMethodInvocation();
 		mi.setName(ast.newSimpleName("isInternal"));
 		mi.arguments().add(ast.newSimpleName(isInternal.getFieldOf().getField()));
 		return mi;
-	}
+	}*/
 
 	/**
 	 * It sets the <strong>blacklist</strong> variable/falg to differentiate the
@@ -553,7 +688,11 @@ public class RuleUnmarshallerS {
 			if (temp.getOr() != null) {
 				continue;
 			}
-			startblock.arguments().add(exp);
+			if(state) {
+				stateblockint.arguments().add(exp);
+			} else {
+				startblock.arguments().add(exp);
+			}
 		}
 		return null;
 	}
@@ -590,9 +729,11 @@ public class RuleUnmarshallerS {
 		mi.arguments().add(exps.get(0));
 		mi.arguments().add(ast.newSimpleName("NoOp"));
 		mi.arguments().add(newNestedIf(exps, 1));
-
+		if(state) {
+			stateblockint.arguments().add(mi);
+		}else {
 		startblock.arguments().add(mi);
-		return mi;
+		}return mi;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -657,7 +798,7 @@ public class RuleUnmarshallerS {
 				if ((equal.getRightExpression().getFieldOf() != null)
 						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_1")
 						&& lfield.contains(Constants.IP_SOURCE)) {
-					newSwithIpRules();
+					newSwitchIpRules();
 					return null;
 				} else if ((equal.getRightExpression().getFieldOf() != null)
 						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_1")
@@ -676,6 +817,12 @@ public class RuleUnmarshallerS {
 					mi.arguments().add(micv);
 					assigvalues.arguments().add(mi);
 				}
+			}else if (lfield!=null && rfield!=null) {
+				if ((equal.getRightExpression().getFieldOf() != null)
+						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_2")) {
+					newMatchState(lfield);
+					return null;
+				}	
 			}
 		} else if (lfield != null && rfield != null && !lfield.equals(rfield)) { // p_1 => field of the input_packet
 			if (packetfield.contains(lfield)) {
@@ -697,6 +844,50 @@ public class RuleUnmarshallerS {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	private void newMatchState(String lfield) {
+    if (state) {
+    	statetype.add(lfield);
+    }
+    else {
+		state = true;
+		statetype = new ArrayList<>();
+		statetype.add(lfield);
+		
+		MethodInvocation miib = ast.newMethodInvocation();
+		miib.setName(ast.newSimpleName(Constants.BLOCK));
+		{
+			MethodInvocation mi = ast.newMethodInvocation();
+			mi.setName(ast.newSimpleName("checkstate"));
+			mi.arguments().add(ast.newSimpleName("params"));
+			miib.arguments().add(mi);
+		}
+		
+		startblock.arguments().add(miib);
+		
+		stateblock = ast.newMethodInvocation();
+		stateblock.setName(ast.newSimpleName(Constants.IF));
+		{ // Output: If(flaf,aggiorna,NoOp)
+			MethodInvocation mic = ast.newMethodInvocation();
+			mic.setName(ast.newSimpleName(Constants.RULE));
+			{ // Output: Constrain(mic,postParsef(ConstantValue(cvmi)))
+				MethodInvocation mitt = ast.newMethodInvocation();
+				// postParsef=> :==: Function in SEFL invalid in Java! Need post-parser
+				mitt.setName(ast.newSimpleName("postParsef"));
+				MethodInvocation micv = ast.newMethodInvocation();
+				micv.setName(ast.newSimpleName("ConstantValue"));
+				micv.arguments().add(ast.newNumberLiteral("1"));
+				mitt.arguments().add(micv);
+				mic.arguments().add(makeStringLiteral("flag"));
+				mic.arguments().add(mitt);
+			}
+			stateblock.arguments().add(mic);
+			stateblockint = ast.newMethodInvocation();
+			stateblockint.setName(ast.newSimpleName(Constants.BLOCK));
+		}
+    }
+}
+
 	/**
 	 * Generate SEFL instructions to switch the header field IP_SOURCE and
 	 * IP_DESRINARION <br>
@@ -706,7 +897,7 @@ public class RuleUnmarshallerS {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	private void newSwithIpRules() {
+	private void newSwitchIpRules() {
 		MethodInvocation miatmp = ast.newMethodInvocation();
 		miatmp.setName(ast.newSimpleName(Constants.ALLOCATE));
 		miatmp.arguments().add(makeStringLiteral("tmp"));
@@ -943,12 +1134,14 @@ public class RuleUnmarshallerS {
 					miib.arguments().add(mi);
 				}
 				{	//UPDATE: set the Interface assign only if the 'param' is an interface!
+					if(!flagstate ) {
 					MethodInvocation mi = ast.newMethodInvocation();
 					mi.setName(ast.newSimpleName(Constants.ASSIGN));
 					mi.arguments().add(makeStringLiteral("idIfSend"));
 					Expression ecv = newconstatvalue("if", 1);
 					mi.arguments().add(ecv);
 					miib.arguments().add(mi);
+					}
 				}
 				return miib;
 			}
@@ -972,6 +1165,48 @@ public class RuleUnmarshallerS {
 		}
 		index++;
 		imi.arguments().add(newib(index)); // true-branch of IF-statement
+		imi.arguments().add(ast.newName("NoOp")); // false-branch of IF-statement
+		mi.arguments().add(imi);
+		return mi;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Expression newibstate(int index) {
+		if (index == statetype.size()) {
+			{
+				MethodInvocation miib = ast.newMethodInvocation();
+				miib.setName(ast.newSimpleName(Constants.BLOCK));
+				{
+					MethodInvocation mi = ast.newMethodInvocation();
+					mi.setName(ast.newSimpleName(Constants.ASSIGN));
+					mi.arguments().add(makeStringLiteral("flag"));
+					MethodInvocation micv = ast.newMethodInvocation();
+					micv.setName(ast.newSimpleName("ConstantValue"));
+					micv.arguments().add(ast.newNumberLiteral("1"));
+					mi.arguments().add(micv);
+					miib.arguments().add(mi);
+				}
+				return miib;
+			}
+		}
+		MethodInvocation mi = ast.newMethodInvocation();
+		mi.setName(ast.newSimpleName(Constants.BLOCK));
+
+		MethodInvocation imi = ast.newMethodInvocation();
+		imi.setName(ast.newSimpleName(Constants.IF));
+		{
+			MethodInvocation cmi = ast.newMethodInvocation();
+			cmi.setName(ast.newSimpleName(Constants.RULE));
+			cmi.arguments().add(ast.newSimpleName(fieldMapping(statetype.get(index))));
+			MethodInvocation mitt = ast.newMethodInvocation();
+			mitt.setName(ast.newSimpleName("postParsef"));
+			Expression cv = newconstatvalue("p", index);
+			mitt.arguments().add(cv);
+			cmi.arguments().add(mitt);
+			imi.arguments().add(cmi);
+		}
+		index++;
+		imi.arguments().add(newibstate(index)); // true-branch of IF-statement
 		imi.arguments().add(ast.newName("NoOp")); // false-branch of IF-statement
 		mi.arguments().add(imi);
 		return mi;

@@ -10,7 +10,9 @@ import javax.xml.bind.MarshalException;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -125,6 +127,9 @@ public class ClassGeneratorS {
 			td.bodyDeclarations().add(u.generateRule());
 			if (!tableTypes.isEmpty())
 				td.bodyDeclarations().add(u.generateMatch(tableTypes));
+			MethodDeclaration md; //= u.generateCheckState();
+			if((md = u.generateCheckState())!=null) {
+			td.bodyDeclarations().add(md);}
 
 			FileWriter writer = new FileWriter(new File(fileNameSymNet));
 			writer.write(cu.toString());
