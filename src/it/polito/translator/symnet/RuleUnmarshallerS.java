@@ -1134,7 +1134,7 @@ public class RuleUnmarshallerS {
 					miib.arguments().add(mi);
 				}
 				{	//UPDATE: set the Interface assign only if the 'param' is an interface!
-					if(!flagstate ) {
+					if(!flagstate) {
 					MethodInvocation mi = ast.newMethodInvocation();
 					mi.setName(ast.newSimpleName(Constants.ASSIGN));
 					mi.arguments().add(makeStringLiteral("idIfSend"));

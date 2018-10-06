@@ -74,7 +74,6 @@ Folders:
 	- nfSymNetJava: folder to output classes of the 1th phase of SymNet Translation. (Parser)
 	- nfSymNetScala/input: folder to output classes of the 2dh phase of SymNetTranslation (mvn plug-in)
 	- nfSymNetScala/output folder to output classes of the 3th phase of SymNetTranslation (Post-Process)
-	- xsd/java: folder to output classes of Verigraph traslation
 	- xsd/txt: there are the NFs rules in a textual form (make by Parser)
 	- xsd: there are the NFs in XML format and the XML-schema.
 

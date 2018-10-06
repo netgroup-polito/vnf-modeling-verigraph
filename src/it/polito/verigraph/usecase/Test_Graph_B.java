@@ -209,13 +209,13 @@ public class Test_Graph_B {
 	    
 		PacketModel packet = new PacketModel();
 			//packet.setProto(1);
-		//packet.setProto(2);
-			packet.setProto(3);
+		packet.setProto(2);
+			//packet.setProto(3);
 		packet.setEmailFrom(100);
 			//packet.setEmailFrom(333);
 		packet.setUrl(100);
 			//packet.setUrl(666); 
-		packet.setIp_dest(nctx.am.get("ip_a"));
+		packet.setIp_dest(nctx.am.get("ip_b"));
 			//packet.setIp_dest(nctx.am.get("ip_b"));
 			//packet.setIp_dest(nctx.am.get("ip_c"));
 		
@@ -240,10 +240,10 @@ public class Test_Graph_B {
 		Test_Graph_B model = new Test_Graph_B();
 		model.resetZ3();
 
-		//IsolationResult ret = model.check.checkIsolationProperty(model.a, model.b); 
+		IsolationResult ret = model.check.checkIsolationProperty(model.a, model.b); 
 		//IsolationResult ret = model.check.checkIsolationProperty(model.b, model.a); 
 		//IsolationResult ret = model.check.checkIsolationProperty(model.a, model.c); 
-		IsolationResult ret = model.check.checkIsolationProperty(model.c, model.a); 
+		//IsolationResult ret = model.check.checkIsolationProperty(model.c, model.a); 
 		if (ret.result == Status.UNSATISFIABLE) {
 			System.out.println("UNSAT"); // Nodes a and b are isolated
 		} else {

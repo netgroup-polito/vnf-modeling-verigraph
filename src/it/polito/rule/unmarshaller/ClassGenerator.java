@@ -76,7 +76,7 @@ public class ClassGenerator {
 		this.imports = new ArrayList<String[]>();
 
 		fileNameXml = "./xsd/Rule_" + className + ".xml";
-		fileNameJava = "./xsd/java/Rule_" + className + ".java";
+		fileNameJava = "./src/it/polito/verigraph/mcnet/netobjs/Rule_" + className + ".java";
 
 		imports.add(new String[] { "java", "util", "List" });
 		imports.add(new String[] { "java", "util", "ArrayList" });
@@ -121,7 +121,7 @@ public class ClassGenerator {
 			tableSize = tableTypes.size();
 
 			PackageDeclaration pd = ast.newPackageDeclaration();
-			pd.setName(ast.newName(new String[] { "modify_it" }));
+			pd.setName(ast.newName(new String[] { "it","polito","verigraph","mcnet","netobjs" }));
 			cu.setPackage(pd);
 
 			for (String[] temp : imports) {

@@ -22,7 +22,6 @@ import it.polito.verigraph.mcnet.components.Network;
 import it.polito.verigraph.mcnet.components.NetworkObject;
 import it.polito.verigraph.mcnet.components.Tuple;
 import it.polito.verigraph.mcnet.netobjs.PolitoEndHost;
-import it.polito.verigraph.mcnet.netobjs.PolitoMailServer;
 import it.polito.verigraph.mcnet.netobjs.PacketModel;
 import it.polito.verigraph.mcnet.netobjs.PolitoAntispam;
 
