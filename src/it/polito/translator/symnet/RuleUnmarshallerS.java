@@ -826,6 +826,11 @@ public class RuleUnmarshallerS {
 			}
 		} else if (lfield != null && rfield != null && !lfield.equals(rfield)) { // p_1 => field of the input_packet
 			if (packetfield.contains(lfield)) {
+				if ((equal.getRightExpression().getFieldOf() != null)
+						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_2")) {
+					newMatchState(lfield);
+					return null;
+				}	
 				mi.setName(ast.newSimpleName(Constants.RULE));
 
 				mi.arguments().add(ast.newSimpleName(fieldMapping(lfield)));
@@ -839,6 +844,14 @@ public class RuleUnmarshallerS {
 				mitt.arguments().add(micv);
 				mi.arguments().add(mitt);
 				return mi;
+			}
+		} else if(lfield != null && rfield != null) {
+			if (packetfield.contains(lfield)) {
+				if ((equal.getRightExpression().getFieldOf() != null)
+						&& equal.getRightExpression().getFieldOf().getUnit().equals("p_2")) {
+					newMatchState(lfield);
+					return null;
+				}
 			}
 		}
 		return null;
